@@ -1206,6 +1206,51 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .famdlg .pkacts{display:flex!important;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .famdlg .pkacts .pbtn{white-space:normal}
 .bkrow{display:flex;flex-wrap:wrap;gap:8px}.bkfile{cursor:pointer}
+/* ===== Unser Plan: Layout v2 ===== */
+#pvCal{display:grid;gap:16px;align-items:start}
+@media (min-width:900px){#pvCal{grid-template-columns:minmax(340px,420px) minmax(0,1fr)}}
+.pvleft,.pvright{display:grid;gap:12px;min-width:0;align-content:start}
+.pcal{max-width:none!important}
+.pcalq{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 8px}
+.pcalq button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer;min-height:30px}
+.pcalq button:hover{border-color:var(--nx)}
+.pcalg button{position:relative;min-height:44px}
+.pcalg button.today{border:2px solid var(--nx)!important;font-weight:800}
+.pcalg button.wkend:not(.wefree):not(.has):not(.obusy):not(.rng):not(:disabled){background:color-mix(in srgb,var(--line) 35%,transparent)}
+.pcalg .sa::before{content:"";position:absolute;left:-3px;top:3px;bottom:3px;border-left:1.5px solid var(--line)}
+.pcalg span.sa{position:relative}
+.pcalg button em{font-size:13px!important}
+.pcalg .cds{display:flex;gap:2px;justify-content:center;font-style:normal}
+.cd{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.cd.e{background:var(--ev)}
+.pcalg .cbz{font-style:normal;font-size:10px;line-height:1}
+.pcalg button[aria-pressed="true"],.pcalg button.wefree[aria-pressed="true"],.pcalg button.obusy[aria-pressed="true"],.pcalg button.rng[aria-pressed="true"]{background:var(--nx)!important;color:var(--nx-ink)!important;border-color:var(--nx)!important}
+.pcalg button.wefree[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ok)}
+.pcalg button[aria-pressed="true"] .cd{box-shadow:0 0 0 1.5px var(--nx-ink)}
+.pleg{display:none!important}
+.pleg2{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin-top:8px}
+.pleg2 span{display:inline-flex;align-items:center;gap:5px}
+.pleg2 .lgf{width:14px;height:12px;border-radius:3px;background:color-mix(in srgb,var(--ok) 14%,transparent);border:1px solid color-mix(in srgb,var(--ok) 45%,transparent)}
+.pleg2 .lg5{width:14px;height:12px;border-radius:3px;background:repeating-linear-gradient(135deg,color-mix(in srgb,#B4532A 35%,transparent) 0 3px,transparent 3px 6px);border:1px solid #B4532A}
+.pleg2 .lgr{font-style:normal;color:var(--nx)}
+.pnext{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:4px}
+.pnext h4{margin:0 0 4px;font-size:15px}
+.nxrow{font:inherit;text-align:left;display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;align-items:center;border:0;border-radius:8px;background:none;color:var(--ink);padding:6px 4px;cursor:pointer}
+.nxrow:hover{background:var(--bg)}
+.nxd{font-weight:800;font-size:12.5px;display:grid;line-height:1.2}
+.nxd small{font-weight:600;color:var(--muted)}
+.nxt{display:flex;align-items:center;gap:6px;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nxt .cd{flex:none}
+.pdhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;width:100%}
+.pdt{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pdt b{font-family:var(--f-display);font-size:18px}
+.pdacts{display:flex;gap:6px;flex-wrap:wrap}
+.pdacts .busybtn{margin:0}
+@media (max-width:899px){.pdhead{flex-direction:column;align-items:stretch}.pdt{justify-content:space-between}.pdacts{justify-content:flex-start}.pdt{flex-wrap:nowrap}.pdt b{font-size:17px!important}.pdacts .pmini{font-size:12.5px;padding:4px 9px}}
+.pdt .pall{white-space:nowrap;flex:none}
+.pdacts .pexp{margin-left:0}
+.phead:has(.pdhead){display:grid!important;gap:8px}
+.busyban{width:100%;box-sizing:border-box}
 </style>
 
 <div class="wrap">
@@ -1405,8 +1450,8 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
   <section class="mview" id="heuteView" hidden aria-label="Heute"></section>
   <section class="mview planview" id="planView" hidden aria-labelledby="pH">
     <h2 class="mtitle" id="pH">📋 Unser Plan</h2>
-    <div class="pvsec" id="pvCal"><div class="pdays"><div class="pcal" id="pCal" aria-label="Kalender"></div><div class="wefree" id="weGrid"></div></div><div class="phead" id="pHead"></div><div id="pList" class="plist"></div>
-    <div class="dlglinks"><button type="button" class="pbtn" id="pCopy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>Plan als Text kopieren</button></div></div>
+    <div class="pvsec" id="pvCal"><div class="pvleft"><div class="pcal" id="pCal" aria-label="Kalender"></div><div class="pnext" id="pNext"></div></div><div class="pvright"><div class="phead" id="pHead"></div><div id="pList" class="plist"></div>
+    <div class="dlglinks"><button type="button" class="pbtn" id="pCopy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>Plan als Text kopieren</button></div></div></div>
     <div class="pvsec"><h3>♡ Vielleicht <span class="pvn" id="mbN"></span></h3><div class="mblist" id="maybeList"></div></div>
   </section>
   <nav class="modenav" id="modeNav" aria-label="Bereiche"><button type="button" data-m2="heute"><span class="ni" aria-hidden="true" id="navDayI">☀️</span><span id="navDayL">Heute</span></button><button type="button" data-m2="entdecken"><span class="ni" aria-hidden="true">🔭</span><span>Entdecken</span></button><button type="button" data-m2="plan"><span class="ni" aria-hidden="true">📋</span><span>Unser Plan</span><i class="nn" id="navPlanN"></i></button></nav>
@@ -3156,9 +3201,10 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
   if(!CALM)CALM=(PDAY||(E[0]?E[0].d:T0)).slice(0,7);if(CALM<T0.slice(0,7))CALM=T0.slice(0,7);renderPCal(E);
   const [y,m]=CALM.split("-").map(Number);let h="",head="";
   if(PDAY){const L=E.filter(o=>o.d===PDAY),R=E.filter(o=>{const r=rangeOf(o);return o.d!==PDAY&&r&&r[0]<=PDAY&&PDAY<=r[1]});
-    head=`<b>${WDL[pdate(PDAY).getDay()]}, ${pdate(PDAY).getDate()}. ${MONL[pdate(PDAY).getMonth()]}</b><button type="button" class="pall" data-pall>← Ganzer ${MONL[m-1]}</button>${PDAY>=T0&&!ST.busy[PDAY]?`<button type="button" class="pmini pexp" data-explore="${PDAY}">🔭 Für diesen Tag entdecken</button>`:""}`;
-    const BZ=ST.busy[PDAY],busyHtml=PDAY<T0?"":BZ?`<div class="busyban"><span>⛔ <b>Anderweitig verplant</b></span><input type="text" class="busynote" data-busynote="${PDAY}" value="${esc(BZ.note||"")}" placeholder="Notiz, z. B. Geburtstag Oma" maxlength="60" aria-label="Notiz"><button type="button" class="pmini" data-busy="${PDAY}">Wieder freigeben</button></div>`
-      :`<button type="button" class="pmini busybtn" data-busy="${PDAY}">⛔ Anderweitig verplant</button>`;
+    const BZ=ST.busy[PDAY];
+    head=`<div class="pdhead"><div class="pdt"><b>${WDL[pdate(PDAY).getDay()]}, ${pdate(PDAY).getDate()}. ${MONL[pdate(PDAY).getMonth()]}</b><button type="button" class="pall" data-pall>← ${MONL[m-1]}</button></div>${PDAY>=T0&&!BZ?`<div class="pdacts"><button type="button" class="pmini pexp" data-explore="${PDAY}">🔭 Für diesen Tag entdecken</button><button type="button" class="pmini busybtn" data-busy="${PDAY}">⛔ Anderweitig verplant</button></div>`:""}</div>`
+      +(PDAY>=T0&&BZ?`<div class="busyban"><span>⛔ <b>Anderweitig verplant</b></span><input type="text" class="busynote" data-busynote="${PDAY}" value="${esc(BZ.note||"")}" placeholder="Notiz, z. B. Geburtstag Oma" maxlength="60" aria-label="Notiz"><button type="button" class="pmini" data-busy="${PDAY}">Wieder freigeben</button></div>`:"");
+    const busyHtml="";
     h=busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
       :(PDAY>=T0?(BZ?"":`<div class="sugfree">🟢 Noch frei – unsere Vorschläge:</div>`+daySug(PDAY)):`<div class="evempty">An diesem Tag war nichts geplant.</div>`))+(R.length?`<div class="psub">Läuft an diesem Tag auch – an einem anderen Tag bevorzugt:</div>`+R.map(o=>prow(o,true)).join(""):"");
   }else{const L=PALL?E:E.filter(o=>o.d.startsWith(CALM));
@@ -3179,13 +3225,17 @@ function renderStep(){const a=$("pCalStep");if(!a)return;const n=KL.length;a.hid
 function planText(dt){const L=planItems(dt),d=pdate(dt);return `Ausflugsplan ${WDL[d.getDay()]}, ${d.getDate()}. ${MONL[d.getMonth()]}\n`+L.map(({p,ev,t,ti})=>`${t||"--:--"}  ${ti}${ev?" ("+p.n+")":""}\n       ${p.a} · Auto ca. ${p.car} Min.`).join("\n")}
 let CALM=null,PALL=false;
 function renderPCal(E){const EVN=evAllNear();const [y,m]=CALM.split("-").map(Number),first=new Date(y,m-1,1),off=(first.getDay()+6)%7,n=new Date(y,m,0).getDate();
-  const iso=d=>y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");let h=["Mo","Di","Mi","Do","Fr","Sa","So"].map((w,i)=>`<span class="wd${i>4?" we":""}">${w}</span>`).join("")+"<span></span>".repeat(off);
+  const iso=d=>y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");let h=["Mo","Di","Mi","Do","Fr","Sa","So"].map((w,i)=>`<span class="wd${i>4?" we":""}${i===5?" sa":""}">${w}</span>`).join("")+"<span></span>".repeat(off);
   for(let d=1;d<=n;d++){const s=iso(d),c=E.filter(o=>o.d===s).length,rg=E.filter(o=>{const r=rangeOf(o);return o.d!==s&&r&&r[0]<=s&&s<=r[1]}).length,
     dw=pdate(s).getDay(),bz=!!ST.busy[s],wef=!bz&&s>=T0&&(window.FREEDAYS?FREEDAYS.has(dw):(dw===0||dw===6))&&!c,wx=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===s):null,
-    cl=[s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":""].filter(Boolean).join(" ");
-    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c?`<i>● ${c}</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
+    cl=[s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
+    dots=E.filter(o=>o.d===s).slice(0,3).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).join("");
+    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
   const can=CALM>T0.slice(0,7);
-  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalg">${h}</div><div class="pleg"><span class="li"><i class="lg1"></i>geplant</span><span class="li"><i class="lg2"></i>mehrtägig, anderer Tag bevorzugt</span><span class="li"><i class="lg3"></i>Ziel</span><span class="li"><i class="lg4"></i>Veranstaltung</span><span class="li"><i class="lg5"></i>anderweitig verplant</span></div>`}
+  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
+  renderNext(E)}
+function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);
+  el.innerHTML=`<h4>Nächste Ausflüge</h4>`+(N.length?N.map(o=>`<button type="button" class="nxrow" data-cal="${o.d}"><span class="nxd">${o.d===T0?"Heute":o.d===plus(1)?"Morgen":fmtDate(o.d)}${o.t?`<small>${esc(o.t)}</small>`:""}</span><span class="nxt"><b class="cd ${o.ev?"e":"z"}"></b>${esc(o.ti.replace(/^Ausflug: /,""))}</span></button>`).join(""):`<p class="pvsub">Noch nichts eingeplant.</p>`)}
 function openPlan(){setM2("plan")}
 window.renderPlanNow=()=>renderPlan();
 $("planView").addEventListener("click",e=>{
@@ -3198,7 +3248,8 @@ $("planView").addEventListener("click",e=>{
   const mx=e.target.closest("[data-mbx]");if(mx){const o=ST.maybe[mx.dataset.mbx];if(o)toggleMaybe(o);return}
   const pm=e.target.closest("[data-pmode]");if(pm){PALL=true;PDAY=null;renderPlan();return}
   const pmo=e.target.closest("[data-pmon]");if(pmo){PALL=false;PDAY=null;CALM=pmo.dataset.pmon;renderPlan();return}
-  const c=e.target.closest("[data-cal]");if(c){PALL=false;SUGOPEN=false;PDAY=PDAY===c.dataset.cal?null:c.dataset.cal;renderPlan();if(PDAY){const hd=$("pHead");if(hd&&hd.getBoundingClientRect().top>innerHeight*0.7)hd.scrollIntoView({behavior:"smooth",block:"start"})}return}
+  const jp=e.target.closest("[data-jump]");if(jp){PALL=false;SUGOPEN=false;let d=T0;if(jp.dataset.jump==="free"){for(let i=0;i<120;i++){const s=plus(i),w=pdate(s).getDay();if((w===6||w===0)&&!planItems(s).length&&!ST.busy[s]){d=s;break}}}PDAY=d;CALM=d.slice(0,7);renderPlan();const hd=$("pHead");if(hd&&hd.getBoundingClientRect().top>innerHeight*0.7)hd.scrollIntoView({behavior:"smooth",block:"start"});return}
+  const c=e.target.closest("[data-cal]");if(c){PALL=false;SUGOPEN=false;PDAY=PDAY===c.dataset.cal?null:c.dataset.cal;if(PDAY)CALM=PDAY.slice(0,7);renderPlan();if(PDAY){const hd=$("pHead");if(hd&&hd.getBoundingClientRect().top>innerHeight*0.7)hd.scrollIntoView({behavior:"smooth",block:"start"})}return}
   if(e.target.closest("[data-sugopen]")){SUGOPEN=true;renderPlan();return}
   const bz=e.target.closest("[data-busy]");if(bz){const d=bz.dataset.busy;if(ST.busy[d]){delete ST.busy[d];write("busy/"+d,null);toast("Tag wieder frei")}else{const o={at:Date.now(),note:""};if(MYID)o.by=MYID;ST.busy[d]=o;write("busy/"+d,o);toast("⛔ "+fmtDate(d)+" anderweitig verplant")}persistLocal();renderPlan();return}
   if(e.target.closest("[data-pall]")){PDAY=null;renderPlan();return}
