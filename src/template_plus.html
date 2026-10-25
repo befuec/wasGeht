@@ -1265,6 +1265,29 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .pdacts .pexp{margin-left:0}
 .phead:has(.pdhead){display:grid!important;gap:8px}
 .busyban{width:100%;box-sizing:border-box}
+
+/* ===== Einheitliche Schriftgrößen (alle Bereiche) ===== */
+:root{--fs-h:17px;--fs-t:15px;--fs-m:13.5px;--fs-s:12.5px;--fs-chip:11.5px;--fs-btn:13px}
+/* Tages- und Abschnittsüberschriften */
+.evday,.pdt b,.hsec h3,.pvsec h3,.pmh{font-size:var(--fs-h)!important;line-height:1.25}
+/* Titel eines Eintrags */
+.evrow .t,.prow .t,.mbrow b,.sugrow b,.hcard:not(.big)>b{font-size:var(--fs-t)!important;font-weight:700;line-height:1.3}
+.hcard.big>b{font-size:19px!important}
+/* Ort, Zeit, Entfernung */
+.evrow .p,.prow .p,.hcard .hm,.mbrow small,.sugrow small,.evdaywx{font-size:var(--fs-m)!important;line-height:1.45}
+.evrow .p button{font-size:inherit!important}
+/* Zusatzinfos */
+.hcard .hw,.pdet,.rgpat,.prange,.ptime,.ppref{font-size:var(--fs-s)!important}
+/* Kleine Etiketten */
+.xtag,.regtag,.anmtag,.newtag,.soontag,.hottag,.evtag,.pnew,.hk{font-size:var(--fs-chip)!important;vertical-align:1px}
+.evrow .t .xtag,.evrow .t .regtag,.evrow .t [class$="tag"]{margin:2px 0 0;display:inline-block}
+/* Knöpfe und Links bei Einträgen */
+.pmini,.pbtn,.evrow .acts a,.evrow .acts summary,.hcard .ha a,.pdet a,.mbdet{font-size:var(--fs-btn)!important;font-weight:700}
+.pmini{padding:5px 11px!important;min-height:32px}
+/* Veranstaltung: erst Knöpfe, dann Links */
+.evrow .acts>.pmini{order:1}
+.evrow .acts>.anmtag,.evrow .acts>a,.evrow .acts>details{order:2}
+.evrow .acts>.anmtag{margin-right:-4px}
 </style>
 
 <div class="wrap">
@@ -3495,11 +3518,17 @@ $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]"
   const hv=e.target.closest("[data-hvisit]");if(hv){const id=+hv.dataset.hvisit,v=!P_(id).visited;setPlace(id,{visited:v});toast(v?"✓ Als besucht markiert – wie war’s? Unten bewerten":"Besucht zurückgenommen");return}
   const hr=e.target.closest("[data-hrate]");if(hr){const id=+hr.dataset.pid,r=+hr.dataset.hrate;setPlace(id,{rating:P_(id).rating===r?0:r});return}
   const hp=e.target.closest("[data-hplan]");if(hp){const p=byId(+hp.dataset.hplan);if(p)togglePlacePlan(p,hp.dataset.d);return}
-  const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore)});
-function exploreDay(dt){EVDATE=dt;EVMON=null;if(typeof WXD!=="undefined"&&WXD&&WXD.some(x=>x.dt===dt)){WXDAY=dt;if(WXAUTO)applyWx(false);renderWx()}
+  const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore,true)});
+const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]},DRIVEKM={"15":10,"30":25,"60":50};
+function heuteToEv(){const n=[];evResetAll();EVAGE=true;n.push("passend zum Alter");
+  if(HQ.drive){EVDIST=DRIVEKM[HQ.drive]||110;n.push("bis "+EVDIST+" km")}
+  if(HQ.cost==="free"){EVCOST="free";n.push("kostenlos")}
+  if(HQ.mood&&MOODK[HQ.mood]){MOODK[HQ.mood].forEach(k=>EVKF.add(k));try{localStorage.setItem("hwk-evk",JSON.stringify([...EVKF]))}catch(_){}n.push(HQO.mood[1].find(o=>o[0]===HQ.mood)[1].replace(/^\S+\s/,""))}
+  saveEvf();const dr=$("evDist");if(dr)dr.value=EVDIST;return n}
+function exploreDay(dt,fromHeute){const hn=fromHeute?heuteToEv():null;EVDATE=dt;EVMON=null;if(typeof WXD!=="undefined"&&WXD&&WXD.some(x=>x.dt===dt)){WXDAY=dt;if(WXAUTO)applyWx(false);renderWx()}
   setM2("entdecken");setTab("termine");renderEvMap();render();
   requestAnimationFrame(()=>{const ts=document.querySelector(".tabstick");if(ts)scrollTo(0,ts.getBoundingClientRect().top+scrollY-8)});
-  toast("🔭 Gefiltert auf "+fmtDate(dt))}
+  toast("🔭 "+fmtDate(dt)+(hn&&hn.length?" · "+hn.join(" · "):""))}
 setInterval(()=>{if(M2==="heute"&&!document.hidden)renderHeute()},5*60*1000);
 function updNavDay(){const late=new Date().getHours()>=18,l=$("navDayL"),i=$("navDayI");if(l)l.textContent=late?"Morgen":"Heute";if(i)i.textContent=late?"🌅":"☀️"}
 updNavDay();setInterval(()=>{const was=$("navDayL")&&$("navDayL").textContent;updNavDay();if(M2==="heute"&&$("navDayL").textContent!==was)renderHeute()},60*1000);

@@ -531,11 +531,17 @@ $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]"
   const hv=e.target.closest("[data-hvisit]");if(hv){const id=+hv.dataset.hvisit,v=!P_(id).visited;setPlace(id,{visited:v});toast(v?"✓ Als besucht markiert – wie war’s? Unten bewerten":"Besucht zurückgenommen");return}
   const hr=e.target.closest("[data-hrate]");if(hr){const id=+hr.dataset.pid,r=+hr.dataset.hrate;setPlace(id,{rating:P_(id).rating===r?0:r});return}
   const hp=e.target.closest("[data-hplan]");if(hp){const p=byId(+hp.dataset.hplan);if(p)togglePlacePlan(p,hp.dataset.d);return}
-  const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore)});
-function exploreDay(dt){EVDATE=dt;EVMON=null;if(typeof WXD!=="undefined"&&WXD&&WXD.some(x=>x.dt===dt)){WXDAY=dt;if(WXAUTO)applyWx(false);renderWx()}
+  const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore,true)});
+const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]},DRIVEKM={"15":10,"30":25,"60":50};
+function heuteToEv(){const n=[];evResetAll();EVAGE=true;n.push("passend zum Alter");
+  if(HQ.drive){EVDIST=DRIVEKM[HQ.drive]||110;n.push("bis "+EVDIST+" km")}
+  if(HQ.cost==="free"){EVCOST="free";n.push("kostenlos")}
+  if(HQ.mood&&MOODK[HQ.mood]){MOODK[HQ.mood].forEach(k=>EVKF.add(k));try{localStorage.setItem("hwk-evk",JSON.stringify([...EVKF]))}catch(_){}n.push(HQO.mood[1].find(o=>o[0]===HQ.mood)[1].replace(/^\S+\s/,""))}
+  saveEvf();const dr=$("evDist");if(dr)dr.value=EVDIST;return n}
+function exploreDay(dt,fromHeute){const hn=fromHeute?heuteToEv():null;EVDATE=dt;EVMON=null;if(typeof WXD!=="undefined"&&WXD&&WXD.some(x=>x.dt===dt)){WXDAY=dt;if(WXAUTO)applyWx(false);renderWx()}
   setM2("entdecken");setTab("termine");renderEvMap();render();
   requestAnimationFrame(()=>{const ts=document.querySelector(".tabstick");if(ts)scrollTo(0,ts.getBoundingClientRect().top+scrollY-8)});
-  toast("🔭 Gefiltert auf "+fmtDate(dt))}
+  toast("🔭 "+fmtDate(dt)+(hn&&hn.length?" · "+hn.join(" · "):""))}
 setInterval(()=>{if(M2==="heute"&&!document.hidden)renderHeute()},5*60*1000);
 function updNavDay(){const late=new Date().getHours()>=18,l=$("navDayL"),i=$("navDayI");if(l)l.textContent=late?"Morgen":"Heute";if(i)i.textContent=late?"🌅":"☀️"}
 updNavDay();setInterval(()=>{const was=$("navDayL")&&$("navDayL").textContent;updNavDay();if(M2==="heute"&&$("navDayL").textContent!==was)renderHeute()},60*1000);
