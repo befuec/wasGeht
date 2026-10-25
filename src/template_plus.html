@@ -1223,6 +1223,13 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .pcalg .cds{display:flex;gap:2px;justify-content:center;font-style:normal}
 .cd{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)}
 .cd.e{background:var(--ev)}
+.cd.m{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ev)}
+.pcalg button[aria-pressed="true"] .cd.m{box-shadow:inset 0 0 0 1.5px var(--nx-ink)}
+.mbdet{font:inherit;font-weight:700;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.mbe .mbdet,.mbe .pdet a{color:var(--ev)}
+.pmbday{margin-bottom:10px;padding:4px 12px 6px;border:1.5px dashed color-mix(in srgb,var(--ev) 55%,transparent);border-radius:12px;background:color-mix(in srgb,var(--ev) 5%,var(--surface))}
+@media (max-width:600px){.mbrow{grid-template-columns:minmax(0,1fr)}.mbrow .mba{justify-content:flex-start}}
+.pmbday .psub{margin:6px 0 2px;font-weight:700;color:var(--ev)}
 .pcalg .cbz{font-style:normal;font-size:10px;line-height:1}
 .pcalg button[aria-pressed="true"],.pcalg button.wefree[aria-pressed="true"],.pcalg button.obusy[aria-pressed="true"],.pcalg button.rng[aria-pressed="true"]{background:var(--nx)!important;color:var(--nx-ink)!important;border-color:var(--nx)!important}
 .pcalg button.wefree[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ok)}
@@ -3204,7 +3211,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     const BZ=ST.busy[PDAY];
     head=`<div class="pdhead"><div class="pdt"><b>${WDL[pdate(PDAY).getDay()]}, ${pdate(PDAY).getDate()}. ${MONL[pdate(PDAY).getMonth()]}</b><button type="button" class="pall" data-pall>← ${MONL[m-1]}</button></div>${PDAY>=T0&&!BZ?`<div class="pdacts"><button type="button" class="pmini pexp" data-explore="${PDAY}">🔭 Für diesen Tag entdecken</button><button type="button" class="pmini busybtn" data-busy="${PDAY}">⛔ Anderweitig verplant</button></div>`:""}</div>`
       +(PDAY>=T0&&BZ?`<div class="busyban"><span>⛔ <b>Anderweitig verplant</b></span><input type="text" class="busynote" data-busynote="${PDAY}" value="${esc(BZ.note||"")}" placeholder="Notiz, z. B. Geburtstag Oma" maxlength="60" aria-label="Notiz"><button type="button" class="pmini" data-busy="${PDAY}">Wieder freigeben</button></div>`:"");
-    const busyHtml="";
+    const MBL=PDAY>=T0?maybeOn(PDAY):[];const busyHtml=MBL.length?`<div class="pmbday"><div class="psub">♡ Vielleicht an diesem Tag</div>${MBL.map(x=>mbRow(x,"d")).join("")}</div>`:"";
     h=busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
       :(PDAY>=T0?(BZ?"":`<div class="sugfree">🟢 Noch frei – unsere Vorschläge:</div>`+daySug(PDAY)):`<div class="evempty">An diesem Tag war nichts geplant.</div>`))+(R.length?`<div class="psub">Läuft an diesem Tag auch – an einem anderen Tag bevorzugt:</div>`+R.map(o=>prow(o,true)).join(""):"");
   }else{const L=PALL?E:E.filter(o=>o.d.startsWith(CALM));
@@ -3224,15 +3231,15 @@ function renderStep(){const a=$("pCalStep");if(!a)return;const n=KL.length;a.hid
   a.addEventListener("click",e=>{if(KI>=KL.length){e.preventDefault();KI=0;renderStep();return}setTimeout(()=>{KI++;renderStep();if(KI<KL.length)toast("Eingetragen? Dann den nächsten Termin antippen");else toast("Fertig – alle Termine an Google Kalender übergeben")},80)})}}
 function planText(dt){const L=planItems(dt),d=pdate(dt);return `Ausflugsplan ${WDL[d.getDay()]}, ${d.getDate()}. ${MONL[d.getMonth()]}\n`+L.map(({p,ev,t,ti})=>`${t||"--:--"}  ${ti}${ev?" ("+p.n+")":""}\n       ${p.a} · Auto ca. ${p.car} Min.`).join("\n")}
 let CALM=null,PALL=false;
-function renderPCal(E){const EVN=evAllNear();const [y,m]=CALM.split("-").map(Number),first=new Date(y,m-1,1),off=(first.getDay()+6)%7,n=new Date(y,m,0).getDate();
+function renderPCal(E){const EVN=evAllNear(),MBD={};maybeEntries().forEach(x=>{if(x.ev&&!x.ev.to&&!x.planned)(MBD[x.ev.dt]=MBD[x.ev.dt]||[]).push(x)});const [y,m]=CALM.split("-").map(Number),first=new Date(y,m-1,1),off=(first.getDay()+6)%7,n=new Date(y,m,0).getDate();
   const iso=d=>y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");let h=["Mo","Di","Mi","Do","Fr","Sa","So"].map((w,i)=>`<span class="wd${i>4?" we":""}${i===5?" sa":""}">${w}</span>`).join("")+"<span></span>".repeat(off);
   for(let d=1;d<=n;d++){const s=iso(d),c=E.filter(o=>o.d===s).length,rg=E.filter(o=>{const r=rangeOf(o);return o.d!==s&&r&&r[0]<=s&&s<=r[1]}).length,
     dw=pdate(s).getDay(),bz=!!ST.busy[s],wef=!bz&&s>=T0&&(window.FREEDAYS?FREEDAYS.has(dw):(dw===0||dw===6))&&!c,wx=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===s):null,
     cl=[s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
-    dots=E.filter(o=>o.d===s).slice(0,3).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).join("");
-    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
+    mb=(MBD[s]||[]).length,dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).slice(0,3).join("");
+    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
   const can=CALM>T0.slice(0,7);
-  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
+  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
   renderNext(E)}
 function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);
   el.innerHTML=`<h4>Nächste Ausflüge</h4>`+(N.length?N.map(o=>`<button type="button" class="nxrow" data-cal="${o.d}"><span class="nxd">${o.d===T0?"Heute":o.d===plus(1)?"Morgen":fmtDate(o.d)}${o.t?`<small>${esc(o.t)}</small>`:""}</span><span class="nxt"><b class="cd ${o.ev?"e":"z"}"></b>${esc(o.ti.replace(/^Ausflug: /,""))}</span></button>`).join(""):`<p class="pvsub">Noch nichts eingeplant.</p>`)}
@@ -3245,6 +3252,7 @@ $("planView").addEventListener("click",e=>{
   const sp=e.target.closest("[data-sugpl]");if(sp){const p=byId(+sp.dataset.sugpl);if(p)togglePlacePlan(p,sp.dataset.d);return}
   const mp=e.target.closest("[data-mbplan]");if(mp){const o=ST.maybe[mp.dataset.mbplan];if(!o)return;const p=byId(o.id);if(!p)return;
     if(o.type==="ev"){const ev=p.up.find(x=>evKey(p,x)===o.k);if(!ev)return;if(ev.to)openPickEv(p,ev,null);else toggleEvPlan(p,ev)}else openPick(p);return}
+  const md=e.target.closest("[data-mbdet]");if(md){const k=md.dataset.mbdet;MBOPEN.has(k)?MBOPEN.delete(k):MBOPEN.add(k);renderPlan();return}
   const mx=e.target.closest("[data-mbx]");if(mx){const o=ST.maybe[mx.dataset.mbx];if(o)toggleMaybe(o);return}
   const pm=e.target.closest("[data-pmode]");if(pm){PALL=true;PDAY=null;renderPlan();return}
   const pmo=e.target.closest("[data-pmon]");if(pmo){PALL=false;PDAY=null;CALM=pmo.dataset.pmon;renderPlan();return}
@@ -3495,9 +3503,13 @@ function maybeEntries(){return Object.entries(ST.maybe).map(([id,o])=>{const p=b
     if(o.type==="ev"){const ev=p.up.find(x=>evKey(p,x)===o.k);if(!ev||(ev.to||ev.dt)<T0)return null;return {id,o,p,ev,planned:window.inPlanEv(o.k)}}
     return {id,o,p,planned:!!planDateOf(p.id)}}).filter(Boolean)
   .sort((a,b)=>(a.planned-b.planned)||((a.ev?a.ev.dt:"9")+a.p.n).localeCompare((b.ev?b.ev.dt:"9")+b.p.n))}
+const MBOPEN=new Set();
+function mbRow({id,p,ev,planned,o},ctx){const op=MBOPEN.has(ctx+id);
+  return `<div class="mbrow${ev?" mbe":""}"><div style="min-width:0"><b>${esc(ev?ev.ti:p.n)}</b><small>${ev?(ev.to?`läuft ${fmtDate(ev.dt<T0?T0:ev.dt)} – ${fmtDate(ev.to)}`:`${fmtDate(ev.dt)}${ev.t?", "+ev.t+" Uhr":""}`)+" · "+esc(p.n):esc(CATS[p.c]||"Ziel")+" · "+Math.round(p.km)+" km"}${byTag(o)} · <button type="button" class="mbdet" data-mbdet="${ctx+id}" aria-expanded="${op}">Details ${op?"▴":"▾"}</button></small>${op?pdet({p,ev,d:ev?ev.dt<T0?T0:ev.dt:(PDAY||T0)}):""}</div>
+    <span class="mba">${planned?`<span class="pplan on">${IC.pin}eingeplant</span>`:`<button type="button" class="pmini" data-mbplan="${id}">${IC.pin}${ev&&!ev.to?"Einplanen":"Tag wählen"}</button>`}<button type="button" class="mbx" data-mbx="${id}" aria-label="Aus Vielleicht entfernen">✕</button></span></div>`}
+function maybeOn(s){return maybeEntries().filter(x=>x.ev&&!x.ev.to&&!x.planned&&x.ev.dt===s)}
 function renderMaybe(){const L=maybeEntries(),el=$("maybeList");if(!el)return;$("mbN").textContent=L.filter(x=>!x.planned).length||"";
-  el.innerHTML=L.length?L.map(({id,p,ev,planned,o})=>`<div class="mbrow"><div style="min-width:0"><b>${esc(ev?ev.ti:p.n)}</b><small>${ev?(ev.to?`läuft ${fmtDate(ev.dt<T0?T0:ev.dt)} – ${fmtDate(ev.to)}`:`${fmtDate(ev.dt)}${ev.t?", "+ev.t+" Uhr":""}`)+" · "+esc(p.n):esc(CATS[p.c]||"Ziel")+" · "+Math.round(p.km)+" km"}${byTag(o)}</small></div>
-    <span class="mba">${planned?`<span class="pplan on">${IC.pin}eingeplant</span>`:`<button type="button" class="pmini" data-mbplan="${id}">${IC.pin}${ev&&!ev.to?"Einplanen":"Tag wählen"}</button>`}<button type="button" class="mbx" data-mbx="${id}" aria-label="Aus Vielleicht entfernen">✕</button></span></div>`).join("")
+  el.innerHTML=L.length?L.map(x=>mbRow(x,"l")).join("")
     :`<p class="pvsub">Noch nichts gemerkt. Bei Zielen und Terminen „♡ Vielleicht“ antippen – ganz ohne Datum.</p>`}
 /* --- B2: Wochenend-Planer --- */
 function weekends(n){const out=[],wd=TODAY.getDay(),sat=new Date(TODAY);sat.setDate(sat.getDate()+(wd===0?-1:(6-wd)));
@@ -3512,8 +3524,8 @@ function renderWE(){const g=$("weGrid");if(!g)return;g.hidden=true;g.innerHTML="
         <span class="wst">${past?"vorbei":L.length?`📌 ${esc(L[0].ti.replace(/^Ausflug: /,""))}${L.length>1?" +"+(L.length-1):""}`:"🟢 noch frei"}</span>${tip?`<span class="wtip">${esc(tip)}</span>`:""}</button>`};
     return `<div class="werow"><span class="wel">KW ${isoWeek(pdate(sa))}</span>${cell(sa)}${cell(so)}</div>`}).join("")}
 function daySug(dt,title){if(!dt||dt<T0)return"";const EV=evAllNear(),seen=new Set(),di=DIDX(pdate(dt));
-  const mb=maybeEntries().filter(o=>!o.planned&&(o.ev?onDay({e:o.ev},dt):(o.p.h&&o.p.h[di])));
-  const ev=EV.filter(x=>onDay(x,dt)&&!x.e.rg&&!FULL.test(x.e.no||"")&&ageFit(x.e)&&!window.inPlanEv(evKey(x.p,x.e))&&!/elterncaf|pekip|krabbel|beratung|stillcaf/i.test(x.e.ti))
+  const mb=maybeEntries().filter(o=>!o.planned&&(o.ev?onDay({e:o.ev},dt)&&!(!o.ev.to&&o.ev.dt===dt):(o.p.h&&o.p.h[di])));
+  const ev=EV.filter(x=>onDay(x,dt)&&!x.e.rg&&!FULL.test(x.e.no||"")&&ageFit(x.e)&&!window.inPlanEv(evKey(x.p,x.e))&&!isMaybe(evKey(x.p,x.e))&&!/elterncaf|pekip|krabbel|beratung|stillcaf/i.test(x.e.ti))
     .map(x=>({k:"e",x,s:hl(x)+2})).filter(o=>o.s>0).sort((a,b)=>b.s-a.s).filter(o=>{const k=o.x.p.id;if(seen.has(k))return false;seen.add(k);return true}).slice(0,6);
   const pl=topForAll(dt).filter(o=>o.p.c!=="cafe"&&o.p.h&&o.p.h[di]&&planDateOf(o.p.id)!==dt&&!seen.has(o.p.id)).slice(0,6).map(o=>({k:"p",o,s:o.v}));
   const mix=[];{const A=ev.slice(),B=pl.slice();let turn=(A[0]?A[0].s:-99)>=(B[0]?B[0].s:-99);while(mix.length<8&&(A.length||B.length)){const src=turn?(A.length?A:B):(B.length?B:A);mix.push(src.shift());turn=!turn}}
