@@ -1,0 +1,35 @@
+<title>Was geht? umgezogen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Startseite: eine zentrierte Karte, die zum Ausflugsplaner weiterleitet */
+:root{--bg:#F1F2F0;--surface:#FFFFFF;--ink:#1C2426;--muted:#5D6766;--line:#D9DDDA;--accent:#0E6A61;--accent-ink:#FFFFFF;--ev:#9A3B62;
+  --f-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;--f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#111415;--surface:#1A1F21;--ink:#E5E9E8;--muted:#9EA7A6;--line:#2F3639;--accent:#4CC0B1;--accent-ink:#06201D;--ev:#D5799F;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111415;--surface:#1A1F21;--ink:#E5E9E8;--muted:#9EA7A6;--line:#2F3639;--accent:#4CC0B1;--accent-ink:#06201D;--ev:#D5799F;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body);min-height:100vh;display:grid;place-items:center;padding:32px max(16px,env(safe-area-inset-right,0px)) 32px max(16px,env(safe-area-inset-left,0px))}
+main{max-width:560px;width:100%;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:16px;padding:28px 24px;display:grid;gap:16px}
+h1{font:800 32px/1.1 var(--f-display);margin:0;text-wrap:balance}
+p{margin:0;color:var(--muted)}
+ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+li{display:flex;gap:10px;align-items:flex-start}
+li span{flex:none;width:28px;text-align:center}
+.go{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font:800 17px/1.2 var(--f-body);text-decoration:none;padding:12px 22px}
+.go:focus-visible{outline:3px solid var(--ev);outline-offset:3px}
+small{color:var(--muted);font-size:12.5px}
+</style>
+<main>
+  <h1>Was geht? ist umgezogen</h1>
+  <p>Der Ausflugsplaner liegt jetzt unter <b>befuec.github.io/wasGeht</b>. Euer gemeinsamer Plan ist dort mit dem Familien-Code erreichbar. Diese Seite wird nicht mehr aktualisiert.</p>
+  <ul>
+    <li><span>📍</span>Alle Ziele aus euren beiden Google-Maps-Listen mit Wetter, Öffnungszeiten und Preisen</li>
+    <li><span>📅</span>Veranstaltungen mit Filtern, „Diese Woche anmelden“ und Wetter an Draußen-Terminen</li>
+    <li><span>📋</span>Gemeinsamer Ausflugsplan mit Fahrzeiten und Kalender-Export</li>
+    <li><span>🧒</span>Kinderansicht mit Sternen und „Was ist los?“</li>
+  </ul>
+  <a class="go" href="https://befuec.github.io/wasGeht/" target="_blank" rel="noopener">Zu „Was geht?“ →</a>
+  <small>Tipp: Im Browser „Zum Home-Bildschirm“ wählen, dann ist „Was geht?“ wie eine App erreichbar. Neue Termine kommen jeden Freitag.</small>
+</main>

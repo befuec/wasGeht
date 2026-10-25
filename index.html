@@ -1215,6 +1215,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 #sbStat{display:grid;gap:6px;justify-items:start}
 .famdlg .pkacts{display:flex!important;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .famdlg .pkacts .pbtn{white-space:normal}
+.bkrow{display:flex;flex-wrap:wrap;gap:8px}.bkfile{cursor:pointer}
 </style>
 
 <div class="wrap">
@@ -1440,6 +1441,8 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
             </fieldset></div>
     <h3 class="seth">🗓️ Freie Tage für Ausflüge</h3><p class="famnote">Diese Wochentage sind im Kalender unter „Unser Plan“ grün markiert, solange nichts eingeplant ist.</p><div class="dquick freed" id="freeDays" role="group" aria-label="Freie Wochentage"></div>
     <h3 class="seth">🔗 Gemeinsamer Plan</h3><div id="sbStat"></div>
+    <h3 class="seth">💾 Sicherung</h3><p class="famnote">Alle Einträge (Plan, Vielleicht, verplante Tage, Wünsche, Sterne, Familie, freie Tage) als Datei aufs Gerät laden oder aus so einer Datei zurückholen.</p>
+    <div class="bkrow"><button type="button" class="pmini" id="bkSave">Daten sichern</button><label class="pmini bkfile" for="bkFile">Wiederherstellen …</label><input type="file" id="bkFile" accept="application/json,.json" hidden></div><p class="famnote" id="bkInfo" aria-live="polite"></p>
     <h3 class="seth">Über die Daten</h3><div class="setinfo"><p class="famnote"><span class="origin"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>ab Henstedt-Rhen</span> · <span id="total"></span> Ziele basierend auf 2 Google-Maps-Listen · <span class="stand">Termine Stand <span id="buildD"></span></span></p></div>
     <h3 class="seth">Darstellung</h3><div class="theme" role="group" aria-label="Darstellung"><button type="button" data-th="light" aria-label="Hell" title="Hell">☀︎</button><button type="button" data-th="dark" aria-label="Dunkel" title="Dunkel">☾</button><button type="button" data-th="auto" aria-label="Automatisch wie das Gerät" title="Automatisch wie das Gerät">A</button></div></div>
   <div class="dlglinks"><button type="button" class="pkok" id="setOk">Fertig</button></div>
@@ -1491,7 +1494,7 @@ const COST = {frei:"Kostenlos",b10:"bis 10 €",b20:"bis 20 €",b40:"bis 40 €
 const COST_SHORT = {frei:"kostenlos",b10:"bis 10 €",b20:"bis 20 €",b40:"bis 40 €",g40:"über 40 €",unbek:"Preis unbekannt"};
 const SEASON = (()=>{const m=new Date().getMonth()+1;return m>=3&&m<=5?"F":m>=6&&m<=8?"S":m>=9&&m<=11?"H":"W"})();
 let FAM={ad:2,kids:[]}; try{const f=JSON.parse(localStorage.getItem("hwk-fam")||"null"); if(f&&Number.isFinite(f.ad)&&Array.isArray(f.kids)) FAM=f;}catch(e){}
-function saveFam(){try{localStorage.setItem("hwk-fam",JSON.stringify(FAM))}catch(e){}}
+function saveFam(){try{localStorage.setItem("hwk-fam",JSON.stringify(FAM))}catch(e){}if(window.plusSettingsChanged)window.plusSettingsChanged("family")}
 function personPrice(m,age){ if(age>=18) return m.a||0; const cf=m.cf??0, ct=m.ct??17; if(age<cf) return m.c0||0; if(age<=ct) return m.c||0; return m.y??(m.a||0); }
 function famCost(p){ const ad=FAM.ad, kids=FAM.kids;
   if(p.pk==="free") return 0; if(p.pk==="unknown") return null;
@@ -2320,7 +2323,7 @@ window.FREEDAYS=new Set([6,0]);try{const v=JSON.parse(localStorage.getItem("hwk-
 function renderFreeDays(){$("freeDays").innerHTML=[1,2,3,4,5,6,0].map(i=>`<button type="button" data-fd="${i}" aria-pressed="${FREEDAYS.has(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}
 renderFreeDays();
 $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]");if(!b)return;const i=+b.dataset.fd;FREEDAYS.has(i)?FREEDAYS.delete(i):FREEDAYS.add(i);
-  try{localStorage.setItem("hwk-freedays",JSON.stringify([...FREEDAYS]))}catch(_){}renderFreeDays();window.renderPlanNow&&window.renderPlanNow()});
+  try{localStorage.setItem("hwk-freedays",JSON.stringify([...FREEDAYS]))}catch(_){}if(window.plusSettingsChanged)window.plusSettingsChanged("freedays");renderFreeDays();window.renderPlanNow&&window.renderPlanNow()});
 {const sync=()=>document.querySelectorAll(".tschips [data-ts]").forEach(b=>{const d=$(b.dataset.ts);b.setAttribute("aria-pressed",String(!!d.open));b.hidden=!!d.hidden});
  document.querySelector(".tschips").addEventListener("click",e=>{const b=e.target.closest("[data-ts]");if(!b)return;const d=$(b.dataset.ts),op=!d.open;if(op)["top3","wxbar","mapbox"].forEach(id=>{if(id!==b.dataset.ts)$(id).open=false});d.open=op;sync()});
  if(matchMedia("(max-width:900px)").matches)setTimeout(()=>{let one=false;["top3","wxbar","mapbox"].forEach(id=>{const d=$(id);if(d.open&&!d.hidden){if(one)d.open=false;one=true}});sync()},50);
@@ -2969,14 +2972,37 @@ let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=docum
     firstM=false;ST.maybe=JSON.parse(JSON.stringify(o));persistLocal();refresh()},()=>{});
 }catch(e){}})();
 /* --- Supabase: Laden, Abgleich, Anmeldung mit Familien-Code --- */
-let SBSIG="",SBERR=null;
+let SBSIG="",SBERR=null;const SETS={};
+/* Einstellungen (Familie, freie Wochentage) gemeinsam speichern */
+window.plusSettingsChanged=what=>{if(!SB||window.APPLYING)return;
+  if(what==="family"){SETS.family={ad:FAM.ad,kids:FAM.kids.slice()};write("settings/family",SETS.family)}
+  if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}};
+function applySettings(s){if(!s)return;window.APPLYING=true;try{
+  if(s.family&&Number.isFinite(s.family.ad)&&Array.isArray(s.family.kids)&&JSON.stringify(s.family)!==JSON.stringify({ad:FAM.ad,kids:FAM.kids})){FAM.ad=s.family.ad;FAM.kids=s.family.kids.slice();saveFam();renderKids();if($("setFam"))$("setFam").textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
+  if(s.freedays&&Array.isArray(s.freedays.days)){window.FREEDAYS=new Set(s.freedays.days);try{localStorage.setItem("hwk-freedays",JSON.stringify(s.freedays.days))}catch(_){}if(typeof renderFreeDays==="function")renderFreeDays()}
+  Object.assign(SETS,s)}finally{window.APPLYING=false}}
+/* Sicherung: alles als JSON-Datei herunterladen und wiederherstellen */
+function backupData(){const E=[];const m={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};for(const k in m)for(const id in m[k])E.push({kind:k,id,data:m[k][id]});
+  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});
+  return {app:"was-geht",version:1,exported:new Date().toISOString(),entries:E}}
+let BKPEND=null;
+document.addEventListener("click",e=>{
+  if(e.target.id==="bkSave"){const d=backupData(),blob=new Blob([JSON.stringify(d,null,1)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="was-geht-sicherung-"+T0+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);$("bkInfo").textContent="✅ "+d.entries.length+" Einträge als Datei gespeichert.";return}
+  if(e.target.id==="bkGo"&&BKPEND){const n=BKPEND.length;BKPEND.forEach(x=>{const k=x.kind,id=String(x.id);if(k==="settings"){applySettings({[id]:x.data});window.plusSettingsChanged(id);return}const map={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy}[k];if(!map)return;map[id]=x.data;write(k+"/"+id,x.data)});
+    BKPEND=null;persistLocal();refresh();renderPlan();$("bkInfo").textContent="✅ "+n+" Einträge wiederhergestellt"+(SB?" und gemeinsam gespeichert.":" (nur auf diesem Gerät).");return}});
+document.addEventListener("change",e=>{if(e.target.id!=="bkFile")return;const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.app!=="was-geht"||!Array.isArray(d.entries))throw 0;BKPEND=d.entries;
+    $("bkInfo").innerHTML=`Sicherung vom ${esc(new Date(d.exported).toLocaleString("de-DE"))} mit ${d.entries.length} Einträgen. Gleiche Einträge werden überschrieben, andere bleiben. <button type="button" class="pmini" id="bkGo">Jetzt wiederherstellen</button>`}
+  catch(_){BKPEND=null;$("bkInfo").textContent="Das ist keine Sicherungsdatei von „Was geht?“."}};r.readAsText(f);e.target.value=""});
 function sbErr(m){SBERR=m;const s=$("sbStat");if(s)renderSbStat()}
 async function sbLoad(first){if(!SB)return;try{const rows=await sbRpc("fam_list",{p_code:SB.code});
-    const o={places:{},plans:{},evwish:{},maybe:{},busy:{}};rows.forEach(r=>{if(o[r.kind])o[r.kind][r.id]=r.data});
-    if(first&&!rows.length){const loc={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};let n=0;for(const k in loc)for(const id in loc[k]){write(k+"/"+id,loc[k][id]);n++}if(n){SHARED=true;syncNote();return}}
-    for(const path in pq){const q=pq[path];if(q.busy||q.next!==undefined){const [k,...r]=path.split("/"),id=r.join("/");const cur={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy}[k];if(cur){if(cur[id]!==undefined)o[k][id]=cur[id];else delete o[k][id]}}}
+    const o={places:{},plans:{},evwish:{},maybe:{},busy:{},settings:{}};rows.forEach(r=>{if(o[r.kind])o[r.kind][r.id]=r.data});
+    if(first&&!o.settings.family)window.plusSettingsChanged("family");
+    if(first&&!o.settings.freedays)window.plusSettingsChanged("freedays");
+    if(first&&!rows.filter(r=>r.kind!=="settings").length){const loc={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};let n=0;for(const k in loc)for(const id in loc[k]){write(k+"/"+id,loc[k][id]);n++}if(n){SHARED=true;syncNote();return}}
+    for(const path in pq){const q=pq[path];if(q.busy||q.next!==undefined){const [k,...r]=path.split("/"),id=r.join("/");const cur={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy,settings:SETS}[k];if(cur){if(cur[id]!==undefined)o[k][id]=cur[id];else delete o[k][id]}}}
     const sig=JSON.stringify(o);SHARED=true;sbErr(null);if(sig===SBSIG)return;SBSIG=sig;
-    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;persistLocal();syncNote();refresh();renderPlan()}
+    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings);persistLocal();syncNote();refresh();renderPlan()}
   catch(e){if(e.code==="28000")sbLogout(true);else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
 function sbLogout(wrong){SB=null;LS.set("hwk-fam-sb",null);SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
 function famAsk(msg){const d=$("famdlg");if(!d)return;$("famErr").textContent=msg||"";$("famName").value=(SB&&SB.name)||LS.get("hwk-fam-name","")||"";d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("famCode").focus(),50)}

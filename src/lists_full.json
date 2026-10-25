@@ -1,0 +1,2204 @@
+{
+"hwk": [
+{
+"n": "WORLD OF BRICKS",
+"info": [
+"2,6",
+"Museum"
+],
+"r": "2,6",
+"note": ""
+},
+{
+"n": "Junge Die Bäckerei.",
+"info": [
+"4,3",
+"1–10 € · Bäckerei"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Pilzspielplatz",
+"info": [
+"4,6",
+"Spielplatz"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Die Werkkiste",
+"info": [
+"4,9",
+"Geschäft"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Lighthouse Erlebniszentrum European XFEL",
+"info": [
+"5,0",
+"Wissenschaftsmuseum"
+],
+"r": "5,0",
+"note": ""
+},
+{
+"n": "Möller-Hof",
+"info": [
+"4,9",
+"Hofladen"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Du‘ana Café",
+"info": [
+"4,8",
+"10–20 € · Coffeeshop"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "urban apes Hamburg Ost",
+"info": [
+"4,7",
+"Kletterhalle"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "HT16 Kletterzentrum",
+"info": [
+"4,2",
+"Kletterhalle"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Boberger Dünenhaus",
+"info": [
+"4,7",
+"Naturkundemuseum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "LIFE HAMBURG Campus",
+"info": [
+"4,2",
+"Bildungszentrum"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Splashaus Hamburg",
+"info": [
+"5,0",
+"Kunstatelier"
+],
+"r": "5,0",
+"note": ""
+},
+{
+"n": "Lykkeby Familiencafé",
+"info": [
+"3,9",
+"10–20 € · Café"
+],
+"r": "3,9",
+"note": ""
+},
+{
+"n": "Stadtmuseum Pinneberg",
+"info": [
+"4,5",
+"Museum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Hofcafé Wilkenshoff",
+"info": [
+"4,6",
+"10–20 € · Café"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Bestes vom Elbdeich",
+"info": [
+"4,8",
+"Hofladen"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Villa Vanilla - Café am Planschbecken",
+"info": [
+"3,7",
+"1–20 € · Café"
+],
+"r": "3,7",
+"note": ""
+},
+{
+"n": "Töpferstube in den Großen Wallanlagen",
+"info": [
+"4,8",
+"Töpferkurs"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Sonnendeck St. Pauli - Beachclub",
+"info": [
+"4,5",
+"Vorübergehend geschlossen"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "BallinStadt - Auswanderermuseum Hamburg",
+"info": [
+"4,3",
+"Museum"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "ERNST (Stackmann)",
+"info": [
+"4,1",
+"10–20 € · Restaurant"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "BOOT e.V.: \"BOOTsWagen\"-Café mit SUP - und Kanuverleih",
+"info": [
+"4,6",
+"Vorübergehend geschlossen"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Café Lüküs",
+"info": [
+"4,3",
+"Vorübergehend geschlossen"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Internationales Maritimes Museum Hamburg",
+"info": [
+"4,7",
+"Schifffahrtsmuseum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Waldhuuske",
+"info": [
+"4,6",
+"Café"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "RICKI BEACH",
+"info": [
+"4,5",
+"Strandpavillon"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Café Nimmerland / Das Familiencafe",
+"info": [
+"4,6",
+"10–20 € · Café"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Hamburg BUNKER",
+"info": [
+"4,5",
+"Historische Sehenswürdigkeit"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "FUNDUS THEATER | Forschungstheater",
+"info": [
+"4,5",
+"Theater"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "NEST CoWork & Play",
+"info": [
+"4,9",
+"Co-Working-Fläche"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "NaturRaum HafenCity",
+"info": [
+"4,9",
+"Museum"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Zwergenaufstand | Secondhand für Kinder",
+"info": [
+"4,4",
+"Geschäft für Second-Hand-Kleidung"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Lille Kinder",
+"info": [
+"4,6",
+"Buchhandlung"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "KALLA Spielstadt",
+"info": [
+"4,4",
+"Indoorspielplatz"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Knopf & Krümel",
+"info": [
+"4,9",
+"1–10 € · Café"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Boulderwelt Hamburg",
+"info": [
+"4,7",
+"Kletterhalle"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "MiniFinds",
+"info": [
+"4,9",
+"Geschäft für Second-Hand-Kleidung"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Universum Bremen",
+"info": [
+"4,6",
+"Wissenschaftsmuseum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Wildgehege Klövensteen",
+"info": [
+"4,5",
+"Wildpark"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Paradox Museum Hamburg",
+"info": [
+"4,3",
+"Museum"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Rathauspassage Hamburg",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Emilia's Familiencafé",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kinder Glück - SpieleCafé",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "SunnX GmbH \"Salzino Hamburg\"",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "urban apes Hamburg West",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Junge Die Bäckerei.",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Biohofladen Overmeyer",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Botschaft der Wildtiere",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kletterwald Hamburg",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "MARKK Museum am Rothenbaum",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Junge Die Bäckerei.",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Streichelzoo Ruschwedel",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kliemannsland - Erlebnishof",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Herzapfelhof Lühs",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "ErlebnisWald Trappenkamp",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Flughafen Hamburg",
+"info": [
+"3,7",
+"Internationaler Flughafen"
+],
+"r": "3,7",
+"note": ""
+},
+{
+"n": "Zum Dorfkrug Landhof/ Erlebniswelt",
+"info": [
+"4,6",
+"Hofladen"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Bio-Hofladen Gut Wulfsdorf",
+"info": [
+"4,5",
+"Bioladen"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "LyLy Restaurant",
+"info": [
+"4,6",
+"Vorübergehend geschlossen"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "GOKARTHOF",
+"info": [
+"4,8",
+"Spielwarengeschäft"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Hof Bullerbü",
+"info": [
+"4,7",
+"Garten"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Energieberg Georgswerder",
+"info": [
+"4,5",
+"Museum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Cafe Yade",
+"info": [
+"4,9",
+"10–20 € · Frühstück"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "TALA300",
+"info": [
+"4,3",
+"Indoorspielplatz"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Q21 Gasthaus",
+"info": [
+"4,2",
+"20–30 € · Brauereischänke"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Almthof Erlebnisbauernhof und Hofcafé",
+"info": [
+"4,7",
+"Zoo"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Verein Jordsand zum Schutz der Seevögel und der Natur e. V.",
+"info": [
+"4,7",
+"Naturkundemuseum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Hamburger Kunsthalle",
+"info": [
+"4,6",
+"Kunstmuseum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Matthies Gartencafé",
+"info": [
+"4,5",
+"10–20 € · Restaurant"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "1407 Breakfast Club - Specialty Coffee & Matcha",
+"info": [
+"4,4",
+"10–20 € · Café"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Hofbräu Wirtshaus Speersort",
+"info": [
+"4,2",
+"20–30 € · Restaurant"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "KLICK Kindermuseum Hamburg",
+"info": [
+"4,1",
+"Kindermuseum"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "Obsthof Lienau",
+"info": [
+"4,8",
+"Lebensmittelhändler"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Tüdelband Winsen",
+"info": [
+"4,8",
+"Kinderladen"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Erntegarten \"Projekt Vielfalt\"",
+"info": [
+"4,9",
+"Selbsternte"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "PIERDREI Hotel HafenCity Hamburg",
+"info": [
+"4,7",
+"Hotel"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Haus der Wilden Weiden",
+"info": [
+"4,7",
+"Besucherzentrum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Elisa - Konditorei und Café",
+"info": [
+"4,5",
+"10–20 € · Café"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Hof Bartels - Hofladen & Café",
+"info": [
+"4,5",
+"Obst- und Gemüsehändler"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Burgerlich Gänsemarkt",
+"info": [
+"4,4",
+"10–30 € · Restaurant"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Bienen-Lehr-und Schaugarten Ahrensburg",
+"info": [
+"4,9",
+"Garten"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Weingarten sechsundzwanzig",
+"info": [
+"4,9",
+"1–10 € · Weinstube"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Food Lounge Bergedorf",
+"info": [
+"4,3",
+"10–20 € · Restaurant"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "[why not] Café",
+"info": [
+"4,8",
+"10–20 € · Café"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Spielplatz Ritterburg Schemmannstraße",
+"info": [
+"4,7",
+"Spielplatz"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "LüttePlünn Secondhandshop für Kinder - DRK Kreisverband Hamburg - Nordost e.V.",
+"info": [
+"4,9",
+"Geschäft für Second-Hand-Kleidung"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Hamburger Klimaschutzstiftung",
+"info": [
+"4,5",
+"Bildungszentrum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Robin am See",
+"info": [
+"4,6",
+"Vorübergehend geschlossen"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "BUND Naturerlebnisgarten (im Wilhelmsburger Inselpark)",
+"info": [
+"4,6",
+"Garten"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Obsthof VIETS",
+"info": [
+"4,7",
+"Hofladen"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Eisenbahnmuseum Lokschuppen Aumühle",
+"info": [
+"4,6",
+"Museum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Familiencafé Krümel (SOS-Kinderdorf Hamburg)",
+"info": [
+"4,4",
+"10–20 € · Café"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Hof Eggers in der Ohe",
+"info": [
+"4,3",
+"Bio-Landwirtschaftsbetrieb"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Uhlenkolk",
+"info": [
+"4,8",
+"Wildpark"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Café Zwei Herz",
+"info": [
+"4,7",
+"10–20 € · Café"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Wodrich`s Spielzeugspeicher",
+"info": [
+"4,9",
+"Dauerhaft geschlossen"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Feuerwehrmuseum Schleswig-Holstein",
+"info": [
+"4,6",
+"Museum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Museum für Kunst und Gewerbe Hamburg (MK&G)",
+"info": [
+"4,5",
+"Museum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Märchenwanderweg \"Der Trickser\"",
+"info": [
+"4,5",
+"Wandergebiet"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "WIWA - Baggerplatz Ausflugsziele Erlebnispark - Baggerpark - freizeitaktivität",
+"info": [
+"4,9",
+"Baggerunternehmen"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "U-Bootmuseum Hamburg GmbH",
+"info": [
+"4,6",
+"Museum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "StrandPauli",
+"info": [
+"4,6",
+"10–20 € · Bar"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Niendorfer Gehege",
+"info": [
+"4,7",
+"Wald"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Die Halle Hamburg",
+"info": [
+"4,7",
+"Sportanlage"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Polizeimuseum",
+"info": [
+"4,7",
+"Museum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "fUX Vintage - Second Hand for Kids",
+"info": [
+"4,7",
+"Kinderbekleidungsgeschäft"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Porzellanfräulein Keramik selbst bemalen Keramik to go",
+"info": [
+"4,8",
+"Keramikhersteller"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Spielhaus",
+"info": [
+"4,9",
+"Jugendzentrum"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Museumsschiff Rickmer Rickmers",
+"info": [
+"4,6",
+"Museum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "WÄLDERHAUS",
+"info": [
+"4,4",
+"Vereinigung / Organisation"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "NABU Vogelstation Wedeler Marsch",
+"info": [
+"4,8",
+"Vogelbeobachtungsgebiet"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Greenpeace-Ausstellung / Greenpeace Exhibition",
+"info": [
+"3,5",
+"Nichtregierungsorganisation"
+],
+"r": "3,5",
+"note": ""
+},
+{
+"n": "Kinderbauernhof Kirchdorf e.V.",
+"info": [
+"4,4",
+"Zoo"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "FLASHH GmbH",
+"info": [
+"4,5",
+"Kletterhalle"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Pflanzen-Kölle Gartencenter GmbH & Co. KG Hamburg",
+"info": [
+"4,5",
+"Gartencenter"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "JUFA Hotel Hamburg HafenCity",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kindertheater Wackelzahn",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Altonaer Museum",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Entenwerder1",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Museumsdorf Volksdorf",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kaltehofe",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Loki Schmidt Garden Botanical of University Hamburg",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Barfußpark Lüneburger Heide in Egestorf",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Playground Emma-Poel-Straße",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Spielplatz am alten Lokschuppen",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Spielplatz Wegenkamp",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Mottenburger Hühnertwiete",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Museum of Nature - Zoology",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "A7 Deckel Stellingen",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kleine Arche Wahlstedt",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Hofcafé Büge",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "KÆF. Rösterei & Café GmbH",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Urbaneo - Junges Architektur Zentrum",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Port des Lumières",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Kinder-und Familienfreizeitzentrum Bauspielplatz & Spielhaus Eppendorfer \nPark",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Filippos Erlebnisgarten",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Playground Arni",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Wasserspielplatz Windflüchter",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Spielplatz Geheimnisvolle Insel",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Inselpark Café",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Geysir im Inselpark",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Thalia Hamburg - Überseequartier",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Mama Luu's Kitchen",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "LEGO Discovery Centre Hamburg",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Bambini City",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Norderstedt Park",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "WaldBude",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Vapiano",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Land & Leute Erlebnishof Dithmarschen",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "People and Ice",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Frau Meis Eisladen",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Luicella's Ice Cream Osterstraße",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Café Herr Nilsson",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Luicella's HafenCity",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Frau Meis Eis • Café",
+"info": [
+"4,9",
+"Eis"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "ETV-Studio Hoheluft",
+"info": [
+"4,8",
+"Fitnessraum"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Babybeach Salzspielplatz Hamburg",
+"info": [
+"4,5",
+"Indoorspielplatz"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Deutsche Wildtier Stiftung",
+"info": [
+"5,0",
+"Gemeinnützige Organisation"
+],
+"r": "5,0",
+"note": ""
+},
+{
+"n": "SALZRAUM Hamburg",
+"info": [
+"4,8",
+"Wellness-Center"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Dat Backhus Café",
+"info": [
+"4,2",
+"10–20 € · Bäckerei"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Carlos Coffee - Ottensen",
+"info": [
+"4,4",
+"10–20 € · Café"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Bucerius Kunst Forum",
+"info": [
+"4,5",
+"Kunstmuseum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Ciao Bella Hamburg ElbAir Finkenwerder",
+"info": [
+"4,7",
+"10–30 € · Pizza"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Strandperle Hamburg",
+"info": [
+"4,4",
+"10–20 € · Restaurant"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Baby Beach",
+"info": [
+"5,0",
+"Dauerhaft geschlossen"
+],
+"r": "5,0",
+"note": ""
+},
+{
+"n": "shift Hamburg",
+"info": [
+"5,0",
+"Kulturzentrum"
+],
+"r": "5,0",
+"note": ""
+},
+{
+"n": "KisWunderland Spielecafe",
+"info": [
+"4,8",
+"10–20 € · Kindercafé"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Barfußland (Barfußpark & Maislabyrinth)",
+"info": [
+"4,6",
+"Freizeitpark"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "felto – Filzwelt Soltau",
+"info": [
+"4,6",
+"Museum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "SALON SCHÖNE BRIGITTE",
+"info": [
+"5,0",
+"Friseursalon"
+],
+"r": "5,0",
+"note": ""
+}
+],
+"ka": [
+{
+"n": "SOS-Kinderdorf Harksheide",
+"info": [
+"4,6",
+"Sozialeinrichtung"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Junge Die Bäckerei.",
+"info": [
+"4,2",
+"10–20 € · Bäckerei"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Bäckerei-Konditorei Nitt - RHENER Café",
+"info": [
+"4,2",
+"1–10 € · Bäckerei"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Zur Gondel - Bootsvermietung Dornheim",
+"info": [
+"4,3",
+"Vorübergehend geschlossen"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Museum der Natur Hamburg - Zoologie",
+"info": [
+"4,8",
+"Zoologisches Museum"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Urbaneo - Junges Architektur Zentrum",
+"info": [
+"4,9",
+"Kindermuseum"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Skatepark Frederikspark",
+"info": [
+"4,3",
+"Skatepark"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Henstedt-Ulzburg Bewegt e.V.",
+"info": [
+"4,3",
+"Vereinigung / Organisation"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Bürgerpark",
+"info": [
+"4,6",
+"Wald"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "HOFCAFÉ WEIDE-BIMÖHLEN",
+"info": [
+"4,6",
+"10–20 € · Café"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Barmstedter Badewonne",
+"info": [
+"4,5",
+"Schwimmbad"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Kids & Play",
+"info": [
+"4,5",
+"Indoorspielplatz"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "urban apes Norderstedt",
+"info": [
+"4,7",
+"Kletterhalle"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Tobolino Kaki UG",
+"info": [
+"4,6",
+"Indoorspielplatz"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Action Arena",
+"info": [
+"4,7",
+"Freizeitpark"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Spectrum Kino Center Norderstedt",
+"info": [
+"4,4",
+"Kino"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Skateplatz Henstedt-Ulzburg",
+"info": [
+"4,1",
+"Skatepark"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "Minigolf-Oase",
+"info": [
+"4,3",
+"Minigolfplatz"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Eis Soost",
+"info": [
+"4,8",
+"Eis"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Arboretum Ellerhoop",
+"info": [
+"4,7",
+"Arboretum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Schlossinsel",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Naturbad Kiwittsmoor",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Torfbahn Himmelmoor e. V.",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Endern",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "KAYAKOMAT - Hamburg, Alster",
+"info": [
+"4,5",
+"Kanu- und Kajakverleih"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Kanuverleih Hamburg",
+"info": [
+"4,3",
+"Kanu- und Kajakverleih"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Kanu- und Freizeitstätte",
+"info": [
+"4,8",
+"Kanu- und Kajakverleih"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Hamburger Dom",
+"info": [
+"4,4",
+"Vorübergehend geschlossen"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Wildpark Schwarze Berge",
+"info": [
+"4,7",
+"Wildpark"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Freilichtmuseum am Kiekeberg",
+"info": [
+"4,7",
+"Freilichtmuseum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Karl-May-Spiele",
+"info": [
+"4,8",
+"Amphitheater"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Tierpark Neumünster",
+"info": [
+"4,2",
+"Zoo"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Cap San Diego",
+"info": [
+"4,8",
+"Museum"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "EisArena Hamburg",
+"info": [
+"4,4",
+"Eissporthalle"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Alter Elbtunnel",
+"info": [
+"4,7",
+"Historische Sehenswürdigkeit"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Hamburg-Finkenwerder Landungsbrücke",
+"info": [
+"4,5",
+"Bushaltestelle"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Allee Theater Hamburg",
+"info": [
+"4,5",
+"Theater"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "rabatzz! Indoorspielplatz",
+"info": [
+"4,7",
+"Indoorspielplatz"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Zentralbibliothek",
+"info": [
+"4,6",
+"Öffentliche Bücherei"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Kinderbuchhaus im Altonaer Museum",
+"info": [
+"4,8",
+"Museum"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Miniatur Wunderland",
+"info": [
+"4,8",
+"Museum"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Kinderbauernhof Kirchdorf e.V.",
+"info": [
+"4,4",
+"Zoo"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Elbstrand",
+"info": [
+"4,7",
+"Öffentlicher Strand"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Planten un Blomen",
+"info": [
+"4,8",
+"Park"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Stadtpark",
+"info": [
+"4,7",
+"Öffentlicher Park"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Duvenstedter BrookHus (NABU)",
+"info": [
+"4,7",
+"Touristeninformation"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "ARRIBA Erlebnisbad & Sauna",
+"info": [
+"4,0",
+"Erlebnisbad"
+],
+"r": "4,0",
+"note": ""
+},
+{
+"n": "Itzstedter See",
+"info": [
+"4,6",
+"See"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Museumsdorf Volksdorf",
+"info": [
+"4,6",
+"Freilichtmuseum"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Spielplatz Wegenkamp",
+"info": [
+"4,4",
+"Spielplatz"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "ErlebnisWald Trappenkamp",
+"info": [
+"4,5",
+"Freizeitpark"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Polizeimuseum",
+"info": [
+"4,7",
+"Museum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Ballorig Enschede | Indoor speeltuin",
+"info": [
+"4,1",
+"Indoorspielplatz"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "Wildpark Frankenhof",
+"info": [
+"4,7",
+"Freizeitpark"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Botschaft der Wildtiere",
+"info": [
+"4,7",
+"Naturkundemuseum"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Familien-Campingplatz Padenstedt",
+"info": [
+"4,6",
+"Campingplatz"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "LIFE HAMBURG Campus",
+"info": [
+"4,2",
+"Bildungszentrum"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Energieberg Georgswerder",
+"info": [
+"4,5",
+"Museum"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "vju im Energiebunker",
+"info": [
+"4,1",
+"20–30 € · Café"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "Plakatwerkstatt",
+"info": [
+"4,3",
+"Freizeitzentrum"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "ETV Sportzentrum Hoheluft",
+"info": [
+"4,6",
+"Sportverein"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Bambini City",
+"info": [
+"4,6",
+"Indoorspielplatz"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Stover Strand Camping",
+"info": [
+"4,3",
+"Campingplatz"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Freizeitpark Sommerrodelbahn",
+"info": [
+"4,5",
+"Freizeitpark"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Waldspielplatz Grabau",
+"info": [
+"4,7",
+"Spielplatz"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Waldkugelbahn im Köllbachtal",
+"info": [
+"4,8",
+"Sehenswürdigkeit"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Haus- und Nutztierpark Arche Warder",
+"info": [
+"4,7",
+"Zoo"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Zum Dorfkrug Landhof/ Erlebniswelt",
+"info": [
+"4,6",
+"Hofladen"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "St. Peter-Ording",
+"info": [],
+"r": null,
+"note": ""
+},
+{
+"n": "Familienlagune Perlebucht",
+"info": [
+"4,5",
+"Öffentlicher Strand"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "KALLA Spielstadt",
+"info": [
+"4,4",
+"Indoorspielplatz"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "KisWunderland Spielecafe",
+"info": [
+"4,8",
+"10–20 € · Kindercafé"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Asphalt Pumptrack & Bikepark Rellingen",
+"info": [
+"4,9",
+"BMX-Bahn"
+],
+"r": "4,9",
+"note": ""
+},
+{
+"n": "Coffee to Fly",
+"info": [
+"4,5",
+"1–10 € · Café"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Jumping Point - Trampolinpark und Halle - Quickborn/Hamburg",
+"info": [
+"4,6",
+"Freizeitpark"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Christina´s Kuchen und Torten im Café am Wöddel",
+"info": [
+"4,6",
+"1–10 € · Café"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "Almthof Erlebnisbauernhof und Hofcafé",
+"info": [
+"4,7",
+"Zoo"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Volkspark",
+"info": [
+"4,7",
+"Öffentlicher Park"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Jenischpark",
+"info": [
+"4,7",
+"Öffentlicher Park"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "HolstenTherme Kaltenkirchen",
+"info": [
+"4,4",
+"Erlebnisbad"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Gemeindebücherei und -mediothek",
+"info": [
+"4,8",
+"Bibliothek"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Naturbad Beckersberg",
+"info": [
+"4,4",
+"Freibad"
+],
+"r": "4,4",
+"note": ""
+},
+{
+"n": "Bürgerpark",
+"info": [
+"Park"
+],
+"r": null,
+"note": ""
+},
+{
+"n": "Badestrand Costa Kiesa",
+"info": [
+"4,2",
+"Badesee"
+],
+"r": "4,2",
+"note": ""
+},
+{
+"n": "Naturschutzgebiet Henstedter Moor",
+"info": [
+"4,7",
+"Naturschutzgebiet"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Freibad Alveslohe",
+"info": [
+"4,6",
+"Freibad"
+],
+"r": "4,6",
+"note": ""
+},
+{
+"n": "NORDIC Bowling",
+"info": [
+"4,5",
+"Bowlingbahn"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Fun Arena",
+"info": [
+"4,7",
+"Indoorspielplatz"
+],
+"r": "4,7",
+"note": ""
+},
+{
+"n": "Bäderland Bondenwald",
+"info": [
+"4,1",
+"Schwimmbad"
+],
+"r": "4,1",
+"note": ""
+},
+{
+"n": "TALA300",
+"info": [
+"4,3",
+"Indoorspielplatz"
+],
+"r": "4,3",
+"note": ""
+},
+{
+"n": "Palmencafé Hasloh",
+"info": [
+"4,5",
+"Dauerhaft geschlossen"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Gut Wulksfelde Hofladen",
+"info": [
+"4,5",
+"Bioladen"
+],
+"r": "4,5",
+"note": ""
+},
+{
+"n": "Kletterpark Hochseilgarten Hasloh",
+"info": [
+"4,8",
+"Hochseilgarten"
+],
+"r": "4,8",
+"note": ""
+},
+{
+"n": "Inklusionsspielplatz",
+"info": [
+"4,4",
+"Spielplatz"
+],
+"r": "4,4",
+"note": ""
+}
+]
+}

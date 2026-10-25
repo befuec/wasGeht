@@ -1,0 +1,98 @@
+# Preismodelle für die Familienrechnung (Stand 23.10.2026).
+# a = Erwachsene (ab 18), c = Kinder von cf bis ct Jahre, c0 = Preis unter cf (Standard 0 = frei),
+# y = Preis für Jugendliche ct+1..17 (Standard = a), fam = Familienkarten, est = Schätzung
+def F(amin,amax,kmax,p,kinc=99,xk=0): return dict(amin=amin,amax=amax,kmax=kmax,p=p,kinc=kinc,xk=xk)
+PM = {
+"urban apes Hamburg Ost":dict(a=16.9,c=9.9,cf=4,ct=13,y=14.9,fam=[F(1,1,3,34.9),F(2,2,2,34.9)]),
+"urban apes Hamburg West":dict(a=16.9,c=9.9,cf=4,ct=13,y=14.9,fam=[F(1,1,3,34.9),F(2,2,2,34.9)]),
+"Splashaus Hamburg":dict(flatk=119,a=89),
+"BallinStadt Auswanderermuseum":dict(a=14.9,c=8.5,cf=5,ct=13),
+"Internationales Maritimes Museum":dict(a=18,c=13,cf=6,ct=17,fam=[F(1,1,4,21),F(2,2,4,38)]),
+"Fundus Theater":dict(a=6,c=6,cf=2,ct=17,est=True),
+"KALLA Spielstadt":dict(a=6,c=11,cf=1,ct=17),
+"Boulderwelt Hamburg":dict(a=17.9,c=5,cf=3,ct=17,fam=[F(1,1,4,21.9,1,5),F(2,2,9,39.9)]),
+"Universum Bremen":dict(a=18,c=12,cf=6,ct=17,fam=[F(1,2,2,42)]),
+"Paradox Museum":dict(a=23.5,c=17.5,cf=4,ct=11,y=19.5),
+"Kinder Glück SpieleCafé":dict(a=6,c=9,cf=1,ct=5,y=7.5),
+"Botschaft der Wildtiere":dict(a=8,c=0,cf=0,ct=13,y=5),
+"Kletterwald Hamburg":dict(a=36,c=28,cf=5,ct=17,fam=[F(2,2,9,116,2,26)]),
+"MARKK":dict(a=9.5,c=5,cf=0,ct=17,est=True),
+"ErlebnisWald Trappenkamp":dict(a=10,c=6,cf=1,ct=15,fam=[F(1,2,9,25,2,5)]),
+"Hof Bartels":dict(a=5,c=4,cf=3,ct=12),
+"Almthof Erlebnisbauernhof":dict(a=5,c=5,cf=3,ct=17),
+"TALA300":dict(a=4,c=4,cf=1,ct=17),
+"Hamburger Kunsthalle":dict(a=18,c=0,cf=0,ct=17,fam=[F(1,1,9,16),F(2,2,9,32)]),
+"Feuerwehrmuseum Schleswig-Holstein":dict(a=5,c=0,cf=0,ct=12,y=2.5),
+"Museum für Kunst und Gewerbe":dict(a=14,c=0,cf=0,ct=17),
+"WIWA Baggerplatz":dict(flat=32),
+"U-Boot Museum":dict(a=9,c=6,cf=6,ct=12,fam=[F(2,2,1,20),F(2,2,2,22)]),
+"The hall – Parkour":dict(a=10,c=10,cf=5,ct=17),
+"Polizeimuseum Hamburg":dict(a=8,c=0,cf=0,ct=17),
+"Porzellanfräulein":dict(a=15,c=12,cf=3,ct=17,est=True),
+"Rickmer Rickmers":dict(a=7,c=5,cf=4,ct=12,fam=[F(2,2,9,18)]),
+"Arche Warder":dict(a=10,c=10,cf=4,ct=17),
+"St. Peter-Ording":dict(a=4,c=0,cf=0,ct=17),
+"KisWunderland Spielecafé":dict(a=0,c=13,cf=0,ct=8,est=True),
+"Jumping Point Quickborn":dict(a=0,c=14,cf=3,c0=7,ct=17),
+"HolstenTherme Kaltenkirchen":dict(a=16.2,c=8.1,cf=5,c0=3.7,ct=16),
+"Fun Arena":dict(a=6.5,c=11.5,cf=6,c0=6.5,ct=17),
+"Bäderland Bondenwald":dict(a=11.3,c=2.8,cf=0,ct=11,y=5.5),
+"Hochseilgarten Hasloh":dict(a=25.9,c=20.9,cf=8,c0=15.9,ct=17),
+"Sommerrodelbahn Ibbenbüren":dict(a=9,c=9,cf=3,ct=17,est=True),
+"Freibad Alveslohe":dict(a=3,c=2,cf=3,ct=17,est=True),
+"Lokschuppen Aumühle":dict(a=0,c=0),
+}
+# Hinweise ergänzend zum Preistext
+PMN = {
+"Arche Warder":"gerechnet mit Winterpreis",
+"Jumping Point Quickborn":"Preis für 60 Min. je springendem Kind; Begleitpersonen frei",
+"KisWunderland Spielecafé":"ca. 13 € je Kind inkl. Begleitperson",
+"Boulderwelt Hamburg":"Kinder bouldern nur mit Erwachsenen; Kombi- oder Familienkarte",
+"WIWA Baggerplatz":"eine Baggerfahrt (15 Min.) für die Familie",
+"Splashaus Hamburg":"Family Splash für die ganze Familie",
+"Sommerrodelbahn Ibbenbüren":"Schätzung: 10 Fahrten pro Person",
+"Museum für Kunst und Gewerbe":"bis 1.11.2026 zahlen Erwachsene in Begleitung von Kindern nur 10 €",
+}
+# Verzehr-Schätzung (Erwachsene, Kind ab 2 J.) in Euro
+CONS_T = {"kuchen":(9,5),"fruehstueck":(16,8),"restaurant":(20,11),"baecker":(6,4),"bar":(10,5),"hofcafe":(10,6),"imbiss":(8,5),"eis":(4,3)}
+CONS = {
+"Duan'na Café":"kuchen","Möller-Hof":"hofcafe","Lykkeby Familiencafé":None,"Hofladen & Café Hollenstedt":"hofcafe",
+"Bestes vom Elbdeich":"eis","Villa Vanilla am Planschbecken":"imbiss","Sonnendeck St. Pauli":"bar","ERNST (Stackmann)":"fruehstueck",
+"Café Lüküs":"imbiss","Waldhuuske":"hofcafe","RICKI BEACH":"imbiss","Café Nimmerland":"kuchen","Knopf & Krümel":"kuchen",
+"Rathauspassage":"kuchen","Emilia's Familiencafé":"fruehstueck","Junge Die Bäckerei (Rugenbarg)":"baecker",
+"Junge Die Bäckerei (Ahrensburg)":"baecker","Biohofladen Overmeyer":"hofcafe","Gut Wulfsdorf":"imbiss","LyLy Restaurant":"restaurant",
+"Cafe Yade":"fruehstueck","Q21 Gasthaus":"restaurant","Matthies Gartencafé":"hofcafe","1407 Breakfast Club":"fruehstueck",
+"Hofbräu Wirtshaus Speersort":"restaurant","Obsthof Lienau":"eis","Elisa Konditorei & Café":"kuchen","Burgerlich Gänsemarkt":"restaurant",
+"Weingarten sechsundzwanzig":"bar","Food Lounge Bergedorf":"restaurant","[why not] Café":"kuchen","Robin am See":"kuchen",
+"Obsthof VIETS":"hofcafe","Familiencafé Krümel":"kuchen","Hof Eggers in der Ohe":"hofcafe","Café Zwei Herz":"kuchen",
+"StrandPauli":"bar","Coffee to Fly":"kuchen","Café am Wöddel":"kuchen","Palmencafé Hasloh":"hofcafe","Gut Wulksfelde":"imbiss",
+"Hof Bullerbü":"imbiss","Zum Dorfkrug Landhof":"restaurant","Lille Kinder":"kuchen","Tüdelband Winsen":"kuchen",
+}
+CONS_L = {"kuchen":"Kaffee/Kakao und Kuchen","fruehstueck":"Frühstück oder Brunch","restaurant":"Hauptgericht und Getränk",
+          "baecker":"Gebäck und Getränk","bar":"Getränk und Snack","hofcafe":"Kaffee/Kakao und Kuchen","imbiss":"Snack und Getränk","eis":"Eis oder Saft"}
+
+# Geeignetes Alter (von, bis) – Schätzung; Standard je Kategorie
+AGE_CAT = {"museum":(6,14),"natur":(0,14),"hof":(0,12),"ausflug":(3,14),"aktiv":(4,16),"spiel":(1,8),"kreativ":(4,12),
+           "cafe":(0,10),"laden":(0,10),"sonst":(0,12),"baden":(0,16)}
+AGE = {
+"Hamburger Kunsthalle":(5,16),"Museum für Kunst und Gewerbe":(8,16),"Paradox Museum":(6,16),"U-Boot Museum":(6,16),
+"Rickmer Rickmers":(4,14),"Internationales Maritimes Museum":(5,16),"BallinStadt Auswanderermuseum":(8,16),"Polizeimuseum Hamburg":(6,16),
+"Botschaft der Wildtiere":(3,12),"NaturRaum HafenCity":(3,12),"KL!CK Kindermuseum":(3,12),"Lighthouse European XFEL":(10,16),
+"Universum Bremen":(5,16),"Feuerwehrmuseum Schleswig-Holstein":(3,12),"Lokschuppen Aumühle":(2,12),"Stadtmuseum Pinneberg":(6,14),
+"WÄLDERHAUS":(4,12),"Fundus Theater":(3,10),"Splashaus Hamburg":(3,16),"Porzellanfräulein":(4,16),"Die Werkkiste":(5,14),
+"Töpferstube Große Wallanlagen":(4,12),"Kletterwald Hamburg":(6,16),"Hochseilgarten Hasloh":(6,16),"urban apes Hamburg Ost":(4,16),
+"urban apes Hamburg West":(4,16),"Boulderwelt Hamburg":(3,16),"HT16 Kletterzentrum":(5,16),"The hall – Parkour":(5,16),
+"Jumping Point Quickborn":(3,16),"Fun Arena":(2,12),"KALLA Spielstadt":(1,8),"Kinder Glück SpieleCafé":(1,6),
+"KisWunderland Spielecafé":(0,4),"Lykkeby Familiencafé":(0,6),"NEST CoWork & Play":(0,4),"Salzino Hamburg":(0,8),"TALA300":(1,6),
+"Spielhaus Eimsbüttel":(1,10),"Inklusionsspielplatz Henstedt-Ulzburg":(3,12),"Spielplatz Ritterburg":(1,12),"Waldspielplatz Grabau":(2,12),
+"Pumptrack Rellingen":(4,16),"WIWA Baggerplatz":(6,16),"Energieberg Georgswerder":(4,14),"Bunker St. Pauli":(4,16),"Hamburg Airport":(2,14),
+"Coffee to Fly":(2,12),"Sommerrodelbahn Ibbenbüren":(3,14),"Waldkugelbahn Köllbachtal":(2,12),"Kliemannsland":(3,14),
+"ErlebnisWald Trappenkamp":(1,12),"Arche Warder":(1,12),"Herzapfelhof Lühs":(2,12),"Almthof Erlebnisbauernhof":(1,10),
+"Zum Dorfkrug Landhof":(1,10),"Hof Bullerbü":(1,6),"Streichelzoo Ruschwedel":(1,8),"Uhlenkolk Mölln":(1,10),"Klövensteen":(1,12),
+"Niendorfer Gehege":(1,12),"Märchenwanderweg „Der Trickser“":(3,10),"Gemeindebücherei Henstedt-Ulzburg":(0,12),"BOOT e.V. – BOOTsWagen":(6,16),
+"Gut Karlshöhe":(3,12),"Haus der Wilden Weiden":(3,12),"Verein Jordsand (Haus der Natur)":(3,12),"Bienen-Lehr- und Schaugarten":(4,12),
+"BUND Naturerlebnisgarten":(3,12),"Erntegarten Projekt Vielfalt":(2,12),"Boberger Dünenhaus":(3,12),"Henstedter Moor":(3,14),
+"Familienlagune Perlebucht":(0,12),"Stover Strand":(0,14),"NORDIC Bowling":(5,16),"MARKK":(6,14),"Lille Kinder":(0,6),
+"Knopf & Krümel":(0,4),"Emilia's Familiencafé":(0,5),"Café Nimmerland":(0,6),"[why not] Café":(0,5),"Familiencafé Krümel":(0,8),
+"Gut Wulksfelde":(1,10),"GOKARTHOF":(3,12),
+}

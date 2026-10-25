@@ -1,0 +1,7 @@
+src/places.json
+src/ext.json
+src/ausfluege-plus.html
+src/gh/
+src/ics/
+src/__pycache__/
+*.pyc
