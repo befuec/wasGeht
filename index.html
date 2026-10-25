@@ -1354,10 +1354,10 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
           <fieldset class="fgroup"><legend class="sr">Geöffnet</legend><div class="chips" id="open"></div></fieldset>
         </details>
         <details class="fsec" data-k="travdist">
-          <summary><span class="ft">Anreise &amp; Entfernung</span><span class="fh" id="h-travdist"></span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="m6 9 6 6 6-6"/></svg></summary>
+          <summary><span class="ft">Anreise &amp; Fahrzeit</span><span class="fh" id="h-travdist"></span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="m6 9 6 6 6-6"/></svg></summary>
           <fieldset class="fgroup"><legend class="sublab">Anreise</legend><div class="chips" id="trav"></div></fieldset>
-          <div class="fgroup"><label class="sublab" for="dist">Entfernung (Luftlinie): <output id="distOut" for="dist"></output></label>
-          <input type="range" id="dist" min="10" max="110" step="5">
+          <div class="fgroup"><label class="sublab" for="dist">Fahrzeit mit dem Auto: <output id="distOut" for="dist"></output></label>
+          <input type="range" id="dist" min="10" max="90" step="5" aria-label="Maximale Fahrzeit">
           <div class="rangescale"><span>10 km</span><span>50</span><span>alle</span></div></div>
         </details>
         <details class="fsec" data-k="dur">
@@ -1396,7 +1396,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
         <div class="evfsec"><span class="lbl">Alter</span><label class="regtog"><input type="checkbox" id="evAge"> Nur passend zum Alter eurer Kinder <span id="evAgeTxt" class="muted"></span></label></div>
         <div class="evfsec"><span class="lbl">Drinnen / draußen</span><div class="dquick" id="evIo" role="group" aria-label="Drinnen oder draußen"></div></div>
         <div class="evfsec"><span class="lbl">Kosten</span><div class="dquick" id="evCost" role="group" aria-label="Kosten"><button type="button" data-c="all">Alle</button><button type="button" data-c="free">Kostenlos</button></div></div>
-        <div class="evfsec"><span class="lbl">Entfernung ab Rhen: <output id="evDistOut"></output></span><input type="range" id="evDist" min="5" max="110" step="5" aria-label="Entfernung für Veranstaltungen"></div>
+        <div class="evfsec"><span class="lbl">Fahrzeit mit dem Auto: <output id="evDistOut"></output></span><input type="range" id="evDist" min="10" max="90" step="5" aria-label="Maximale Fahrzeit für Veranstaltungen"></div>
         <div class="evfsec"><span class="lbl">Weitere</span>
           <label class="regtog"><input type="checkbox" id="regTog" checked> Regelmäßige Angebote zeigen (z. B. Elterncafé, offene Werkstatt)</label>
           <label class="regtog" id="newTogL" hidden><input type="checkbox" id="newTog"> Nur neue Termine seit eurem letzten Besuch <span class="newtag" id="newCnt"></span></label>
@@ -1455,7 +1455,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
         <div class="viewtog" role="group" aria-label="Darstellung der Ziele"><button type="button" data-view="cards" aria-pressed="true">▦ Kacheln</button><button type="button" data-view="list" aria-pressed="false">☰ Liste</button></div>
         <label class="sortbox" for="sort">Sortieren
           <select id="sort">
-            <option value="km">nach Entfernung</option>
+            <option value="km">nach Fahrzeit</option>
             <option value="ev">nach nächstem Termin</option>
             <option value="price">nach Preis</option>
             <option value="dur">nach Dauer</option>
@@ -1481,7 +1481,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
         </div>
         <div class="dquick accq" id="accQ" role="group" aria-label="Zugang: offen, mit Anmeldung oder Tickets"></div>
         <div class="evvrow"><div class="evvt" role="group" aria-label="Darstellung der Veranstaltungen"><button type="button" data-evv="cards">▦ Kacheln</button><button type="button" data-evv="list">☰ Liste</button></div>
-        <label class="sortbox" for="evSort">Sortieren <select id="evSort"><option value="date">nach Datum</option><option value="km">nach Entfernung</option><option value="price">nach Preis</option><option value="name">nach Name</option></select></label></div>
+        <label class="sortbox" for="evSort">Sortieren <select id="evSort"><option value="date">nach Datum</option><option value="km">nach Fahrzeit</option><option value="price">nach Preis</option><option value="name">nach Name</option></select></label></div>
         <div class="evchips" id="evChips"></div>
         <p class="evhint" id="dateHint"></p>
         <div class="evlist" id="dateList"></div>
@@ -1598,7 +1598,7 @@ function tierOf(v){return v==null?"unbek":v===0?"frei":v<=10?"b10":v<=20?"b20":v
 function fmtEur(v,est){ if(v==null) return ""; if(v===0) return "0 €"; const s=Number.isInteger(v)?String(v):v.toFixed(2).replace(".",","); return (est?"ca. ":"")+s+" €"; }
 function ageFits(p){ return FAM.kids.every(k=>k>=p.amin&&k<=p.amax); }
 function famText(){ const k=FAM.kids; const ad=FAM.ad===1?"1 Erwachsenen":FAM.ad+" Erwachsene"; return k.length? `${ad} und ${k.length===1?"1 Kind":k.length+" Kinder"} (${k.map(x=>x+" J.").join(", ")})` : ad; }
-const TRAV = {all:"Egal",bike:"Mit dem Rad (unter 10 km)",oepnv:"Mit U-/S-Bahn"};
+const TRAV = {all:"Egal",bike:"Mit dem Rad (bis ca. 40 Min.)",oepnv:"Mit U-/S-Bahn"};
 const DUR = {d2:"bis 2 h",d4:"2–4 h",d6:"4–6 h",d8:"Tagesausflug"};
 const EVF = {all:"Alle",cal:"Mit Kalender",d2:"Heute & morgen",d7:"Nächste 7 Tage",d30:"Nächste 30 Tage",anm:"Mit Anmeldung"};
 const IO_LABEL = {drinnen:"drinnen",draussen:"draußen",beides:"drinnen & draußen"};
@@ -1628,7 +1628,7 @@ function fmtDate(s){const d=pdate(s);return WD[d.getDay()]+" "+String(d.getDate(
 PLACES.forEach(p=>{p.up=p.ev.filter(e=>e.dt>=T0).sort((a,b)=>(a.dt+a.t).localeCompare(b.dt+b.t));
   p.hay=(p.n+" "+p.a+" "+p.d+" "+CATS[p.c]+" "+p.ev.map(e=>e.ti).join(" ")).toLowerCase()});
 
-const DEF = {season:"",q:"",trav:"all",dur:[],cost:[],kidsfree:false,agefit:false,open:"all",cats:[],io:"all",wx:"all",dist:110,evf:"all",sort:"km"};
+const DEF = {season:"",q:"",trav:"all",dur:[],cost:[],kidsfree:false,agefit:false,open:"all",cats:[],io:"all",wx:"all",dist:90,evf:"all",sort:"km"};
 let S = structuredClone(DEF);
 try{const s=JSON.parse(localStorage.getItem("hwk-filter")||"null"); if(s){S=Object.assign(structuredClone(DEF),s); delete S.season; delete S.src; S.cost=(S.cost||[]).filter(c=>c in COST);}}catch(e){}
 S.evf="all"; S.season=SEASON; delete S.allseason; DEF.season=SEASON;
@@ -1686,7 +1686,7 @@ function match(p){
   if(S.wx==="rain" && p.wx!=="egal") return false;
   if((S.wx==="dry"||S.wx==="cloudy"||S.wx==="mixed") && p.wx==="warm") return false;
   if(S.season!=="all"&&(!p.s.includes(S.season)||(S.season===SEASON&&closedSeason(p)))) return false;
-  if(S.dist<110 && p.km>S.dist) return false;
+  if(S.dist<90 && carMin(p)>S.dist) return false;
   if(S.evf==="cal" && !p.cal && !p.ev.length) return false;
   const lim={d2:plus(1),d7:plus(6),d30:plus(29)}[S.evf];
   if(lim && !p.up.some(e=>e.dt<=lim)) return false;
@@ -1778,7 +1778,8 @@ function getXPL(){if(XPL)return XPL;const m=new Map();let id=9001;
     p.up.push({dt,dt0:x.dt,to:x.to||null,t:x.t||"",te:x.te||"",te2:x.te||"",ti:x.ti,no:[x.age&&x.age!=="alle"?x.age:"",x.pr||""].filter(Boolean).join(", "),u:x.u,an:/€/.test(x.pr||"")&&!/frei|kostenlos/i.test(x.pr||""),xs:x.q});
     p.hay=(p.hay+" "+x.ti+" "+x.v+" "+x.a).toLowerCase()});
   XPL=[...m.values()];XPL.forEach(p=>p.up.sort((a,b)=>(a.dt+a.t).localeCompare(b.dt+b.t)));window.XPL=XPL;return XPL}
-function xplFor(){return getXPL().filter(p=>(EVDIST>=110||p.km<=EVDIST))}
+function carMin(p){return p.car||Math.round((p.km||0)*1.95)}
+function xplFor(){return getXPL().filter(p=>(EVDIST>=90||carMin(p)<=EVDIST))}
 /* Suche: auf Ebene der einzelnen Termine, Umlaute egal, verwandte Begriffe */
 const NORM=s=>(s||"").toLowerCase().replace(/ä/g,"a").replace(/ö/g,"o").replace(/ü/g,"u").replace(/ß/g,"ss");
 const QSYN=[[/^weihnachtsmark|^adventsmark|^christkindlmark/,/weihnachtsmark|adventsmark|weihnachtsbummel|wintervergn|weihnachtsdorf|advent im dorf|adventsdorf|christkindl|weihnachtszauber|nordische weihnachten|winterzauber|lichtermark|wintermark/],
@@ -2048,7 +2049,7 @@ let SHOWREG=true; try{SHOWREG=localStorage.getItem("hwk-reg")!=="0"}catch(e){}
 function dedupe(a){const s=new Set();return a.filter(x=>{if(!x.e.sid)return true;const k=x.p.id+x.e.sid;if(s.has(k))return false;s.add(k);return true})}
 function isDt(v){return /^\d{4}-\d\d-\d\d$/.test(v||"")}
 function weRange(){const t=DIDX(TODAY);if(t===6)return[T0,T0];const o=(5-t+7)%7;return[plus(o),plus(o+1)]}
-let EVAGE=false,EVDIST=110,EVCOST="all";try{const o=JSON.parse(localStorage.getItem("hwk-evf")||"{}");EVAGE=!!o.age;EVDIST=+o.dist||110;EVCOST=o.cost==="free"?"free":"all"}catch(e){}
+let EVAGE=false,EVDIST=90,EVCOST="all";try{const o=JSON.parse(localStorage.getItem("hwk-evf")||"{}");EVAGE=!!o.age;EVDIST=Math.min(90,+o.dist||90);EVCOST=o.cost==="free"?"free":"all"}catch(e){}
 function saveEvf(){try{localStorage.setItem("hwk-evf",JSON.stringify({age:EVAGE,dist:EVDIST,cost:EVCOST,acc:[...EVACC],io:EVIO}))}catch(e){}}
 function evAgeRange(e){const s=(e.ti+" "+(e.no||"")).replace(/–/g,"-");let m;
   if(m=s.match(/(\d{1,2})\s*-\s*(\d{1,2})\s*J/))return[+m[1],+m[2]];
@@ -2069,7 +2070,7 @@ function evIO(x){if(x.e._io)return x.e._io;const s=x.e.ti+" "+(x.e.no||"")+" "+(
 function evIoOk(x){if(EVIO==="all")return true;const r=evIO(x);return r==="beides"||r===EVIO}
 function evFree(x){const n=(x.e.no||"")+" "+x.e.ti;return /kostenlos|eintritt frei|\bfrei\b|gratis|ohne eintritt/i.test(n)||(x.p.pk==="free"&&!/€/.test(n))}
 function evCostOk(x){return EVCOST==="all"||evFree(x)}
-function evBase(){return PLACES.filter(p=>(!p.cl||T0<p.cl.fr)&&(EVDIST>=110||p.km<=EVDIST))}
+function evBase(){return PLACES.filter(p=>(!p.cl||T0<p.cl.fr)&&(EVDIST>=90||carMin(p)<=EVDIST))}
 function evMode(){return EVDATE==="soon"||EVDATE==="all"||EVDATE==="we"?EVDATE:/^[mw]:/.test(EVDATE)?"rng":"day"}
 let EVMON=null;
 function monRange(ym){const [y,m]=ym.split("-").map(Number);return[ym+"-01",ym+"-"+String(new Date(y,m,0).getDate()).padStart(2,"0")]}
@@ -2098,7 +2099,7 @@ function evActive(){const a=[];
   [...EVACC].forEach(k=>a.push(["Zugang",ACCL[k],()=>{EVACC.delete(k);saveEvf()}]));
   if(EVIO!=="all") a.push(["Drinnen/draußen",EVIO==="drinnen"?"🏠 drinnen":"🌳 draußen",()=>{EVIO="all";saveEvf()}]);
   if(EVCOST!=="all") a.push(["Kosten","kostenlos",()=>{EVCOST="all";saveEvf()}]);
-  if(EVDIST<110) a.push(["Entfernung","bis "+EVDIST+" km",()=>{EVDIST=110;saveEvf()}]);
+  if(EVDIST<90) a.push(["Fahrzeit","bis "+EVDIST+" Min.",()=>{EVDIST=90;saveEvf()}]);
   if(!SHOWREG) a.push(["Regelmäßige","ausgeblendet",()=>{SHOWREG=true;try{localStorage.setItem("hwk-reg","1")}catch(_){}}]);
   if(window.NEWONLY) a.push(["Neu","nur neue Termine",()=>{window.NEWONLY=false;const n=$("newTog");if(n)n.checked=false}]);
   return a}
@@ -2111,14 +2112,14 @@ function evEmpty(which){const act=evActive();if(!act.length)return `<div class="
   evRestore(s);if($("q")){$("q").value=S.q||"";$("qClear").hidden=!S.q}saveEvf();try{localStorage.setItem("hwk-wdf",JSON.stringify([...WDF]));localStorage.setItem("hwk-evk",JSON.stringify([...EVKF]));localStorage.setItem("hwk-reg",SHOWREG?"1":"0")}catch(_){}
   tips.sort((a,b)=>b[1]-a[1]);
   return `<div class="evempty evzero"><b>Keine Termine für diese Auswahl.</b>${tips.length?` Diese Filter blenden Termine aus:<div class="evtips">${tips.slice(0,4).map(([f,n])=>`<button type="button" class="evtip" data-evrm="${esc(f[0]+"|"+f[1])}">${esc(f[0])}: ${esc(f[1])} entfernen <small>→ ${n} Termine</small></button>`).join("")}</div>`:""}<button type="button" class="evtip" data-evrm="*">Alle Veranstaltungs-Filter zurücksetzen</button></div>`}
-function evResetAll(){EVIO="all";EVMON=null;EVACC.clear();EVDATE="all";WDF.clear();EVKF.clear();EVAGE=false;EVCOST="all";EVDIST=110;SHOWREG=true;window.NEWONLY=false;const n=$("newTog");if(n)n.checked=false;
+function evResetAll(){EVIO="all";EVMON=null;EVACC.clear();EVDATE="all";WDF.clear();EVKF.clear();EVAGE=false;EVCOST="all";EVDIST=90;SHOWREG=true;window.NEWONLY=false;const n=$("newTog");if(n)n.checked=false;
   try{localStorage.setItem("hwk-wdf","[]");localStorage.setItem("hwk-evk","[]");localStorage.setItem("hwk-reg","1")}catch(_){}saveEvf()}
 function evChipsHtml(act){return act.length?act.map((f,i)=>`<button type="button" class="afchip" data-evi="${i}" aria-label="Filter ${esc(f[0])}: ${esc(f[1])} entfernen"><span><small>${esc(f[0])}:</small> ${esc(f[1])}</span><span class="x" aria-hidden="true">×</span></button>`).join("")+`<button type="button" class="evclr" data-evrm="*">Alle löschen</button>`:""}
 
 let EVSORT="date";try{EVSORT=localStorage.getItem("hwk-evsort")||"date"}catch(e){}
 function evPrice(x){const s=((x.e.no||"")+" "+x.e.ti),m=s.replace(/(\d),(\d)/g,"$1.$2").match(/(\d+(?:\.\d+)?)\s*€/);if(/kostenlos|eintritt frei|gratis|ohne eintritt/i.test(s))return 0;if(m)return +m[1];return evFree(x)?0:1e6}
 function evSorted(sel){const a=[...sel],dt=x=>(x.e.dt<T0?T0:x.e.dt)+(x.e.t||"99");
-  if(EVSORT==="km")a.sort((x,y)=>x.p.km-y.p.km||dt(x).localeCompare(dt(y)));
+  if(EVSORT==="km")a.sort((x,y)=>carMin(x.p)-carMin(y.p)||dt(x).localeCompare(dt(y)));
   else if(EVSORT==="price")a.sort((x,y)=>evPrice(x)-evPrice(y)||dt(x).localeCompare(dt(y)));
   else if(EVSORT==="name")a.sort((x,y)=>x.e.ti.localeCompare(y.e.ti,"de")||dt(x).localeCompare(dt(y)));
   return a}
@@ -2186,7 +2187,7 @@ function renderEvents(){
   $("wdF").innerHTML=[["all","Alle Tage"],[1,"Mo"],[2,"Di"],[3,"Mi"],[4,"Do"],[5,"Fr"],[6,"Sa"],[0,"So"]].map(([k,v])=>`<button type="button" data-wd="${k}" aria-pressed="${k==="all"?!WDF.size:WDF.has(k)}">${v}</button>`).join("");
   $("evAge").checked=EVAGE;$("evAgeTxt").textContent=FAM.kids.length?"("+FAM.kids.map(k=>k+" J.").join(", ")+")":"(oben rechts unter ⚙️ Einstellungen Kinder eintragen)";
   document.querySelectorAll("#evCost button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.c===EVCOST)));
-  $("evDist").value=EVDIST;$("evDistOut").textContent=EVDIST>=110?"alle":"bis "+EVDIST+" km";
+  $("evDist").value=EVDIST;$("evDistOut").textContent=EVDIST>=90?"egal":"bis "+EVDIST+" Min.";
   const act=evActive();
   $("evChips").innerHTML=evChipsHtml(act);$("anmChips").innerHTML=evChipsHtml(act);
   document.querySelectorAll(".evfn").forEach(x=>x.textContent=act.length?act.length:"");
@@ -2315,7 +2316,7 @@ function activeFilters(){if(typeof MT!=="undefined"&&MT!=="ziele")return evActiv
   if(S.q) a.push(["Suche","„"+S.q+"“",()=>S.q=""]);
   if(S.open!=="all") a.push(["Geöffnet",OPEN[S.open],()=>S.open="all"]);
   if(S.trav!=="all") a.push(["Anreise",TRAV[S.trav],()=>S.trav="all"]);
-  if(S.dist<110) a.push(["Entfernung","bis "+S.dist+" km",()=>S.dist=110]);
+  if(S.dist<90) a.push(["Fahrzeit","bis "+S.dist+" Min.",()=>S.dist=90]);
   S.dur.forEach(v=>a.push(["Dauer",DUR[v],()=>S.dur=S.dur.filter(x=>x!==v)]));
   S.cost.forEach(v=>a.push(["Kosten",COST[v],()=>S.cost=S.cost.filter(x=>x!==v)]));
   if(S.kidsfree) a.push(["Kosten","Kinder frei",()=>S.kidsfree=false]);
@@ -2342,7 +2343,7 @@ function secHints(){
   const L=(m,v)=>v.map(x=>m[x]).join(", ");
   const H={fam:famText(),quick:"",q:S.q,open:S.open!=="all"?OPEN[S.open]:"",dur:L(DUR,S.dur),
     cost:[L(COST,S.cost),S.kidsfree?"Kinder frei":""].filter(Boolean).join(", "),cats:S.cats.length?S.cats.length+" gewählt":"",
-    season:S.season!=="all"?SEASF[S.season]:"Alle",iowx:[S.io!=="all"?IO[S.io]:"",S.wx!=="all"?WX[S.wx]:""].filter(Boolean).join(", "),travdist:[S.trav!=="all"?TRAV[S.trav]:"",S.dist<110?"bis "+S.dist+" km":""].filter(Boolean).join(", ")};
+    season:S.season!=="all"?SEASF[S.season]:"Alle",iowx:[S.io!=="all"?IO[S.io]:"",S.wx!=="all"?WX[S.wx]:""].filter(Boolean).join(", "),travdist:[S.trav!=="all"?TRAV[S.trav]:"",S.dist<90?"Auto bis "+S.dist+" Min.":""].filter(Boolean).join(", ")};
   for(const k in H){const el=$("h-"+k);if(el)el.textContent=H[k]||""}
 }
 
@@ -2361,10 +2362,10 @@ const MOREIO="IntersectionObserver" in window?new IntersectionObserver(es=>es.fo
 if(MOREIO)setTimeout(()=>MOREIO.observe($("zMore")),1500);
 function render(){
   save();
-  $("distOut").textContent=S.dist>=110?"alle":"bis "+S.dist+" km";
+  $("distOut").textContent=S.dist>=90?"egal":"bis "+S.dist+" Min.";
   let list=PLACES.filter(match);
   const nextEv=p=>p.up[0]?p.up[0].dt+p.up[0].t:"9999";
-  if(S.sort==="km") list.sort((a,b)=>a.km-b.km);
+  if(S.sort==="km") list.sort((a,b)=>carMin(a)-carMin(b)||a.km-b.km);
   else if(S.sort==="name") list.sort((a,b)=>a.n.localeCompare(b.n,"de"));
   else if(S.sort==="dur") list.sort((a,b)=>a.dur-b.dur||a.km-b.km);
   else if(S.sort==="price") list.sort((a,b)=>{const x=famCost(a),y=famCost(b);return (x==null?1e9:x)-(y==null?1e9:y)||a.km-b.km});
@@ -2383,7 +2384,7 @@ function render(){
   $("mtc-ziele").textContent=list.length;
   renderMap(mapPlaces(list));
   if(window.plusAfterRender) window.plusAfterRender(list);
-  let n=window.plusCount?window.plusCount():0; if(S.q)n++; if(S.trav!=="all")n++; if(S.dur.length)n++; if(S.cost.length)n++; if(S.kidsfree)n++; if(S.open!=="all")n++; if(S.cats.length)n++; for(const k of ["io","wx","evf"]) if(S[k]!=="all")n++; if(S.agefit)n++; if(S.dist<110)n++;
+  let n=window.plusCount?window.plusCount():0; if(S.q)n++; if(S.trav!=="all")n++; if(S.dur.length)n++; if(S.cost.length)n++; if(S.kidsfree)n++; if(S.open!=="all")n++; if(S.cats.length)n++; for(const k of ["io","wx","evf"]) if(S[k]!=="all")n++; if(S.agefit)n++; if(S.dist<90)n++;
   n=AF.length;$("activeCnt").textContent=n?`· ${n} aktiv`:"";
 }
 
@@ -2967,7 +2968,7 @@ function renderKidView(){const day=kDay();if(KS.stars&&!KSTAR.size)KS.stars=fals
   if(KS.stars) L=L.filter(p=>KSTAR.has(p.n));
   if(KS.open) L=L.filter(p=>kOpenOn(p,day.dt)===true);
   if(KS.inside) L=L.filter(p=>p.io!=="draussen");
-  if(KS.near) L=L.filter(p=>p.km<=10);
+  if(KS.near) L=L.filter(p=>carMin(p)<=20);
   if(KS.wx) L=L.filter(p=>kWxOk(p,day.c));
   L.sort((a,b)=>(KSTAR.has(b.n)-KSTAR.has(a.n))||a.km-b.km);
   $("kCount").textContent=(L.length===1?"1 Ausflugsziel":L.length+" Ausflugsziele")+(KSTAR.size?" · ⭐ "+KSTAR.size+" mit Stern":"");
@@ -3548,9 +3549,9 @@ $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]"
   const hr=e.target.closest("[data-hrate]");if(hr){const id=+hr.dataset.pid,r=+hr.dataset.hrate;setPlace(id,{rating:P_(id).rating===r?0:r});return}
   const hp=e.target.closest("[data-hplan]");if(hp){const p=byId(+hp.dataset.hplan);if(p)togglePlacePlan(p,hp.dataset.d);return}
   const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore,true)});
-const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]},DRIVEKM={"15":10,"30":25,"60":50};
+const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]};
 function heuteToEv(){const n=[];evResetAll();EVAGE=true;n.push("passend zum Alter");
-  if(HQ.drive){EVDIST=DRIVEKM[HQ.drive]||110;n.push("bis "+EVDIST+" km")}
+  if(HQ.drive){EVDIST=+HQ.drive;n.push("bis "+EVDIST+" Min. Fahrt")}
   if(HQ.cost==="free"){EVCOST="free";n.push("kostenlos")}
   if(HQ.mood&&MOODK[HQ.mood]){MOODK[HQ.mood].forEach(k=>EVKF.add(k));try{localStorage.setItem("hwk-evk",JSON.stringify([...EVKF]))}catch(_){}n.push(HQO.mood[1].find(o=>o[0]===HQ.mood)[1].replace(/^\S+\s/,""))}
   saveEvf();const dr=$("evDist");if(dr)dr.value=EVDIST;return n}

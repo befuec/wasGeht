@@ -542,9 +542,9 @@ $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]"
   const hr=e.target.closest("[data-hrate]");if(hr){const id=+hr.dataset.pid,r=+hr.dataset.hrate;setPlace(id,{rating:P_(id).rating===r?0:r});return}
   const hp=e.target.closest("[data-hplan]");if(hp){const p=byId(+hp.dataset.hplan);if(p)togglePlacePlan(p,hp.dataset.d);return}
   const ex=e.target.closest("[data-explore]");if(ex)exploreDay(ex.dataset.explore,true)});
-const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]},DRIVEKM={"15":10,"30":25,"60":50};
+const MOODK={toben:["sport"],cozy:["buehne","lesen","werk"],learn:["fuehrung","werk"],animals:["natur"]};
 function heuteToEv(){const n=[];evResetAll();EVAGE=true;n.push("passend zum Alter");
-  if(HQ.drive){EVDIST=DRIVEKM[HQ.drive]||110;n.push("bis "+EVDIST+" km")}
+  if(HQ.drive){EVDIST=+HQ.drive;n.push("bis "+EVDIST+" Min. Fahrt")}
   if(HQ.cost==="free"){EVCOST="free";n.push("kostenlos")}
   if(HQ.mood&&MOODK[HQ.mood]){MOODK[HQ.mood].forEach(k=>EVKF.add(k));try{localStorage.setItem("hwk-evk",JSON.stringify([...EVKF]))}catch(_){}n.push(HQO.mood[1].find(o=>o[0]===HQ.mood)[1].replace(/^\S+\s/,""))}
   saveEvf();const dr=$("evDist");if(dr)dr.value=EVDIST;return n}
