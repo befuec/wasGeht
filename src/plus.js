@@ -61,14 +61,16 @@ let SBSIG="",SBERR=null;const SETS={};
 /* Einstellungen (Familie, freie Wochentage) gemeinsam speichern */
 window.plusSettingsChanged=what=>{if(!SB||window.APPLYING)return;
   if(what==="family"){SETS.family={ad:FAM.ad,kids:FAM.kids.slice()};write("settings/family",SETS.family)}
-  if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}};
+  if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}
+  if(what==="hiddenrg"){SETS.hiddenrg={items:Object.assign({},window.HIDRG||{})};write("settings/hiddenrg",SETS.hiddenrg)}};
 function applySettings(s){if(!s)return;window.APPLYING=true;try{
   if(s.family&&Number.isFinite(s.family.ad)&&Array.isArray(s.family.kids)&&JSON.stringify(s.family)!==JSON.stringify({ad:FAM.ad,kids:FAM.kids})){FAM.ad=s.family.ad;FAM.kids=s.family.kids.slice();saveFam();renderKids();if($("setFam"))$("setFam").textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
   if(s.freedays&&Array.isArray(s.freedays.days)){window.FREEDAYS=new Set(s.freedays.days);try{localStorage.setItem("hwk-freedays",JSON.stringify(s.freedays.days))}catch(_){}if(typeof renderFreeDays==="function")renderFreeDays()}
+  if(s.hiddenrg&&s.hiddenrg.items&&typeof s.hiddenrg.items==="object"&&JSON.stringify(s.hiddenrg.items)!==JSON.stringify(window.HIDRG)){window.HIDRG=s.hiddenrg.items;try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))}catch(_){}window.HIDV++;if(typeof renderHidRg==="function")renderHidRg();EVCACHE=null;setTimeout(()=>{refresh()},0)}
   Object.assign(SETS,s)}finally{window.APPLYING=false}}
 /* Sicherung: alles als JSON-Datei herunterladen und wiederherstellen */
 function backupData(){const E=[];const m={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};for(const k in m)for(const id in m[k])E.push({kind:k,id,data:m[k][id]});
-  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});
+  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});
   return {app:"was-geht",version:1,exported:new Date().toISOString(),entries:E}}
 let BKPEND=null;
 document.addEventListener("click",e=>{
@@ -310,6 +312,13 @@ $("planView").addEventListener("click",e=>{
     const o=planEntries().find(z=>z.d===dd&&z.x.k===it.k),nm=o?o.ti.replace(/^Ausflug: /,""):"Eintrag";
     setPlan(dd,all.filter(x=>x.k!==it.k));
     undoToast(`„${nm}“ am ${fmtDate(dd)} gelöscht`,()=>{const cur=((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==it.k);cur.splice(Math.min(ix,cur.length),0,it);setPlan(dd,cur);toast("↩️ Wiederhergestellt")})}});
+/* Regelmäßige Angebote ausblenden / wieder einblenden */
+document.addEventListener("click",e=>{const h=e.target.closest("[data-rghide]");if(h){e.preventDefault();e.stopPropagation();const k=h.dataset.rghide;
+    HIDRG[k]={ti:h.dataset.ti,pn:h.dataset.pn,rg:h.dataset.rg||"",at:Date.now()};saveHidRg();refreshAllEv();
+    undoToast(`„${h.dataset.ti}“ ausgeblendet – wieder einblenden unter ⚙️ Einstellungen`,()=>{delete HIDRG[k];saveHidRg();refreshAllEv()});return}
+  const s=e.target.closest("[data-rgshow]");if(s){delete HIDRG[s.dataset.rgshow];saveHidRg();refreshAllEv();toast("↩️ Wird wieder angezeigt")}},true);
+function refreshAllEv(){EVCACHE=null;if(typeof renderEvMap==="function")renderEvMap();refresh()}
+renderHidRg();
 /* Rückgängig-Leiste mit ablaufendem Balken */
 const UNDO_MS=6000;let UNDO=null;
 function undoToast(msg,fn){let u=$("undoToast");if(!u){u=document.createElement("div");u.id="undoToast";u.className="undot";u.setAttribute("role","status");u.setAttribute("aria-live","polite");document.body.appendChild(u)}
@@ -432,7 +441,7 @@ function hl(x){const e=x.e,p=x.p;let s=0;let c=[];try{c=evCats(p,e)}catch(_){}
   if(FAM.kids.length){const r=evAgeRange(e);if(r&&!FAM.kids.some(k=>k>=r[0]&&k<=r[1]))s-=6}
   return s-p.km/30}
 let EVCACHE=null,EVCT=0;
-function evAllNear(){if(EVCACHE&&Date.now()-EVCT<5000)return EVCACHE;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
+let EVHV=-1;function evAllNear(){if(EVCACHE&&Date.now()-EVCT<5000&&EVHV===window.HIDV)return EVCACHE;EVHV=window.HIDV;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
 const onDay=(x,dt)=>x.e.dt<=dt&&(x.e.to||x.e.dt)>=dt;
 const ROUTE=p=>"https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination="+encodeURIComponent(p.n+", "+p.a);
 const fmDur=m=>m>=60?(Math.floor(m/60)+(m%60>=30?",5":"")+" h"):m+" Min.";

@@ -1277,6 +1277,11 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .busyban{width:100%;box-sizing:border-box}
 
 .nxrow{min-width:0}.nxt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block!important}.nxt .cd{margin-right:6px;vertical-align:1px}
+.hidrg{display:grid;gap:0;margin-bottom:6px}
+.hidrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.hidrow:first-child{border-top:0}
+.hidrow b{display:block;font-size:13.5px}.hidrow small{display:block;color:var(--muted);font-size:12.5px}
+.evrow .acts>.rghide{order:1;color:var(--muted)!important;border-color:var(--line)!important}
 /* Rückgängig-Leiste */
 .undot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:72;width:min(440px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.3);overflow:hidden;font-size:13.5px;font-weight:700}
 .undot[hidden]{display:none}
@@ -1531,6 +1536,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
               <div class="kids" id="kids"></div>
             </fieldset></div>
     <h3 class="seth">🗓️ Freie Tage für Ausflüge</h3><p class="famnote">Diese Wochentage sind im Kalender unter „Unser Plan“ grün markiert, solange nichts eingeplant ist.</p><div class="dquick freed" id="freeDays" role="group" aria-label="Freie Wochentage"></div>
+    <h3 class="seth">🚫 Ausgeblendete regelmäßige Angebote</h3><p class="famnote">Regelmäßige Angebote, die euch nicht interessieren, tauchen in „Heute“, „Entdecken“ und den Tagesvorschlägen nicht mehr auf. Hier könnt ihr sie wieder einblenden.</p><div class="hidrg" id="hidRg"></div>
     <h3 class="seth">🔗 Gemeinsamer Plan</h3><div id="sbStat"></div>
     <h3 class="seth">💾 Sicherung</h3><p class="famnote">Alle Einträge (Plan, Vielleicht, verplante Tage, Wünsche, Sterne, Familie, freie Tage) als Datei aufs Gerät laden oder aus so einer Datei zurückholen.</p>
     <div class="bkrow"><button type="button" class="pmini" id="bkSave">Daten sichern</button><label class="pmini bkfile" for="bkFile">Wiederherstellen …</label><input type="file" id="bkFile" accept="application/json,.json" hidden></div><p class="famnote" id="bkInfo" aria-live="polite"></p>
@@ -1936,7 +1942,15 @@ function setTab(k){const prev=MT,ts=document.querySelector(".tabstick"),top=ts?t
 document.querySelectorAll(".maintabs button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.mt)));
 setTimeout(()=>{$("filters").hidden=MT!=="ziele";$("evFilters").hidden=MT==="ziele";document.body.classList.toggle("evmode",MT!=="ziele");if(MT!=="ziele"){renderActive();window.renderAfMini&&window.renderAfMini();window.updateFabs&&window.updateFabs()}},0);
 function baseList(){const e=S.evf,o=S.open;S.evf="all";S.open="all";const l=PLACES.filter(match);S.evf=e;S.open=o;return l}
-function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>a.push({p,e})));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>a.push({p,e})));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
+window.HIDRG={};try{const v=JSON.parse(localStorage.getItem("hwk-hidrg")||"null");if(v&&typeof v==="object")window.HIDRG=v}catch(e){}
+window.HIDV=0;
+function rgKey(p,e){return p.id+"|"+String(e.ti).trim().toLowerCase()}
+function rgHidden(p,e){return !!(e.rg&&HIDRG[rgKey(p,e)])}
+function saveHidRg(){try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))}catch(_){}window.HIDV++;if(window.plusSettingsChanged)window.plusSettingsChanged("hiddenrg");renderHidRg()}
+function renderHidRg(){const el=$("hidRg");if(!el)return;const L=Object.entries(HIDRG).sort((x,y)=>(x[1].ti||"").localeCompare(y[1].ti||""));
+  el.innerHTML=L.length?L.map(([k,v])=>`<div class="hidrow"><div style="min-width:0"><b>${esc(v.ti||"")}</b><small>${esc(v.pn||"")}${v.rg?" · "+esc(v.rg):""}</small></div><button type="button" class="pmini" data-rgshow="${esc(k)}">↩️ Wieder anzeigen</button></div>`).join("")
+    :`<p class="famnote" style="margin:0">Nichts ausgeblendet. Bei regelmäßigen Angeboten unter „Entdecken“ auf „🚫 Kein Interesse“ tippen.</p>`}
+function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
 const FULL=/ausgebucht|ausverkauft|nur Warteliste/;
 const MONL=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const WDL=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
@@ -1980,7 +1994,7 @@ function evRow({p,e},noPlace){const full=FULL.test(e.no);
   return `<div class="evrow${full?" full":""}">${calBox(e.dt,e.t)}
     <div style="min-width:0"><div class="t">${esc(e.ti)}${e.to?` <span class="regtag">bis ${pdate(e.to).getDate()}.${pdate(e.to).getMonth()+1}.</span>`:""}${p.x?` <span class="xtag" title="Ort steht nicht in euren Google-Maps-Listen">nicht in euren Listen</span>`:""}${window.plusEvBadge?window.plusEvBadge(p,e):""}${e.rg?` <span class="regtag" title="${esc(e.rg)}">regelmäßig</span>`:""}</div>${e.rg?`<div class="rgpat">${esc(e.rg)}</div>`:""}
       <div class="p">${noPlace?(e.no?esc(e.no):""):`${p.x?`<b>${esc(p.n)}</b>`:`<button type="button" data-id="${p.id}">${esc(p.n)}</button>`}${(()=>{const c=p.a.split(",").pop().replace(/^\s*\d{5}\s*/,"").trim();return c&&!p.n.includes(c)?", "+esc(c):""})()} · ${Math.round(p.km)} km${p.car?` · Auto ca. ${p.car} Min.`:""}${e.no?` · ${esc(e.no)}`:""}`}</div></div>
-    <div class="acts">${e.an?`<span class="anmtag${full?" full":""}">${full?"voll":evKind(e)==="tix"?"🎟️ Tickets":"✍️ Anmeldung"}</span>`:""}${link?`<a href="${link}" target="_blank" rel="noopener">${lt} ↗</a>`:""}${window.plusEvActs?window.plusEvActs(p,e):""}${p.x?`<a href="https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination=${encodeURIComponent(p.a)}" target="_blank" rel="noopener">Route ↗</a>`:""}${calMenu(p,e)}</div></div>`}
+    <div class="acts">${e.an?`<span class="anmtag${full?" full":""}">${full?"voll":evKind(e)==="tix"?"🎟️ Tickets":"✍️ Anmeldung"}</span>`:""}${link?`<a href="${link}" target="_blank" rel="noopener">${lt} ↗</a>`:""}${window.plusEvActs?window.plusEvActs(p,e):""}${e.rg?`<button type="button" class="pmini rghide" data-rghide="${esc(rgKey(p,e))}" data-ti="${esc(e.ti)}" data-pn="${esc(p.n)}" data-rg="${esc(e.rg)}" title="Dieses regelmäßige Angebot künftig ausblenden">🚫 Kein Interesse</button>`:""}${p.x?`<a href="https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination=${encodeURIComponent(p.a)}" target="_blank" rel="noopener">Route ↗</a>`:""}${calMenu(p,e)}</div></div>`}
 function dayWx(dt){if(typeof WXD==="undefined"||!WXD||!WXD.length)return"";const w=WXD.find(x=>x.dt===dt);if(!w||w.hi==null)return"";const r=Math.round(w.rain||0);
   return `<div class="evdaywx${r>=50?" wet":""}">${wxIcon(w.rain,w.code,w.hi)} ${WX[wxClass(w)]} · ${Math.round(w.hi)}°${w.lo!=null?" / "+Math.round(w.lo)+"°":""} · 💧 ${r} % Regen${r>=50?" · für Draußen-Termine Regenjacke einpacken":""}</div>`}
 function dayHead(dt){const d=pdate(dt);const rel=dt===T0?"Heute, ":dt===plus(1)?"Morgen, ":"";return `<h3 class="evday">${rel}${WDL[d.getDay()]}, ${d.getDate()}. ${MONL[d.getMonth()]}</h3>${dayWx(dt)}`}
@@ -3068,14 +3082,16 @@ let SBSIG="",SBERR=null;const SETS={};
 /* Einstellungen (Familie, freie Wochentage) gemeinsam speichern */
 window.plusSettingsChanged=what=>{if(!SB||window.APPLYING)return;
   if(what==="family"){SETS.family={ad:FAM.ad,kids:FAM.kids.slice()};write("settings/family",SETS.family)}
-  if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}};
+  if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}
+  if(what==="hiddenrg"){SETS.hiddenrg={items:Object.assign({},window.HIDRG||{})};write("settings/hiddenrg",SETS.hiddenrg)}};
 function applySettings(s){if(!s)return;window.APPLYING=true;try{
   if(s.family&&Number.isFinite(s.family.ad)&&Array.isArray(s.family.kids)&&JSON.stringify(s.family)!==JSON.stringify({ad:FAM.ad,kids:FAM.kids})){FAM.ad=s.family.ad;FAM.kids=s.family.kids.slice();saveFam();renderKids();if($("setFam"))$("setFam").textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
   if(s.freedays&&Array.isArray(s.freedays.days)){window.FREEDAYS=new Set(s.freedays.days);try{localStorage.setItem("hwk-freedays",JSON.stringify(s.freedays.days))}catch(_){}if(typeof renderFreeDays==="function")renderFreeDays()}
+  if(s.hiddenrg&&s.hiddenrg.items&&typeof s.hiddenrg.items==="object"&&JSON.stringify(s.hiddenrg.items)!==JSON.stringify(window.HIDRG)){window.HIDRG=s.hiddenrg.items;try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))}catch(_){}window.HIDV++;if(typeof renderHidRg==="function")renderHidRg();EVCACHE=null;setTimeout(()=>{refresh()},0)}
   Object.assign(SETS,s)}finally{window.APPLYING=false}}
 /* Sicherung: alles als JSON-Datei herunterladen und wiederherstellen */
 function backupData(){const E=[];const m={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};for(const k in m)for(const id in m[k])E.push({kind:k,id,data:m[k][id]});
-  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});
+  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});
   return {app:"was-geht",version:1,exported:new Date().toISOString(),entries:E}}
 let BKPEND=null;
 document.addEventListener("click",e=>{
@@ -3317,6 +3333,13 @@ $("planView").addEventListener("click",e=>{
     const o=planEntries().find(z=>z.d===dd&&z.x.k===it.k),nm=o?o.ti.replace(/^Ausflug: /,""):"Eintrag";
     setPlan(dd,all.filter(x=>x.k!==it.k));
     undoToast(`„${nm}“ am ${fmtDate(dd)} gelöscht`,()=>{const cur=((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==it.k);cur.splice(Math.min(ix,cur.length),0,it);setPlan(dd,cur);toast("↩️ Wiederhergestellt")})}});
+/* Regelmäßige Angebote ausblenden / wieder einblenden */
+document.addEventListener("click",e=>{const h=e.target.closest("[data-rghide]");if(h){e.preventDefault();e.stopPropagation();const k=h.dataset.rghide;
+    HIDRG[k]={ti:h.dataset.ti,pn:h.dataset.pn,rg:h.dataset.rg||"",at:Date.now()};saveHidRg();refreshAllEv();
+    undoToast(`„${h.dataset.ti}“ ausgeblendet – wieder einblenden unter ⚙️ Einstellungen`,()=>{delete HIDRG[k];saveHidRg();refreshAllEv()});return}
+  const s=e.target.closest("[data-rgshow]");if(s){delete HIDRG[s.dataset.rgshow];saveHidRg();refreshAllEv();toast("↩️ Wird wieder angezeigt")}},true);
+function refreshAllEv(){EVCACHE=null;if(typeof renderEvMap==="function")renderEvMap();refresh()}
+renderHidRg();
 /* Rückgängig-Leiste mit ablaufendem Balken */
 const UNDO_MS=6000;let UNDO=null;
 function undoToast(msg,fn){let u=$("undoToast");if(!u){u=document.createElement("div");u.id="undoToast";u.className="undot";u.setAttribute("role","status");u.setAttribute("aria-live","polite");document.body.appendChild(u)}
@@ -3439,7 +3462,7 @@ function hl(x){const e=x.e,p=x.p;let s=0;let c=[];try{c=evCats(p,e)}catch(_){}
   if(FAM.kids.length){const r=evAgeRange(e);if(r&&!FAM.kids.some(k=>k>=r[0]&&k<=r[1]))s-=6}
   return s-p.km/30}
 let EVCACHE=null,EVCT=0;
-function evAllNear(){if(EVCACHE&&Date.now()-EVCT<5000)return EVCACHE;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
+let EVHV=-1;function evAllNear(){if(EVCACHE&&Date.now()-EVCT<5000&&EVHV===window.HIDV)return EVCACHE;EVHV=window.HIDV;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
 const onDay=(x,dt)=>x.e.dt<=dt&&(x.e.to||x.e.dt)>=dt;
 const ROUTE=p=>"https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination="+encodeURIComponent(p.n+", "+p.a);
 const fmDur=m=>m>=60?(Math.floor(m/60)+(m%60>=30?",5":"")+" h"):m+" Min.";
