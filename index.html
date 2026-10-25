@@ -1276,6 +1276,15 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .phead:has(.pdhead){display:grid!important;gap:8px}
 .busyban{width:100%;box-sizing:border-box}
 
+.nxrow{min-width:0}.nxt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block!important}.nxt .cd{margin-right:6px;vertical-align:1px}
+/* Rückgängig-Leiste */
+.undot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:72;width:min(440px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.3);overflow:hidden;font-size:13.5px;font-weight:700}
+.undot[hidden]{display:none}
+.undot .umsg{flex:1;min-width:0;line-height:1.35}
+.undot .ubtn{font:inherit;font-size:13.5px;font-weight:800;flex:none;border:0;border-radius:999px;background:var(--bg);color:var(--ink);padding:8px 14px;min-height:38px;cursor:pointer}
+.undot .ubar{position:absolute;left:0;bottom:0;height:4px;width:100%;background:var(--ev);transform-origin:left;animation:ubar linear forwards}
+@keyframes ubar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.undot .ubar{animation:none;opacity:.6}}
 /* ===== Einheitliche Schriftgrößen (alle Bereiche) ===== */
 :root{--fs-h:17px;--fs-t:15px;--fs-m:13.5px;--fs-s:12.5px;--fs-chip:11.5px;--fs-btn:13px}
 /* Tages- und Abschnittsüberschriften */
@@ -3303,7 +3312,17 @@ $("planView").addEventListener("click",e=>{
   if(e.target.closest("[data-pall]")){PDAY=null;renderPlan();return}
   const mm=e.target.closest("[data-calm]");if(mm){PALL=false;const [y,m]=CALM.split("-").map(Number),d=new Date(y,m-1+(+mm.dataset.calm),1);CALM=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");PDAY=null;renderPlan();return}
   const mv=e.target.closest("[data-move]");if(mv){movePlan(mv.dataset.move,mv.dataset.from,mv.dataset.to);return}
-  const r=e.target.closest("[data-prm]");if(r){const dd=r.dataset.d;setPlan(dd,((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==r.dataset.prm))}});
+  const r=e.target.closest("[data-prm]");if(r){const dd=r.dataset.d,all=((ST.plans[dd]||{}).items||[]),ix=all.findIndex(x=>x.k===r.dataset.prm);if(ix<0)return;const it=all[ix];
+    const o=planEntries().find(z=>z.d===dd&&z.x.k===it.k),nm=o?o.ti.replace(/^Ausflug: /,""):"Eintrag";
+    setPlan(dd,all.filter(x=>x.k!==it.k));
+    undoToast(`„${nm}“ am ${fmtDate(dd)} gelöscht`,()=>{const cur=((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==it.k);cur.splice(Math.min(ix,cur.length),0,it);setPlan(dd,cur);toast("↩️ Wiederhergestellt")})}});
+/* Rückgängig-Leiste mit ablaufendem Balken */
+const UNDO_MS=6000;let UNDO=null;
+function undoToast(msg,fn){let u=$("undoToast");if(!u){u=document.createElement("div");u.id="undoToast";u.className="undot";u.setAttribute("role","status");u.setAttribute("aria-live","polite");document.body.appendChild(u)}
+  if(UNDO)clearTimeout(UNDO.t);const tp=$("ptoast");if(tp)tp.hidden=true;
+  u.innerHTML=`<span class="umsg"></span><button type="button" class="ubtn">↩️ Rückgängig</button><i class="ubar" style="animation-duration:${UNDO_MS}ms"></i>`;u.querySelector(".umsg").textContent=msg;u.hidden=false;
+  const close=()=>{u.hidden=true;UNDO=null};UNDO={t:setTimeout(close,UNDO_MS)};
+  u.querySelector(".ubtn").onclick=()=>{clearTimeout(UNDO&&UNDO.t);close();fn()}}
 let BNT=null;$("planView").addEventListener("input",e=>{const t=e.target;if(!t.dataset.busynote)return;const d=t.dataset.busynote;clearTimeout(BNT);BNT=setTimeout(()=>{if(!ST.busy[d])return;ST.busy[d]=Object.assign({},ST.busy[d],{note:t.value.trim()});write("busy/"+d,ST.busy[d]);persistLocal()},700)});
 $("planView").addEventListener("change",e=>{const t=e.target;
   if(t.dataset.pref&&t.value&&t.value>=t.min&&t.value<=t.max){if(PDAY)PDAY=t.value;CALM=t.value.slice(0,7);movePlan(t.dataset.pref,t.dataset.d,t.value);return}

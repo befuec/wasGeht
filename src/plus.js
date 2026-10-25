@@ -306,7 +306,17 @@ $("planView").addEventListener("click",e=>{
   if(e.target.closest("[data-pall]")){PDAY=null;renderPlan();return}
   const mm=e.target.closest("[data-calm]");if(mm){PALL=false;const [y,m]=CALM.split("-").map(Number),d=new Date(y,m-1+(+mm.dataset.calm),1);CALM=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");PDAY=null;renderPlan();return}
   const mv=e.target.closest("[data-move]");if(mv){movePlan(mv.dataset.move,mv.dataset.from,mv.dataset.to);return}
-  const r=e.target.closest("[data-prm]");if(r){const dd=r.dataset.d;setPlan(dd,((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==r.dataset.prm))}});
+  const r=e.target.closest("[data-prm]");if(r){const dd=r.dataset.d,all=((ST.plans[dd]||{}).items||[]),ix=all.findIndex(x=>x.k===r.dataset.prm);if(ix<0)return;const it=all[ix];
+    const o=planEntries().find(z=>z.d===dd&&z.x.k===it.k),nm=o?o.ti.replace(/^Ausflug: /,""):"Eintrag";
+    setPlan(dd,all.filter(x=>x.k!==it.k));
+    undoToast(`„${nm}“ am ${fmtDate(dd)} gelöscht`,()=>{const cur=((ST.plans[dd]||{}).items||[]).filter(x=>x.k!==it.k);cur.splice(Math.min(ix,cur.length),0,it);setPlan(dd,cur);toast("↩️ Wiederhergestellt")})}});
+/* Rückgängig-Leiste mit ablaufendem Balken */
+const UNDO_MS=6000;let UNDO=null;
+function undoToast(msg,fn){let u=$("undoToast");if(!u){u=document.createElement("div");u.id="undoToast";u.className="undot";u.setAttribute("role","status");u.setAttribute("aria-live","polite");document.body.appendChild(u)}
+  if(UNDO)clearTimeout(UNDO.t);const tp=$("ptoast");if(tp)tp.hidden=true;
+  u.innerHTML=`<span class="umsg"></span><button type="button" class="ubtn">↩️ Rückgängig</button><i class="ubar" style="animation-duration:${UNDO_MS}ms"></i>`;u.querySelector(".umsg").textContent=msg;u.hidden=false;
+  const close=()=>{u.hidden=true;UNDO=null};UNDO={t:setTimeout(close,UNDO_MS)};
+  u.querySelector(".ubtn").onclick=()=>{clearTimeout(UNDO&&UNDO.t);close();fn()}}
 let BNT=null;$("planView").addEventListener("input",e=>{const t=e.target;if(!t.dataset.busynote)return;const d=t.dataset.busynote;clearTimeout(BNT);BNT=setTimeout(()=>{if(!ST.busy[d])return;ST.busy[d]=Object.assign({},ST.busy[d],{note:t.value.trim()});write("busy/"+d,ST.busy[d]);persistLocal()},700)});
 $("planView").addEventListener("change",e=>{const t=e.target;
   if(t.dataset.pref&&t.value&&t.value>=t.min&&t.value<=t.max){if(PDAY)PDAY=t.value;CALM=t.value.slice(0,7);movePlan(t.dataset.pref,t.dataset.d,t.value);return}
