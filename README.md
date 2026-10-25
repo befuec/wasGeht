@@ -15,6 +15,7 @@ Familien-Ausflugsplaner: Ziele aus zwei Google-Maps-Listen, Veranstaltungen der 
 | `build.sh` | baut `index.html` aus `src/` |
 | `src/template_plus.html` | Seitenvorlage (HTML, CSS, Haupt-Skript) |
 | `src/plus.js` | Plan, Vielleicht, Supabase-Speicher, Heute, Kinderansicht-Zusätze; wird beim Bauen in die Vorlage eingebettet |
+| `src/home.js` | Reiter „Zuhause“: Aufgaben-Katalog, Turnus, Fairness, Punkte, Belohnungen, Abzeichen; Daten als `settings`-Einträge (`hc:` Aufgabe, `hd:` erledigt, `hr:` eingelöst, `people`, `homeblock`, `hrw`) – kein Schema-Update nötig |
 | `src/build_data.py` | erzeugt `places.json`/`ext.json` aus den Quelldateien |
 | `src/assemble_plus.py`, `src/assemble_gh.py` | setzen Daten ein, erzeugen die vollständige Seite |
 | `src/lists_full.json`, `src/newq.json` | Einträge der Google-Maps-Listen |

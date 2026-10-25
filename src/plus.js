@@ -4,8 +4,8 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
 /* --- Speicher: gemeinsam (db) oder nur auf diesem Gerät --- */
 const ST={places:LS.get("hwkp-places",{}),plans:LS.get("hwkp-plans",{}),evw:LS.get("hwkp-evw",{}),maybe:LS.get("hwkp-maybe",{}),busy:LS.get("hwkp-busy",{})};
-const M2S=["heute","entdecken","plan"];
-let M2=(()=>{const h=window.HASH0||"";if(h==="#heute")return"heute";if(h==="#plan")return"plan";if(h==="#ziele"||h==="#veranstaltungen"||h==="#termine")return"entdecken";
+const M2S=["heute","entdecken","plan","zuhause"];
+let M2=(()=>{const h=window.HASH0||"";if(h==="#heute")return"heute";if(h==="#plan")return"plan";if(h==="#zuhause")return"zuhause";if(h==="#ziele"||h==="#veranstaltungen"||h==="#termine")return"entdecken";
   try{const s=sessionStorage.getItem("hwk-m2");if(M2S.includes(s))return s}catch(e){}
   return new Date().getHours()<14?"heute":"entdecken"})();window.M2=M2;
 let MYID=null,UAPI=null;const PROF={};
@@ -38,7 +38,7 @@ window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star
 /* bestehende lokale Sterne übernehmen */
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
-  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan()}updateFabs()},120)}
+  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
   try{const u=await window.claude.use("user");if(u){UAPI=u;if(u.can){const c=await u.can("data.write");if(c===false)CANWRITE=false}if(u.me){const me=await u.me();MYID=me&&me.id||null;if(MYID)PROF[MYID]=me}}}catch(e){}
   let first=true;
@@ -62,15 +62,16 @@ let SBSIG="",SBERR=null;const SETS={};
 window.plusSettingsChanged=what=>{if(!SB||window.APPLYING)return;
   if(what==="family"){SETS.family={ad:FAM.ad,kids:FAM.kids.slice()};write("settings/family",SETS.family)}
   if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}
+  if(window.homeIsKey&&window.homeIsKey(what)){write("settings/"+what,SETS[what]===undefined?null:SETS[what]);return}
   if(what==="hiddenrg"){SETS.hiddenrg={items:Object.assign({},window.HIDRG||{})};write("settings/hiddenrg",SETS.hiddenrg)}};
-function applySettings(s){if(!s)return;window.APPLYING=true;try{
+function applySettings(s,full){if(!s)return;window.APPLYING=true;try{
   if(s.family&&Number.isFinite(s.family.ad)&&Array.isArray(s.family.kids)&&JSON.stringify(s.family)!==JSON.stringify({ad:FAM.ad,kids:FAM.kids})){FAM.ad=s.family.ad;FAM.kids=s.family.kids.slice();saveFam();renderKids();if($("setFam"))$("setFam").textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
   if(s.freedays&&Array.isArray(s.freedays.days)){window.FREEDAYS=new Set(s.freedays.days);try{localStorage.setItem("hwk-freedays",JSON.stringify(s.freedays.days))}catch(_){}if(typeof renderFreeDays==="function")renderFreeDays()}
   if(s.hiddenrg&&s.hiddenrg.items&&typeof s.hiddenrg.items==="object"&&JSON.stringify(s.hiddenrg.items)!==JSON.stringify(window.HIDRG)){window.HIDRG=s.hiddenrg.items;try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))}catch(_){}window.HIDV++;if(typeof renderHidRg==="function")renderHidRg();EVCACHE=null;setTimeout(()=>{refresh()},0)}
-  Object.assign(SETS,s)}finally{window.APPLYING=false}}
+  Object.assign(SETS,s);if(window.homeApply)window.homeApply(s,full);if(window.renderHomeSetNow)renderHomeSetNow()}finally{window.APPLYING=false}}
 /* Sicherung: alles als JSON-Datei herunterladen und wiederherstellen */
 function backupData(){const E=[];const m={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};for(const k in m)for(const id in m[k])E.push({kind:k,id,data:m[k][id]});
-  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});
+  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});for(const k in SETS)if(window.homeIsKey&&homeIsKey(k))E.push({kind:"settings",id:k,data:SETS[k]});
   return {app:"was-geht",version:1,exported:new Date().toISOString(),entries:E}}
 let BKPEND=null;
 document.addEventListener("click",e=>{
@@ -89,7 +90,7 @@ async function sbLoad(first){if(!SB)return;try{const rows=await sbRpc("fam_list"
     if(first&&!rows.filter(r=>r.kind!=="settings").length){const loc={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};let n=0;for(const k in loc)for(const id in loc[k]){write(k+"/"+id,loc[k][id]);n++}if(n){SHARED=true;syncNote();return}}
     for(const path in pq){const q=pq[path];if(q.busy||q.next!==undefined){const [k,...r]=path.split("/"),id=r.join("/");const cur={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy,settings:SETS}[k];if(cur){if(cur[id]!==undefined)o[k][id]=cur[id];else delete o[k][id]}}}
     const sig=JSON.stringify(o);SHARED=true;sbErr(null);if(sig===SBSIG)return;SBSIG=sig;
-    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings);persistLocal();syncNote();refresh();renderPlan()}
+    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings,true);persistLocal();syncNote();refresh();renderPlan()}
   catch(e){if(e.code==="28000")sbLogout(true);else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
 function sbLogout(wrong){SB=null;LS.set("hwk-fam-sb",null);SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
 function famAsk(msg){const d=$("famdlg");if(!d)return;$("famErr").textContent=msg||"";$("famName").value=(SB&&SB.name)||LS.get("hwk-fam-name","")||"";d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("famCode").focus(),50)}
@@ -257,7 +258,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     head=`<div class="pdhead"><div class="pdt"><b>${WDL[pdate(PDAY).getDay()]}, ${pdate(PDAY).getDate()}. ${MONL[pdate(PDAY).getMonth()]}</b><button type="button" class="pall" data-pall>← ${MONL[m-1]}</button></div>${PDAY>=T0&&!BZ?`<div class="pdacts"><button type="button" class="pmini pexp" data-explore="${PDAY}">🔭 Für diesen Tag entdecken</button><button type="button" class="pmini busybtn" data-busy="${PDAY}">⛔ Anderweitig verplant</button></div>`:""}</div>`
       +(PDAY>=T0&&BZ?`<div class="busyban"><span>⛔ <b>Anderweitig verplant</b></span><input type="text" class="busynote" data-busynote="${PDAY}" value="${esc(BZ.note||"")}" placeholder="Notiz, z. B. Geburtstag Oma" maxlength="60" aria-label="Notiz"><button type="button" class="pmini" data-busy="${PDAY}">Wieder freigeben</button></div>`:"");
     const MBL=PDAY>=T0?maybeOn(PDAY):[];const busyHtml=MBL.length?`<div class="pmbday"><div class="psub">♡ Vielleicht an diesem Tag</div>${MBL.map(x=>mbRow(x,"d")).join("")}</div>`:"";
-    h=busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
+    h=(window.homeDay&&!BZ?homeDay(PDAY,L):"")+busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
       :(PDAY>=T0?(BZ?"":`<div class="sugfree">🟢 Noch frei – unsere Vorschläge:</div>`+daySug(PDAY)):`<div class="evempty">An diesem Tag war nichts geplant.</div>`))+(R.length?`<div class="psub">Läuft an diesem Tag auch – an einem anderen Tag bevorzugt:</div>`+R.map(o=>prow(o,true)).join(""):"");
   }else{const L=PALL?E:E.filter(o=>o.d.startsWith(CALM));
     const MS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];const mons=[...new Set(E.map(o=>o.d.slice(0,7)).concat([CALM]))].sort();
@@ -265,7 +266,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     head=`<b>${PALL?"Alles Geplante":"Alles im "+MONL[m-1]+" "+y}</b>${tog}<span class="pcnt">${L.length} ${L.length===1?"Eintrag":"Einträge"}</span>`;
     let last="",lm="";L.forEach(o=>{if(PALL&&o.d.slice(0,7)!==lm){lm=o.d.slice(0,7);const [yy,mm]=lm.split("-").map(Number);h+=`<h3 class="pmh">${MONL[mm-1]} ${yy}</h3>`}if(o.d!==last){const nw=Object.values(DP[o.d]?DP[o.d].info:{}).filter(v=>v.warn).length;h+=`<h4 class="pdh">${o.d===T0?"Heute · ":o.d===plus(1)?"Morgen · ":""}${fmtDate(o.d)}${nw?` <span class="pwarn" style="display:inline">⚠️ ${nw===1?"1 Überschneidung":nw+" Überschneidungen"}</span>`:""}</h4>`;last=o.d}h+=prow(o,false,I(o))});
     if(!L.length)h=PALL?`<div class="evempty">Noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`:`<div class="evempty">Im ${MONL[m-1]} ist noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`}
-  $("pHead").innerHTML=head;$("pList").innerHTML=h;
+  $("pHead").innerHTML=head;$("pList").innerHTML=h;{const pf=$("pFair");if(pf&&window.homeFairMini)pf.innerHTML=homeFairMini()}
   KL=PDAY?E.filter(o=>o.d===PDAY):PALL?E:E.filter(o=>o.d.startsWith(CALM));const sig=KL.map(o=>o.d+o.x.k).join(",");if(sig!==KSIG){KSIG=sig;KI=0}renderStep();updateFabs()}
 function calUrl(o){const e=o.ev||tripEv(o.p,o.d);return gcal(o.p,Object.assign({},e,{t:o.t||e.t,te2:o.x.te||e.te2,dt:o.d,to:null}),false)}
 function renderStep(){const a=$("pCalStep");if(!a)return;const n=KL.length;a.hidden=!n;if(!n)return;
@@ -280,11 +281,11 @@ function renderPCal(E){const EVN=evAllNear(),MBD={};maybeEntries().forEach(x=>{i
   const iso=d=>y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");let h=["Mo","Di","Mi","Do","Fr","Sa","So"].map((w,i)=>`<span class="wd${i>4?" we":""}${i===5?" sa":""}">${w}</span>`).join("")+"<span></span>".repeat(off);
   for(let d=1;d<=n;d++){const s=iso(d),c=E.filter(o=>o.d===s).length,rg=E.filter(o=>{const r=rangeOf(o);return o.d!==s&&r&&r[0]<=s&&s<=r[1]}).length,
     dw=pdate(s).getDay(),bz=!!ST.busy[s],wef=!bz&&s>=T0&&(window.FREEDAYS?FREEDAYS.has(dw):(dw===0||dw===6))&&!c,wx=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===s):null,
-    cl=[s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
-    mb=(MBD[s]||[]).length,dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).slice(0,3).join("");
-    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
+    cl=[s>=T0&&window.homeBlockDay&&homeBlockDay(s)?"hblk":"",s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
+    mb=(MBD[s]||[]).length,hn=s>=T0&&window.homeDots?homeDots(s):0,hb=window.homeBlockDay&&homeBlockDay(s),dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).concat(hn?[`<b class="cd h"></b>`]:[]).slice(0,3).join("");
+    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb||hn?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
   const can=CALM>T0.slice(0,7);
-  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
+  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><b class="cd h"></b>Zuhause</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
   renderNext(E)}
 function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);
   el.innerHTML=`<h4>Nächste Ausflüge</h4>`+(N.length?N.map(o=>`<button type="button" class="nxrow" data-cal="${o.d}"><span class="nxd">${o.d===T0?"Heute":o.d===plus(1)?"Morgen":fmtDate(o.d)}${o.t?`<small>${esc(o.t)}</small>`:""}</span><span class="nxt"><b class="cd ${o.ev?"e":"z"}"></b>${esc(o.ti.replace(/^Ausflug: /,""))}</span></button>`).join(""):`<p class="pvsub">Noch nichts eingeplant.</p>`)}
@@ -421,11 +422,11 @@ $("kGrid").addEventListener("click",e=>{const b=e.target.closest("[data-speak]")
 
 /* ===== Modi: Heute · Entdecken · Unser Plan ===== */
 function setM2(m,first){const prev=M2;M2=m;window.M2=m;document.body.dataset.m2=m;if(m!=="heute")document.body.classList.remove("wizon");try{sessionStorage.setItem("hwk-m2",m)}catch(e){}
-  $("heuteView").hidden=m!=="heute";$("planView").hidden=m!=="plan";
+  $("heuteView").hidden=m!=="heute";$("planView").hidden=m!=="plan";if($("homeView"))$("homeView").hidden=m!=="zuhause";
   document.querySelectorAll("#modeNav [data-m2]").forEach(b=>b.setAttribute("aria-current",b.dataset.m2===m?"page":"false"));
-  try{history.replaceState(null,"",m==="heute"?"#heute":m==="plan"?"#plan":(MT==="ziele"?"#ziele":"#veranstaltungen"))}catch(e){}
+  try{history.replaceState(null,"",m==="heute"?"#heute":m==="plan"?"#plan":m==="zuhause"?"#zuhause":(MT==="ziele"?"#ziele":"#veranstaltungen"))}catch(e){}
   if(prev==="plan"&&m!=="plan"){PSEEN=Date.now();LS.set("hwkp-planseen",PSEEN)}
-  if(m==="heute")renderHeute();if(m==="plan"){if(!first||!PDAY){PDAY=null;CALM=null}renderPlan()}if(m==="entdecken"&&prev!==m&&!first){render()}
+  if(m==="heute")renderHeute();if(m==="plan"){if(!first||!PDAY){PDAY=null;CALM=null}renderPlan()}if(m==="entdecken"&&prev!==m&&!first){render()}if(m==="zuhause"&&window.renderHomeNow)renderHomeNow();
   if(!first&&prev!==m)scrollTo(0,0);updateFabs()}
 window.setM2=setM2;
 $("modeNav").addEventListener("click",e=>{const b=e.target.closest("[data-m2]");if(b)setM2(b.dataset.m2)});

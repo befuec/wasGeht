@@ -1012,7 +1012,7 @@ body.kidsmode .setbtn{display:none}
 .evline .elt{line-height:1.25}
 
 /* ===== Modi: Heute · Entdecken · Unser Plan ===== */
-body[data-m2="heute"] .layout,body[data-m2="plan"] .layout{display:none!important}
+body[data-m2="heute"] .layout,body[data-m2="plan"] .layout,body[data-m2="zuhause"] .layout{display:none!important}
 body.kidsmode .mview,body.kidsmode .modenav{display:none!important}
 .mview[hidden]{display:none!important}
 .mview{display:grid;gap:14px;margin-top:4px}
@@ -1158,7 +1158,7 @@ body.wizon .hwiz .hwico{margin-top:auto!important}
 body.wizon .hwiz::after{content:"";margin-top:auto}
 body.wizon .hwiz .hwback{align-self:flex-start}
 body.wizon #heuteView{max-width:640px;width:100%;margin-inline:auto}
-body[data-m2="plan"] .modebar,body[data-m2="plan"] .wrap > header > p{display:none}
+body[data-m2="plan"] .modebar,body[data-m2="plan"] .wrap > header > p,body[data-m2="zuhause"] .modebar,body[data-m2="zuhause"] .wrap > header > p{display:none}
 .hwx2{display:flex;gap:6px;flex-wrap:wrap}
 .hwx2 span{font-size:12.5px;font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap}
 .hwx2 span.wet{color:#1F5C99;border-color:color-mix(in srgb,#3A86FF 40%,transparent)}
@@ -1272,6 +1272,98 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .hidrow:first-child{border-top:0}
 .hidrow b{display:block;font-size:13.5px}.hidrow small{display:block;color:var(--muted);font-size:12.5px}
 .evrow .acts>.rghide{order:1;color:var(--muted)!important;border-color:var(--line)!important}
+/* ===== Zuhause ===== */
+.modenav{grid-template-columns:repeat(4,1fr)!important;width:min(520px,calc(100% - 16px))!important}
+.modenav button{font-size:12px!important;white-space:nowrap;padding:0 2px}
+.hpdh .pall{border:0;background:none;color:var(--accent);font:inherit;font-weight:800;cursor:pointer;padding:0}
+.homeview .pvsec h3{font-size:var(--fs-h);margin:0 0 6px}
+.hsub{margin:2px 0 8px;color:var(--muted);font-size:13px}
+.hfair{background:var(--surface);border:2px solid var(--ink);border-radius:var(--r);padding:12px 14px;display:grid;gap:6px;box-shadow:0 6px 18px -12px rgba(0,0,0,.4)}
+.hfhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.hfhead h3{margin:0;font-size:var(--fs-h)}
+.hfhead .hseg button{padding:4px 10px;min-height:30px;font-size:12.5px}
+.hfrow{display:grid;grid-template-columns:86px minmax(0,1fr);gap:8px;align-items:center}.hfl{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.hfb{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line);gap:2px}.hfb span{display:block;min-width:0;transition:flex .4s}.hfb.empty{opacity:.5}
+.hfleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;padding-left:94px}.hfleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:0}
+.hfleg.sm{font-size:12px;color:var(--muted)}.hfnote{flex-basis:100%;font-size:11.5px}
+@media (max-width:560px){.hfrow{grid-template-columns:1fr}.hfleg{padding-left:0}}
+.hfwarn{margin:2px 0 0;font-size:13px;font-weight:700;color:#9A3412;background:color-mix(in srgb,#F97316 12%,var(--surface));border-radius:10px;padding:6px 10px}
+.hfok{margin:2px 0 0;font-size:13px;font-weight:700;color:#1F7A3A}
+.hfkids{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;border-top:1px dashed var(--line);padding-top:6px}
+.hfmini{font:inherit;display:flex;align-items:center;gap:8px;width:100%;margin:6px 0 2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--ink);font-size:12.5px}
+.hfmini .hfb{flex:1;height:10px;min-width:60px}.hfmini b{white-space:nowrap}.hfmini>span:last-child{white-space:nowrap}
+.hme{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin:2px 0}.hme>span{font-weight:700;color:var(--muted)}
+.hme button,.hwho button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;min-height:34px}
+.hme button[aria-pressed="true"],.hwho button[aria-pressed="true"]{border-color:var(--pc,var(--ink))!important;background:color-mix(in srgb,var(--pc,var(--ink)) 16%,var(--surface))!important;color:var(--ink)!important}
+.htk{margin-top:6px}
+.hchip{display:inline-flex;align-items:center;gap:3px;font-weight:700;color:var(--pc,var(--ink));white-space:nowrap}
+.hday{margin:10px 0 2px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.htrow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.htrow .hck{width:34px;height:34px;border-radius:10px;border:2px solid var(--accent);background:var(--surface);color:#fff;font-size:18px;font-weight:900;cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+.htrow .hck:active{transform:scale(.9)}.htrow .hck[aria-pressed="true"]{background:#1F7A3A;border-color:#1F7A3A}
+.htrow.dn .hrb b{text-decoration:line-through;color:var(--muted)}
+.htrow.od{background:color-mix(in srgb,#DC2626 7%,var(--surface));border-left:4px solid #DC2626;padding-left:8px;border-radius:8px}
+.htrow.od .hck{border-color:#DC2626}.hod{color:#B91C1C;font-weight:800}
+.hrb{min-width:0}.hrb b{display:block;font-size:var(--fs-t);line-height:1.3}.hrb small{display:block;color:var(--muted);font-size:12.5px;line-height:1.45}
+.hrr{display:grid;justify-items:end;gap:4px}.hpts{font-weight:900;font-size:13px;color:#A16207;white-space:nowrap}.hpts s{color:var(--muted);font-weight:600}
+.htk{border-color:#DC2626!important;color:#B91C1C!important}
+.hcl{display:grid;gap:4px;margin-top:6px;font-size:13px}.hcl label{display:flex;gap:8px;align-items:center}
+.hpcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.hpcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--bg)}
+.hpcard.me{border-color:var(--pc);box-shadow:0 0 0 2px color-mix(in srgb,var(--pc) 25%,transparent)}
+.hpav{font-size:28px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--pc) 16%,var(--surface))}
+.hpcard b{font-size:var(--fs-t)}.hpcard small{display:block;color:var(--muted);font-size:12px}
+.hprog{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin:4px 0 2px}.hprog i{display:block;height:100%;background:linear-gradient(90deg,#F59E0B,#EAB308);border-radius:999px;transition:width .5s}
+.hpbal{text-align:center}.hpbal b{display:block;font-size:22px;font-family:var(--f-display);color:#A16207}
+.hsec2>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between}.hsec2>summary::-webkit-details-marker{display:none}
+.hsec2>summary::after{content:"▾";color:var(--muted)}.hsec2[open]>summary::after{content:"▴"}.hsec2>summary h3{margin:0}
+.htier{border-top:1px dashed var(--line);padding:8px 0}.htier:first-of-type{border-top:0}
+.htl{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}.htl b{font-size:13.5px}.htl small{color:var(--muted);font-size:12px}
+.htier:not(.ok) .htl b{color:var(--muted)}
+.hrw{display:flex;flex-wrap:wrap;gap:6px}
+.hrwb{font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;border:1.5px solid #EAB308;background:color-mix(in srgb,#EAB308 10%,var(--surface));color:var(--ink);border-radius:12px;padding:6px 10px;cursor:pointer;min-height:36px;text-align:left}
+.hrwb span{font-size:17px}.hrwb:disabled{border-color:var(--line);background:var(--bg);color:var(--muted);cursor:default;filter:grayscale(.7)}
+.hrwb:not(:disabled):hover{transform:translateY(-1px)}
+.hredl{margin-bottom:8px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,#EAB308 10%,var(--surface))}.hredl h4{margin:0 0 4px;font-size:13px}
+.hred{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;padding:4px 0}.hred small{color:var(--muted)}.hred .pmini{margin-left:auto}
+.hown{margin-top:8px;font-size:13px}.hown summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.hownf{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.hownf input{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}.hownf input[type=text]{flex:1;min-width:160px}.hownf input[type=number]{width:80px}
+.hownl{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:6px}
+.hgoal{display:grid;gap:6px}.hgbar{position:relative;height:16px;border-radius:999px;background:var(--line);margin:14px 12px 6px}
+.hgbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22C55E,#16A34A)}
+.hgm{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:20px;filter:grayscale(1);opacity:.6}.hgm.ok{filter:none;opacity:1}
+.hunl{margin:0;font-weight:800;color:#15803D;font-size:13.5px}
+.hchal{border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px;font-size:13px}.hchal.ok{border-color:#16A34A;background:color-mix(in srgb,#16A34A 8%,var(--surface))}.hchal small{color:var(--muted)}
+.hbdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.hbdg span{display:flex;align-items:center;gap:8px;font-size:12.5px;border:1px solid var(--line);border-radius:12px;padding:6px 8px;color:var(--muted);filter:grayscale(1);opacity:.55}
+.hbdg span.on{filter:none;opacity:1;color:var(--ink);border-color:#EAB308;background:color-mix(in srgb,#EAB308 10%,var(--surface))}.hbdg i{font-style:normal;font-size:22px}
+.hcrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.hcrow b{display:block;font-size:14px}.hcrow small{display:block;color:var(--muted);font-size:12.5px}
+.hcat{border-top:1px solid var(--line);padding:4px 0}.hcat summary{cursor:pointer;font-weight:800;font-size:14.5px;padding:6px 0}.hcat summary small{color:var(--muted);font-weight:600}
+.htpl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px;padding:4px 0 8px}
+.htb{font:inherit;text-align:left;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:8px;align-items:center;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:8px 10px;cursor:pointer}
+.htb span{grid-row:span 2;font-size:22px}.htb b{font-size:13.5px;line-height:1.25}.htb small{color:var(--muted);font-size:12px}
+.htb.on{border-color:#1F7A3A;background:color-mix(in srgb,#1F7A3A 8%,var(--surface))}
+.hownbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.hdlg{max-width:520px}.hform{display:grid;gap:10px;padding:16px}.hform label{display:grid;gap:4px;font-size:13px;font-weight:700}
+.hform input,.hform select,.hform textarea{font:inherit;font-weight:400;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.hf2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hlab{font-size:13px;font-weight:700}.hhint{color:var(--muted);font-size:12px}
+.hform .dlghead{display:flex;justify-content:space-between;align-items:center}.hform .dlghead h3{margin:0}
+.hfbtn{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.hsave{background:var(--nx)!important;color:var(--nx-ink)!important}.hdel{margin-right:auto;color:#B91C1C!important}
+.hform [hidden]{display:none!important}
+.hconf{position:fixed;bottom:22vh;font-size:26px;z-index:90;pointer-events:none;animation:hconf 1.3s ease-out forwards}
+@keyframes hconf{0%{transform:translate(0,0) scale(.6);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(200deg);opacity:0}}
+.hplus{position:fixed;left:50%;bottom:30vh;transform:translateX(-50%);font:900 40px/1 var(--f-display);color:#CA8A04;z-index:91;pointer-events:none;animation:hplus 1.2s ease-out forwards;text-shadow:0 2px 0 #fff}
+@keyframes hplus{0%{opacity:0;transform:translate(-50%,20px) scale(.6)}25%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+.cd.h{background:#EA580C}
+.pcalg button.hblk::after{content:"🏠";position:absolute;top:1px;left:3px;font-size:9px;opacity:.8}
+.pcalg button{position:relative}
+.hpday{margin:0 0 12px;padding:8px 12px;border-radius:12px;border:1.5px solid color-mix(in srgb,#EA580C 45%,transparent);background:color-mix(in srgb,#EA580C 6%,var(--surface))}
+.hpdh{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:13.5px;margin-bottom:2px}.hpdh .pall{margin-left:auto}
+.hpday .htrow:first-of-type{border-top:0}
+.hppl{display:grid;gap:6px;margin-bottom:6px}.hpr{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.hpr select,.hpr input[type=text]{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.hkid{font-size:12.5px;display:flex;gap:4px;align-items:center}
+.seth2{margin:12px 0 4px;font-size:14px}.hbt{display:flex;gap:12px;margin-top:6px;font-size:13px}.hbt input{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:8px}
 /* Rückgängig-Leiste */
 .undot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:72;width:min(440px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.3);overflow:hidden;font-size:13.5px;font-weight:700}
 .undot[hidden]{display:none}
@@ -1500,12 +1592,14 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
   </div>
   <section class="mview" id="heuteView" hidden aria-label="Heute"></section>
   <section class="mview planview" id="planView" hidden aria-labelledby="pH">
-    <h2 class="mtitle" id="pH">📋 Unser Plan</h2>
+    <h2 class="mtitle" id="pH">📋 Unser Plan</h2><div id="pFair"></div>
     <div class="pvsec" id="pvCal"><div class="pvleft"><div class="pcal" id="pCal" aria-label="Kalender"></div><div class="pnext" id="pNext"></div></div><div class="pvright"><div class="phead" id="pHead"></div><div id="pList" class="plist"></div>
     <div class="dlglinks"><button type="button" class="pbtn" id="pCopy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>Plan als Text kopieren</button></div></div></div>
     <div class="pvsec"><h3>♡ Vielleicht <span class="pvn" id="mbN"></span></h3><div class="mblist" id="maybeList"></div></div>
   </section>
-  <nav class="modenav" id="modeNav" aria-label="Bereiche"><button type="button" data-m2="heute"><span class="ni" aria-hidden="true" id="navDayI">☀️</span><span id="navDayL">Heute</span></button><button type="button" data-m2="entdecken"><span class="ni" aria-hidden="true">🔭</span><span>Entdecken</span></button><button type="button" data-m2="plan"><span class="ni" aria-hidden="true">📋</span><span>Unser Plan</span><i class="nn" id="navPlanN"></i></button></nav>
+  <nav class="modenav" id="modeNav" aria-label="Bereiche"><button type="button" data-m2="heute"><span class="ni" aria-hidden="true" id="navDayI">☀️</span><span id="navDayL">Heute</span></button><button type="button" data-m2="entdecken"><span class="ni" aria-hidden="true">🔭</span><span>Entdecken</span></button><button type="button" data-m2="plan"><span class="ni" aria-hidden="true">📋</span><span>Unser Plan</span><i class="nn" id="navPlanN"></i></button><button type="button" data-m2="zuhause"><span class="ni" aria-hidden="true">🏠</span><span>Zuhause</span></button></nav>
+  <section class="mview homeview" id="homeView" hidden aria-label="Zuhause"></section>
+  <dialog class="evdlg hdlg" id="hdlg" aria-label="Aufgabe"></dialog>
   <section id="kidview" aria-labelledby="kH">
     <div class="khead"><h2 id="kH">Wohin geht's?</h2><p>Such dir was aus und zeig es Mama oder Papa!</p></div>
     <div class="ktop"><div class="kwx" id="kWx" aria-live="polite"></div><div id="kStars"></div></div>
@@ -1526,6 +1620,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
               <div class="kids" id="kids"></div>
             </fieldset></div>
     <h3 class="seth">🗓️ Freie Tage für Ausflüge</h3><p class="famnote">Diese Wochentage sind im Kalender unter „Unser Plan“ grün markiert, solange nichts eingeplant ist.</p><div class="dquick freed" id="freeDays" role="group" aria-label="Freie Wochentage"></div>
+    <h3 class="seth">👥 Personen & 🏠 Zuhause</h3><p class="famnote">Wer bei „Zuhause“ Aufgaben übernimmt und Punkte sammelt. Erwachsene kommen automatisch dazu, sobald sie sich mit dem Familien-Code anmelden.</p><div id="homeSet"></div>
     <h3 class="seth">🚫 Ausgeblendete regelmäßige Angebote</h3><p class="famnote">Regelmäßige Angebote, die euch nicht interessieren, tauchen in „Heute“, „Entdecken“ und den Tagesvorschlägen nicht mehr auf. Hier könnt ihr sie wieder einblenden.</p><div class="hidrg" id="hidRg"></div>
     <h3 class="seth">🔗 Gemeinsamer Plan</h3><div id="sbStat"></div>
     <h3 class="seth">💾 Sicherung</h3><p class="famnote">Alle Einträge (Plan, Vielleicht, verplante Tage, Wünsche, Sterne, Familie, freie Tage) als Datei aufs Gerät laden oder aus so einer Datei zurückholen.</p>
@@ -3015,8 +3110,8 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
 /* --- Speicher: gemeinsam (db) oder nur auf diesem Gerät --- */
 const ST={places:LS.get("hwkp-places",{}),plans:LS.get("hwkp-plans",{}),evw:LS.get("hwkp-evw",{}),maybe:LS.get("hwkp-maybe",{}),busy:LS.get("hwkp-busy",{})};
-const M2S=["heute","entdecken","plan"];
-let M2=(()=>{const h=window.HASH0||"";if(h==="#heute")return"heute";if(h==="#plan")return"plan";if(h==="#ziele"||h==="#veranstaltungen"||h==="#termine")return"entdecken";
+const M2S=["heute","entdecken","plan","zuhause"];
+let M2=(()=>{const h=window.HASH0||"";if(h==="#heute")return"heute";if(h==="#plan")return"plan";if(h==="#zuhause")return"zuhause";if(h==="#ziele"||h==="#veranstaltungen"||h==="#termine")return"entdecken";
   try{const s=sessionStorage.getItem("hwk-m2");if(M2S.includes(s))return s}catch(e){}
   return new Date().getHours()<14?"heute":"entdecken"})();window.M2=M2;
 let MYID=null,UAPI=null;const PROF={};
@@ -3049,7 +3144,7 @@ window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star
 /* bestehende lokale Sterne übernehmen */
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
-  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan()}updateFabs()},120)}
+  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
   try{const u=await window.claude.use("user");if(u){UAPI=u;if(u.can){const c=await u.can("data.write");if(c===false)CANWRITE=false}if(u.me){const me=await u.me();MYID=me&&me.id||null;if(MYID)PROF[MYID]=me}}}catch(e){}
   let first=true;
@@ -3073,15 +3168,16 @@ let SBSIG="",SBERR=null;const SETS={};
 window.plusSettingsChanged=what=>{if(!SB||window.APPLYING)return;
   if(what==="family"){SETS.family={ad:FAM.ad,kids:FAM.kids.slice()};write("settings/family",SETS.family)}
   if(what==="freedays"){SETS.freedays={days:[...(window.FREEDAYS||[])]};write("settings/freedays",SETS.freedays)}
+  if(window.homeIsKey&&window.homeIsKey(what)){write("settings/"+what,SETS[what]===undefined?null:SETS[what]);return}
   if(what==="hiddenrg"){SETS.hiddenrg={items:Object.assign({},window.HIDRG||{})};write("settings/hiddenrg",SETS.hiddenrg)}};
-function applySettings(s){if(!s)return;window.APPLYING=true;try{
+function applySettings(s,full){if(!s)return;window.APPLYING=true;try{
   if(s.family&&Number.isFinite(s.family.ad)&&Array.isArray(s.family.kids)&&JSON.stringify(s.family)!==JSON.stringify({ad:FAM.ad,kids:FAM.kids})){FAM.ad=s.family.ad;FAM.kids=s.family.kids.slice();saveFam();renderKids();if($("setFam"))$("setFam").textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
   if(s.freedays&&Array.isArray(s.freedays.days)){window.FREEDAYS=new Set(s.freedays.days);try{localStorage.setItem("hwk-freedays",JSON.stringify(s.freedays.days))}catch(_){}if(typeof renderFreeDays==="function")renderFreeDays()}
   if(s.hiddenrg&&s.hiddenrg.items&&typeof s.hiddenrg.items==="object"&&JSON.stringify(s.hiddenrg.items)!==JSON.stringify(window.HIDRG)){window.HIDRG=s.hiddenrg.items;try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))}catch(_){}window.HIDV++;if(typeof renderHidRg==="function")renderHidRg();EVCACHE=null;setTimeout(()=>{refresh()},0)}
-  Object.assign(SETS,s)}finally{window.APPLYING=false}}
+  Object.assign(SETS,s);if(window.homeApply)window.homeApply(s,full);if(window.renderHomeSetNow)renderHomeSetNow()}finally{window.APPLYING=false}}
 /* Sicherung: alles als JSON-Datei herunterladen und wiederherstellen */
 function backupData(){const E=[];const m={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};for(const k in m)for(const id in m[k])E.push({kind:k,id,data:m[k][id]});
-  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});
+  E.push({kind:"settings",id:"family",data:{ad:FAM.ad,kids:FAM.kids}});E.push({kind:"settings",id:"freedays",data:{days:[...(window.FREEDAYS||[])]}});E.push({kind:"settings",id:"hiddenrg",data:{items:window.HIDRG||{}}});for(const k in SETS)if(window.homeIsKey&&homeIsKey(k))E.push({kind:"settings",id:k,data:SETS[k]});
   return {app:"was-geht",version:1,exported:new Date().toISOString(),entries:E}}
 let BKPEND=null;
 document.addEventListener("click",e=>{
@@ -3100,7 +3196,7 @@ async function sbLoad(first){if(!SB)return;try{const rows=await sbRpc("fam_list"
     if(first&&!rows.filter(r=>r.kind!=="settings").length){const loc={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy};let n=0;for(const k in loc)for(const id in loc[k]){write(k+"/"+id,loc[k][id]);n++}if(n){SHARED=true;syncNote();return}}
     for(const path in pq){const q=pq[path];if(q.busy||q.next!==undefined){const [k,...r]=path.split("/"),id=r.join("/");const cur={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy,settings:SETS}[k];if(cur){if(cur[id]!==undefined)o[k][id]=cur[id];else delete o[k][id]}}}
     const sig=JSON.stringify(o);SHARED=true;sbErr(null);if(sig===SBSIG)return;SBSIG=sig;
-    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings);persistLocal();syncNote();refresh();renderPlan()}
+    ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings,true);persistLocal();syncNote();refresh();renderPlan()}
   catch(e){if(e.code==="28000")sbLogout(true);else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
 function sbLogout(wrong){SB=null;LS.set("hwk-fam-sb",null);SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
 function famAsk(msg){const d=$("famdlg");if(!d)return;$("famErr").textContent=msg||"";$("famName").value=(SB&&SB.name)||LS.get("hwk-fam-name","")||"";d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("famCode").focus(),50)}
@@ -3268,7 +3364,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     head=`<div class="pdhead"><div class="pdt"><b>${WDL[pdate(PDAY).getDay()]}, ${pdate(PDAY).getDate()}. ${MONL[pdate(PDAY).getMonth()]}</b><button type="button" class="pall" data-pall>← ${MONL[m-1]}</button></div>${PDAY>=T0&&!BZ?`<div class="pdacts"><button type="button" class="pmini pexp" data-explore="${PDAY}">🔭 Für diesen Tag entdecken</button><button type="button" class="pmini busybtn" data-busy="${PDAY}">⛔ Anderweitig verplant</button></div>`:""}</div>`
       +(PDAY>=T0&&BZ?`<div class="busyban"><span>⛔ <b>Anderweitig verplant</b></span><input type="text" class="busynote" data-busynote="${PDAY}" value="${esc(BZ.note||"")}" placeholder="Notiz, z. B. Geburtstag Oma" maxlength="60" aria-label="Notiz"><button type="button" class="pmini" data-busy="${PDAY}">Wieder freigeben</button></div>`:"");
     const MBL=PDAY>=T0?maybeOn(PDAY):[];const busyHtml=MBL.length?`<div class="pmbday"><div class="psub">♡ Vielleicht an diesem Tag</div>${MBL.map(x=>mbRow(x,"d")).join("")}</div>`:"";
-    h=busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
+    h=(window.homeDay&&!BZ?homeDay(PDAY,L):"")+busyHtml+(L.length?L.map(o=>{const i=I(o);return (i&&i.dm?`<div class="pdrive">🚗 ca. ${i.dm} Min. Fahrt</div>`:"")+prow(o,false,i)}).join("")+(PDAY>=T0&&!BZ?(SUGOPEN?daySug(PDAY,"💡 Was passt noch dazu?"):`<button type="button" class="pall sugmore" data-sugopen>💡 Weitere Vorschläge für diesen Tag</button>`):"")
       :(PDAY>=T0?(BZ?"":`<div class="sugfree">🟢 Noch frei – unsere Vorschläge:</div>`+daySug(PDAY)):`<div class="evempty">An diesem Tag war nichts geplant.</div>`))+(R.length?`<div class="psub">Läuft an diesem Tag auch – an einem anderen Tag bevorzugt:</div>`+R.map(o=>prow(o,true)).join(""):"");
   }else{const L=PALL?E:E.filter(o=>o.d.startsWith(CALM));
     const MS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];const mons=[...new Set(E.map(o=>o.d.slice(0,7)).concat([CALM]))].sort();
@@ -3276,7 +3372,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     head=`<b>${PALL?"Alles Geplante":"Alles im "+MONL[m-1]+" "+y}</b>${tog}<span class="pcnt">${L.length} ${L.length===1?"Eintrag":"Einträge"}</span>`;
     let last="",lm="";L.forEach(o=>{if(PALL&&o.d.slice(0,7)!==lm){lm=o.d.slice(0,7);const [yy,mm]=lm.split("-").map(Number);h+=`<h3 class="pmh">${MONL[mm-1]} ${yy}</h3>`}if(o.d!==last){const nw=Object.values(DP[o.d]?DP[o.d].info:{}).filter(v=>v.warn).length;h+=`<h4 class="pdh">${o.d===T0?"Heute · ":o.d===plus(1)?"Morgen · ":""}${fmtDate(o.d)}${nw?` <span class="pwarn" style="display:inline">⚠️ ${nw===1?"1 Überschneidung":nw+" Überschneidungen"}</span>`:""}</h4>`;last=o.d}h+=prow(o,false,I(o))});
     if(!L.length)h=PALL?`<div class="evempty">Noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`:`<div class="evempty">Im ${MONL[m-1]} ist noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`}
-  $("pHead").innerHTML=head;$("pList").innerHTML=h;
+  $("pHead").innerHTML=head;$("pList").innerHTML=h;{const pf=$("pFair");if(pf&&window.homeFairMini)pf.innerHTML=homeFairMini()}
   KL=PDAY?E.filter(o=>o.d===PDAY):PALL?E:E.filter(o=>o.d.startsWith(CALM));const sig=KL.map(o=>o.d+o.x.k).join(",");if(sig!==KSIG){KSIG=sig;KI=0}renderStep();updateFabs()}
 function calUrl(o){const e=o.ev||tripEv(o.p,o.d);return gcal(o.p,Object.assign({},e,{t:o.t||e.t,te2:o.x.te||e.te2,dt:o.d,to:null}),false)}
 function renderStep(){const a=$("pCalStep");if(!a)return;const n=KL.length;a.hidden=!n;if(!n)return;
@@ -3291,11 +3387,11 @@ function renderPCal(E){const EVN=evAllNear(),MBD={};maybeEntries().forEach(x=>{i
   const iso=d=>y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0");let h=["Mo","Di","Mi","Do","Fr","Sa","So"].map((w,i)=>`<span class="wd${i>4?" we":""}${i===5?" sa":""}">${w}</span>`).join("")+"<span></span>".repeat(off);
   for(let d=1;d<=n;d++){const s=iso(d),c=E.filter(o=>o.d===s).length,rg=E.filter(o=>{const r=rangeOf(o);return o.d!==s&&r&&r[0]<=s&&s<=r[1]}).length,
     dw=pdate(s).getDay(),bz=!!ST.busy[s],wef=!bz&&s>=T0&&(window.FREEDAYS?FREEDAYS.has(dw):(dw===0||dw===6))&&!c,wx=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===s):null,
-    cl=[s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
-    mb=(MBD[s]||[]).length,dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).slice(0,3).join("");
-    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
+    cl=[s>=T0&&window.homeBlockDay&&homeBlockDay(s)?"hblk":"",s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
+    mb=(MBD[s]||[]).length,hn=s>=T0&&window.homeDots?homeDots(s):0,hb=window.homeBlockDay&&homeBlockDay(s),dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).concat(hn?[`<b class="cd h"></b>`]:[]).slice(0,3).join("");
+    h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb||hn?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
   const can=CALM>T0.slice(0,7);
-  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
+  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><b class="cd h"></b>Zuhause</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
   renderNext(E)}
 function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);
   el.innerHTML=`<h4>Nächste Ausflüge</h4>`+(N.length?N.map(o=>`<button type="button" class="nxrow" data-cal="${o.d}"><span class="nxd">${o.d===T0?"Heute":o.d===plus(1)?"Morgen":fmtDate(o.d)}${o.t?`<small>${esc(o.t)}</small>`:""}</span><span class="nxt"><b class="cd ${o.ev?"e":"z"}"></b>${esc(o.ti.replace(/^Ausflug: /,""))}</span></button>`).join(""):`<p class="pvsub">Noch nichts eingeplant.</p>`)}
@@ -3432,11 +3528,11 @@ $("kGrid").addEventListener("click",e=>{const b=e.target.closest("[data-speak]")
 
 /* ===== Modi: Heute · Entdecken · Unser Plan ===== */
 function setM2(m,first){const prev=M2;M2=m;window.M2=m;document.body.dataset.m2=m;if(m!=="heute")document.body.classList.remove("wizon");try{sessionStorage.setItem("hwk-m2",m)}catch(e){}
-  $("heuteView").hidden=m!=="heute";$("planView").hidden=m!=="plan";
+  $("heuteView").hidden=m!=="heute";$("planView").hidden=m!=="plan";if($("homeView"))$("homeView").hidden=m!=="zuhause";
   document.querySelectorAll("#modeNav [data-m2]").forEach(b=>b.setAttribute("aria-current",b.dataset.m2===m?"page":"false"));
-  try{history.replaceState(null,"",m==="heute"?"#heute":m==="plan"?"#plan":(MT==="ziele"?"#ziele":"#veranstaltungen"))}catch(e){}
+  try{history.replaceState(null,"",m==="heute"?"#heute":m==="plan"?"#plan":m==="zuhause"?"#zuhause":(MT==="ziele"?"#ziele":"#veranstaltungen"))}catch(e){}
   if(prev==="plan"&&m!=="plan"){PSEEN=Date.now();LS.set("hwkp-planseen",PSEEN)}
-  if(m==="heute")renderHeute();if(m==="plan"){if(!first||!PDAY){PDAY=null;CALM=null}renderPlan()}if(m==="entdecken"&&prev!==m&&!first){render()}
+  if(m==="heute")renderHeute();if(m==="plan"){if(!first||!PDAY){PDAY=null;CALM=null}renderPlan()}if(m==="entdecken"&&prev!==m&&!first){render()}if(m==="zuhause"&&window.renderHomeNow)renderHomeNow();
   if(!first&&prev!==m)scrollTo(0,0);updateFabs()}
 window.setM2=setM2;
 $("modeNav").addEventListener("click",e=>{const b=e.target.closest("[data-m2]");if(b)setM2(b.dataset.m2)});
@@ -3634,6 +3730,295 @@ renderOurs();syncView();syncStarsToKids();render();setM2(M2,true);updateFabs();
  else if(!onClaude&&!LS.get("hwk-fam-skip",0))setTimeout(()=>famAsk(""),600);
  if(!SB){const iv=setInterval(()=>{if(SB){clearInterval(iv);setInterval(()=>{if(!document.hidden)sbLoad()},20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)sbLoad()})}},1000)}}
 document.querySelectorAll(".modebar button").forEach(b=>b.addEventListener("click",()=>setTimeout(updateFabs,0)));
-})();
 
+/* ===== Zuhause: Aufgaben, Fairness, Punkte, Belohnungen ===== */
+const HCATS=[["kinder","👶","Kinder & Alltag"],["gesund","🩺","Gesundheit & Arzttermine"],["haushalt","🧹","Haushalt & Putzen"],["garten","🌳","Garten & Draußen"],["haus","🔧","Haus, Technik & Auto"],["projekt","🛠️","Projekte & Renovierung"],["orga","🗂️","Organisation (Kopf-Arbeit)"],["feste","🎁","Feste & Geschenke"],["sport","⚽","Sport & Freizeit"],["kuemmern","💛","Kümmern & Beziehungen"],["kids","🧒","Aufgaben für Kinder"]];
+const HCAT=Object.fromEntries(HCATS.map(c=>[c[0],c]));
+const MENTAL=new Set(["orga","feste","gesund","kuemmern"]);
+/* [id, Kategorie, Icon, Titel, Turnus, Minuten, unbeliebt, Kinderaufgabe, Checkliste] */
+const HT=[
+["k_baden","kinder","🛁","Kinder baden","w1",30,0,0],["k_abholen","kinder","🚸","Kinder abholen","wd",30,0,0],["k_bringen","kinder","🎒","Kinder in Kita/Schule bringen","wd",25,0,0],
+["k_hausaufg","kinder","✏️","Hausaufgaben begleiten","wd",30,0,0],["k_brotdose","kinder","🥪","Brotdosen packen","wd",10,0,0],["k_bett","kinder","🌙","Zubettbringen & Vorlesen","d",30,0,0],
+["k_naegel","kinder","✂️","Fingernägel schneiden","w1",10,1,0],["k_kleidung","kinder","👕","Kinderkleidung aussortieren & neu kaufen","m6",90,0,0,["Zu Kleines aussortieren","Größen notieren","Neue Sachen kaufen","Aussortiertes spenden/verkaufen"]],
+["k_elternabend","kinder","🏫","Elternabend / Entwicklungsgespräch","m6",90,0,0],["k_kita","kinder","📋","Kita-/Schulsachen & Formulare erledigen","w1",20,1,0],
+["g_u","gesund","🩺","U-Untersuchung / Kinderarzt-Termin vereinbaren","y1",15,0,0,["Termin vereinbaren","Gelbes Heft & Impfpass einpacken","Fragen notieren"]],
+["g_zahnk","gesund","🦷","Zahnarzt Kinder – Termin vereinbaren","m6",15,0,0],["g_zahne","gesund","🦷","Zahnarzt Erwachsene – Termin vereinbaren","m6",15,0,0],
+["g_impf","gesund","💉","Impfpässe prüfen","y1",20,0,0],["g_apo","gesund","💊","Hausapotheke prüfen & auffüllen","m6",30,0,0],["g_auge","gesund","👓","Augenarzt-/Optiker-Termin","y1",15,0,0],
+["g_arzt","gesund","🏥","Arzttermin","x",60,0,0],["g_rezept","gesund","📄","Rezepte & Medikamente besorgen","m1",30,1,0],
+["h_einkauf","haushalt","🛒","Wocheneinkauf","w1",90,0,0],["h_frisch","haushalt","🥦","Frisches einkaufen (Bäcker, Obst)","w1",30,0,0],["h_essen","haushalt","🍽️","Essen für die Woche planen","w1",20,0,0],
+["h_kochen","haushalt","🍳","Kochen","d",45,0,0],["h_spuel","haushalt","🍽️","Spülmaschine ein- & ausräumen","d",10,0,0],["h_waesche","haushalt","🧺","Wäsche waschen & aufhängen","w1",40,0,0],
+["h_falten","haushalt","👚","Wäsche zusammenlegen & wegräumen","w1",30,1,0],["h_bad","haushalt","🚽","Bad putzen","w1",40,1,0],["h_kueche","haushalt","🧽","Küche gründlich putzen","w1",30,1,0],
+["h_saugen","haushalt","🧹","Staubsaugen","w1",40,0,0],["h_wischen","haushalt","🪣","Böden wischen","w2",40,1,0],["h_betten","haushalt","🛏️","Betten beziehen","w2",30,0,0],
+["h_muell","haushalt","🗑️","Müll rausbringen","w1",10,0,0],["h_kuehl","haushalt","🧊","Kühlschrank auswischen","m1",20,1,0],["h_fenster","haushalt","🪟","Fenster putzen","m3",120,1,0],
+["h_grund","haushalt","✨","Grundreinigung","m3",240,1,0,["Küche (Schränke, Backofen)","Bäder entkalken","Fußleisten & Türen","Matratzen saugen","Lampen & Heizkörper"]],
+["h_robo","haushalt","🤖","Saugroboter: Behälter leeren & Bürsten reinigen","w1",10,0,0],["h_robof","haushalt","🤖","Saugroboter: Filter & Seitenbürste tauschen","m3",15,0,0],
+["h_entkalk","haushalt","☕","Kaffeemaschine & Wasserkocher entkalken","m1",15,0,0],["h_staub","haushalt","🪶","Staub wischen","w2",30,0,0],
+["ga_maehen","garten","🌱","Rasen mähen","w1",45,0,0],["ga_fegen","garten","🧹","Draußen fegen (Einfahrt, Terrasse)","w1",20,0,0],["ga_unkraut","garten","🌿","Unkraut jäten","w2",45,1,0],
+["ga_hecke","garten","✂️","Hecke schneiden","m6",120,1,0],["ga_laub","garten","🍂","Laub harken","w1",45,0,0],["ga_giessen","garten","💧","Pflanzen & Beete gießen","d",15,0,0],
+["ga_beet","garten","🥕","Gemüsebeet & Gewächshaus pflegen","w1",45,0,0],["ga_terr","garten","🪑","Terrasse & Gartenmöbel reinigen","m6",90,0,0],["ga_rinne","garten","🏠","Dachrinne reinigen","y1",90,1,0],
+["ga_winter","garten","❄️","Garten winterfest machen","y1",180,0,0,["Wasserhähne außen absperren","Kübelpflanzen rein","Gartenmöbel abdecken","Rasenmäher einwintern"]],["ga_tonnen","garten","♻️","Mülltonnen an die Straße stellen","w1",5,0,0],
+["ha_rauch","haus","🚨","Rauchmelder testen","y1",20,0,0],["ha_heiz","haus","🌡️","Heizkörper entlüften","y1",30,0,0],["ha_dunst","haus","💨","Filter Dunstabzug reinigen","m3",15,0,0],
+["ha_repar","haus","🔨","Kleinreparaturen erledigen","m1",60,0,0],["ha_zaehler","haus","📟","Zählerstände ablesen","m1",10,0,0],["ha_reifen","haus","🚗","Reifenwechsel (Werkstatt-Termin)","m6",60,0,0],
+["ha_auto","haus","🚿","Auto waschen & aussaugen","m1",60,0,0],["ha_tuev","haus","🔧","Inspektion / TÜV","y1",30,0,0],["ha_it","haus","💻","Updates & Backups (Handys, Rechner)","m1",30,1,0],
+["p_renov","projekt","🎨","Renovierungsprojekt","x",240,0,0,["Plan & Material-Liste","Material kaufen","Abkleben & vorbereiten","Arbeiten","Aufräumen"]],["p_bau","projekt","🪚","Etwas Neues bauen","x",240,0,0,["Idee & Maße","Material besorgen","Bauen","Aufräumen"]],
+["p_handw","projekt","👷","Handwerker-Termin","x",60,0,0,["Angebote einholen","Termin vereinbaren","Anwesend sein","Rechnung prüfen"]],["p_angebot","projekt","📑","Angebote einholen","x",60,1,0],
+["p_baumarkt","projekt","🏪","Baumarkt-Einkauf","x",90,0,0],["p_ausmist","projekt","📦","Ausmisten (Keller, Dachboden, Schränke)","m6",180,1,0],
+["o_post","orga","📬","Post & Rechnungen erledigen","w1",30,1,0],["o_kal","orga","📅","Familienkalender pflegen & Woche besprechen","w1",20,0,0],["o_steuer","orga","🧾","Steuererklärung","y1",480,1,0,["Belege sammeln","Unterlagen sortieren","Erklärung ausfüllen","Abschicken"]],
+["o_vers","orga","🛡️","Versicherungen & Verträge prüfen","y1",120,1,0],["o_abos","orga","💳","Abos & Kontoauszüge durchsehen","m1",30,1,0],["o_urlaub","orga","🏝️","Urlaub planen & buchen","m6",180,0,0],
+["o_termine","orga","🗓️","Kita-/Schul-Termine & Ferien eintragen","m3",30,0,0],["o_sitter","orga","🧑‍🍼","Babysitter / Betreuung organisieren","m1",20,0,0],["o_ablage","orga","🗄️","Papierkram ablegen","m1",45,1,0],
+["f_geburtstag","feste","🎂","Kindergeburtstag organisieren","y1",300,0,0,["Gäste & Datum festlegen","Einladungen verschicken","Programm / Spiele planen","Kuchen & Essen","Deko besorgen","Geschenk kaufen","Mitgebsel packen"]],
+["f_geschenk","feste","🎁","Geschenk kaufen","x",60,0,0],["f_karten","feste","💌","Geburtstagsgrüße & Karten","m1",20,0,0],
+["f_weihn","feste","🎄","Weihnachten vorbereiten","y1",360,0,0,["Wunschzettel sammeln","Geschenke kaufen","Geschenke einpacken","Baum & Deko","Plätzchen backen","Besuche & Essen planen"]],
+["f_ostern","feste","🐣","Ostern vorbereiten","y1",120,0,0,["Eier färben","Nester & Kleinigkeiten","Osterfrühstück planen"]],["f_einlad","feste","🎈","Mitbringsel für Einladung besorgen","x",30,0,0],
+["s_eigen","sport","🏃","Eigener Sport","w1",60,0,0],["s_kinder","sport","⚽","Kinder zum Sport fahren","w1",60,0,0],["s_schwimm","sport","🏊","Schwimmkurs begleiten","w1",75,0,0],
+["s_tasche","sport","👟","Sporttaschen packen & Sportsachen waschen","w1",15,0,0],["s_playdate","sport","🤝","Freundesbesuch für die Kinder organisieren","w2",20,0,0],["s_freunde","sport","🍻","Treffen mit Freunden planen","m1",20,0,0],
+["s_ausflug","sport","🗺️","Familienausflug planen","w2",20,0,0],
+["ku_oma","kuemmern","👵","Großeltern anrufen oder besuchen","w1",45,0,0],["ku_date","kuemmern","💑","Paarzeit / Date planen","m1",20,0,0],["ku_tier","kuemmern","🐾","Haustier versorgen","d",20,0,0],
+["ku_pflanz","kuemmern","🪴","Zimmerpflanzen gießen","w1",10,0,0],["ku_nachbar","kuemmern","🏘️","Nachbarn / Freunden helfen","m1",60,0,0],["ku_metime","kuemmern","🧘","Auszeit für den Partner organisieren","m1",15,0,0],
+["ki_zimmer","kids","🧸","Zimmer aufräumen","w1",20,0,1],["ki_tisch","kids","🍴","Tisch decken","d",5,0,1],["ki_abr","kids","🍽️","Tisch abräumen","d",5,0,1],
+["ki_spiel","kids","🧩","Spielzeug wegräumen","d",10,0,1],["ki_giessen","kids","🌻","Blumen gießen","w1",10,0,1],["ki_schuhe","kids","👟","Schuhe ordentlich hinstellen","d",3,0,1],
+["ki_ranzen","kids","🎒","Schulranzen / Kita-Tasche packen","wd",5,0,1],["ki_zaehne","kids","🪥","Zähne putzen ohne Erinnerung","d",5,0,1],["ki_waesche","kids","🧦","Schmutzwäsche in den Korb","d",3,0,1],
+["ki_tier","kids","🐟","Haustier füttern","d",5,0,1],["ki_muell","kids","🗑️","Müll mit rausbringen","w1",5,0,1],["ki_helfen","kids","🥄","Beim Kochen helfen","w1",20,0,1]];
+const HFREQ=[["x","Einmalig / Termin"],["d","Täglich"],["wd","Mo–Fr"],["w1","Wöchentlich"],["w2","Alle 2 Wochen"],["w4","Alle 4 Wochen"],["m1","Monatlich"],["m3","Alle 3 Monate"],["m6","Alle 6 Monate"],["y1","Jährlich"]];
+const HFL=Object.fromEntries(HFREQ);
+const HREW=[
+ ["r_schulter","💆","15 Min. Schultermassage",30,"erholung"],["r_eis","🍦","Eis essen gehen",30,"genuss"],["r_laenger","🌙","15 Min. länger aufbleiben",30,"kinder"],["r_nachtisch","🍮","Wunsch-Nachtisch",30,"kinder"],
+ ["r_ausschlaf","😴","Ausschlafen (bis 9 Uhr)",60,"erholung"],["r_wanne","🛁","Badewanne in Ruhe",60,"erholung"],["r_mittag","💤","Ungestörter Mittagsschlaf",60,"erholung"],["r_stunde","⏳","Eine Stunde nur für mich",60,"freiraum"],["r_kuchen","🍰","Lieblingskuchen backen lassen",60,"genuss"],["r_spielzeit","🎲","Spielzeit mit Mama/Papa nach Wahl",60,"kinder"],
+ ["r_massage","💆","30 Min. Massage",100,"erholung"],["r_sport","🏃","Sport allein, ohne schlechtes Gewissen",100,"freiraum"],["r_morgen","☕","Wochenend-Morgen frei",100,"freiraum"],["r_essen","🍝","Lieblingsessen gekocht bekommen",100,"genuss"],["r_fruehst","🥐","Frühstück ans Bett",100,"genuss"],
+ ["r_abend","🌆","Abend frei",150,"freiraum"],["r_freunde","🍻","Treffen mit Freunden",150,"freiraum"],["r_kino","🎬","Kino mit den Kindern",150,"kinder"],["r_spielzeug","🧸","Kleines Spielzeug / Buch",150,"kinder"],
+ ["r_konzert","🎤","Konzert oder Kino allein/zu zweit",250,"freiraum"],["r_wunschausflug","🗺️","Wunsch-Ausflug aussuchen",250,"kinder"],["r_uebernacht","🏕️","Übernachtungsparty",250,"kinder"],["r_restaurant","🍽️","Essen gehen zu zweit (Babysitter organisiert)",250,"genuss"],
+ ["r_wellness","🧖","Wellness-Tag",400,"erholung"],["r_wochenende","🧳","Wochenende allein / zu zweit",600,"freiraum"]];
+const HRWC={erholung:"💆 Erholung",freiraum:"🕊️ Freiraum",genuss:"😋 Genuss",kinder:"🧒 Für Kinder",eigen:"✍️ Eigene"};
+const HGOAL=[[300,"🍕","Pizza- & Filmabend"],[600,"🗺️","Familien-Wunschausflug"],[1000,"🎢","Großer Ausflug (z. B. Heide-Park)"]];
+const HLEV=[[0,"🌱","Anfänger"],[100,"🧹","Helfer"],[250,"⭐","Profi"],[500,"🦸","Haushalts-Held"],[1000,"🏆","Meister"],[2000,"👑","Legende"]];
+const HCOL=["#2F6FB0","#C2410C","#7C3AED","#15803D","#BE185D","#0E7490","#A16207"];
+const HEMO=["🧔","👩","🧑","👨","👱‍♀️","👧","👦","🧒","👶","🦸","🐻","🦊"];
+const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.round(min/5*(unpop?1.5:1)));
+const HK=k=>"settings/"+k;
+/* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
+const isHomeKey=k=>/^(hc|hd|hr):/.test(k)||k==="people"||k==="homeblock"||k==="hrw";
+{const loc=LS.get("hwk-home",{});for(const k in loc)if(SETS[k]===undefined)SETS[k]=loc[k]}
+function hMirror(){const o={};for(const k in SETS)if(isHomeKey(k))o[k]=SETS[k];LS.set("hwk-home",o)}
+function hset(id,data){if(data==null)delete SETS[id];else SETS[id]=data;hMirror();if(SB)write(HK(id),data)}
+let HFIRST=true;
+window.homeApply=(s,full)=>{if(full){const srv=Object.keys(s).some(k=>/^(hc|hd|hr):/.test(k)||k==="people");
+    if(HFIRST&&!srv){for(const k of Object.keys(SETS))if(isHomeKey(k))write(HK(k),SETS[k])}
+    else for(const k of Object.keys(SETS))if(/^(hc|hd|hr):/.test(k)&&!(k in s))delete SETS[k];HFIRST=false}
+  hMirror();if(M2==="zuhause"&&typeof renderHome==="function")renderHome()};
+window.homeIsKey=isHomeKey;
+/* Personen */
+function hPeople(){let L=(SETS.people&&Array.isArray(SETS.people.list))?SETS.people.list.slice():null;
+  if(!L){L=[];if(MYID)L.push({id:"p_"+hslug(MYID),n:MYID,e:"🧔",kid:false});(FAM.kids||[]).forEach((a,i)=>L.push({id:"k"+(i+1),n:"Kind "+(i+1)+" ("+a+" J.)",e:i?"👦":"👧",kid:true}))}
+  return L.map((p,i)=>Object.assign({c:HCOL[i%HCOL.length]},p))}
+function hslug(s){return String(s).toLowerCase().replace(/[^a-z0-9äöüß]+/g,"-").slice(0,20)}
+function hEnsureMe(){if(!MYID)return;const L=(SETS.people&&SETS.people.list)||null;if(L&&L.some(p=>p.n.toLowerCase()===MYID.toLowerCase()))return;
+  const base=L?L.slice():hPeople().map(({c,...p})=>p);if(!base.some(p=>p.n.toLowerCase()===MYID.toLowerCase()))base.unshift({id:"p_"+hslug(MYID),n:MYID,e:HEMO[base.length%3],kid:false});hset("people",{list:base})}
+const hPer=id=>hPeople().find(p=>p.id===id);
+const hAdults=()=>hPeople().filter(p=>!p.kid);
+function hMe(){const L=hPeople(),s=LS.get("hwk-hme",null);if(s&&L.some(p=>p.id===s))return s;const m=MYID&&L.find(p=>p.n.toLowerCase()===MYID.toLowerCase());return m?m.id:(L[0]||{}).id}
+const hChip=(id,small)=>{const p=hPer(id);if(!p)return id==="rot"?`<span class="hchip">🔄 abwechselnd</span>`:`<span class="hchip">–</span>`;return `<span class="hchip" style="--pc:${p.c}">${p.e} ${small?"":esc(p.n)}</span>`};
+/* Zuhause-Block */
+function hBlock(){const b=SETS.homeblock||{};return {days:Array.isArray(b.days)?b.days:[6],from:b.from||"09:00",to:b.to||"12:00"}}
+const toMin=t=>{const[h,m]=String(t||"0:0").split(":").map(Number);return h*60+(m||0)};
+/* Aufgaben & Termine */
+const hChores=()=>Object.keys(SETS).filter(k=>k.startsWith("hc:")).map(k=>Object.assign({cid:k.slice(3)},SETS[k])).filter(c=>c&&c.ti);
+const hDone=(cid,d)=>SETS["hd:"+cid+":"+d];
+const isoD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const addD=(s,n)=>{const d=pdate(s);d.setDate(d.getDate()+n);return isoD(d)};
+function hOcc(c,from,to){const out=[],st=c.start||c.date||from,f=c.f||"w1";
+  if(f==="x"){if(c.date&&c.date>=from&&c.date<=to)out.push(c.date);return out}
+  if(f==="y1"){const a=c.date||st;const lead=+c.lead||0;for(let y=+from.slice(0,4)-1;y<=+to.slice(0,4)+1;y++){const d=addD(y+a.slice(4),-lead);if(d>=from&&d<=to&&d>=addD(st,-lead))out.push(d)}return out}
+  for(let s=from;s<=to;s=addD(s,1)){if(s<st)continue;const d=pdate(s),wd=d.getDay();
+    if(f==="d"){out.push(s);continue}
+    if(f==="wd"){if(wd>=1&&wd<=5)out.push(s);continue}
+    const cw=c.wd!=null?+c.wd:6;if(wd!==cw)continue;
+    if(f[0]==="w"){const n=+f.slice(1)||1;const wk=Math.floor((pdate(s)-pdate(st))/864e5/7);if(n===1||(wk%n+n)%n===0)out.push(s);continue}
+    if(f[0]==="m"){const n=+f.slice(1)||1;if(d.getDate()>7)continue;const mi=(d.getFullYear()*12+d.getMonth())-(pdate(st).getFullYear()*12+pdate(st).getMonth());if(mi%n===0)out.push(s)}}
+  return out}
+function hWho(c,d){if(c.who!=="rot")return c.who;const A=hAdults();if(!A.length)return null;const i=Math.abs(Math.floor((pdate(d)-pdate(c.start||d))/864e5/7))+hOcc(c,c.start||d,d).length;return A[i%A.length].id}
+const hDaily=c=>c.f==="d"||c.f==="wd";
+/* Fällige Einträge (mit Überfälligen) */
+function hItems(from,to){const L=[];hChores().forEach(c=>hOcc(c,from,to).forEach(d=>L.push({c,d,who:hWho(c,d),dn:hDone(c.cid,d)})));return L.sort((a,b)=>(a.d+(a.c.t||"99")).localeCompare(b.d+(b.c.t||"99")))}
+function hOverdue(){const L=[];hChores().forEach(c=>{if(hDaily(c))return;const occ=hOcc(c,addD(T0,-21),addD(T0,-1));const last=occ.pop();const nx0=hOcc(c,T0,addD(T0,60))[0];if(last&&!hDone(c.cid,last)&&nx0!==T0){const nx=nx0;L.push({c,d:last,who:hWho(c,last),od:true,nx})}});return L}
+/* Punkte & Statistik */
+const hDoneAll=()=>Object.keys(SETS).filter(k=>k.startsWith("hd:")).map(k=>{const [,cid,d]=k.split(":");return Object.assign({cid,d},SETS[k])});
+function hEarned(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&(!from||x.d>=from)&&(!to||x.d<=to)).reduce((s,x)=>s+(+x.pts||0),0)}
+const hReds=()=>Object.keys(SETS).filter(k=>k.startsWith("hr:")).map(k=>Object.assign({rid:k.slice(3)},SETS[k]));
+const hBal=pid=>hEarned(pid)-hReds().filter(r=>r.by===pid).reduce((s,r)=>s+(+r.cost||0),0);
+const hLev=pts=>{let L=HLEV[0],n=null;for(let i=0;i<HLEV.length;i++){if(pts>=HLEV[i][0]){L=HLEV[i];n=HLEV[i+1]||null}}return {L,n}};
+const wkStart=s=>{const d=pdate(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return isoD(d)};
+function hStreak(pid){let n=0,w=wkStart(T0);const D=hDoneAll().filter(x=>x.by===pid);const has=a=>D.some(x=>x.d>=a&&x.d<=addD(a,6));if(!has(w))w=addD(w,-7);while(has(w)){n++;w=addD(w,-7)}return n}
+const fmH=m=>m>=60?Math.floor(m/60)+" h"+(m%60?" "+(m%60)+" min":""):m+" min";
+let HFW="w";
+function hFair(){const A=hAdults(),from=HFW==="w"?wkStart(T0):addD(wkStart(T0),-21),to=addD(wkStart(T0),6);
+  const D=hDoneAll().filter(x=>x.d>=from&&x.d<=to);const ch=Object.fromEntries(hChores().map(c=>[c.cid,c]));
+  const st=A.map(p=>{const mine=D.filter(x=>x.by===p.id);const min=mine.reduce((s,x)=>s+(+x.min||((ch[x.cid]||{}).dur)||0),0);
+    const ml=mine.filter(x=>MENTAL.has(x.cat||(ch[x.cid]||{}).cat)).reduce((s,x)=>s+(+x.min||((ch[x.cid]||{}).dur)||0),0);
+    const plan=hItems(from,to).filter(i=>i.who===p.id).reduce((s,i)=>s+(+i.c.dur||0),0);
+    return {p,min,ml,plan,pts:mine.reduce((s,x)=>s+(+x.pts||0),0),n:mine.length}});
+  const tot=st.reduce((s,x)=>s+x.min,0),tml=st.reduce((s,x)=>s+x.ml,0),tpl=st.reduce((s,x)=>s+x.plan,0);
+  st.forEach(x=>{x.sh=tot?Math.round(x.min/tot*100):0;x.shm=tml?Math.round(x.ml/tml*100):0;x.shp=tpl?Math.round(x.plan/tpl*100):0});
+  const kids=hPeople().filter(p=>p.kid).map(p=>({p,pts:D.filter(x=>x.by===p.id).reduce((s,x)=>s+(+x.pts||0),0)}));
+  return {st,tot,tml,tpl,kids,from,to}}
+function hFairHtml(compact){const F=hFair(),A=F.st;if(!A.length)return "";
+  const bar=(k,lab)=>`<div class="hfb" role="img" aria-label="${esc(lab)}">${A.map(x=>`<span style="flex:${Math.max(x[k],A.length===1?100:0)||.0001};background:${x.p.c}" title="${esc(x.p.n)}: ${x[k]} %"></span>`).join("")}</div>`;
+  const maxSh=Math.max(...A.map(x=>x.sh));const low=A.slice().sort((a,b)=>a.sh-b.sh)[0];
+  const warn=A.length>1&&F.tot>=60&&maxSh>=65?`<p class="hfwarn">⚖️ Ungleich verteilt – vielleicht übernimmt ${esc(low.p.n)} ${HFW==="w"?"diese Woche":"in nächster Zeit"} etwas mehr?</p>`:A.length>1&&F.tot>=60?`<p class="hfok">✅ Gut verteilt</p>`:"";
+  if(compact&&(!F.tot||A.length<2))return `<button type="button" class="hfmini" data-m2="zuhause">⚖️ <b>Fairness</b><span>${A.length<2?"Zweite erwachsene Person unter ⚙️ eintragen":"Diese Woche noch nichts erledigt – zu „Zuhause“ →"}</span></button>`;
+  if(compact)return `<button type="button" class="hfmini" data-m2="zuhause" aria-label="Zur Fairness-Übersicht">⚖️ <b>Diese Woche</b>${bar("sh","Anteil erledigter Zeit")}<span>${A.map(x=>`${x.p.e} ${x.sh} %`).join(" · ")}</span></button>`;
+  return `<section class="hfair" aria-labelledby="hfH"><div class="hfhead"><h3 id="hfH">⚖️ Fairness</h3><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${HFW==="w"}">Diese Woche</button><button type="button" data-hfw="m" aria-pressed="${HFW==="m"}">4 Wochen</button></span></div>
+    <div class="hfrow"><span class="hfl">Erledigt</span>${bar("sh","Erledigte Zeit")}</div>
+    <div class="hfleg">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} <b>${esc(x.p.n)}</b> ${x.sh} % · ${fmH(x.min)} · ${x.pts} Pkt.</span>`).join("")}</div>
+    <div class="hfrow"><span class="hfl">Kopf-Arbeit</span>${F.tml?bar("shm","Kopf-Arbeit"):`<div class="hfb empty"></div>`}</div>
+    <div class="hfleg sm">${F.tml?A.map(x=>`<span>${x.p.e} ${x.shm} %</span>`).join(""):"<span>Noch keine Organisation, Termine oder Geschenke erledigt.</span>"} <span class="hfnote">Termine, Geschenke, Organisation, Kümmern – die unsichtbare Arbeit</span></div>
+    <div class="hfrow"><span class="hfl">Geplant</span>${F.tpl?bar("shp","Geplante Zeit"):`<div class="hfb empty"></div>`}</div>
+    <div class="hfleg sm">${F.tpl?A.map(x=>`<span>${x.p.e} ${x.shp} % · ${fmH(x.plan)}</span>`).join(""):"<span>Noch keine Aufgaben verteilt.</span>"}</div>
+    ${warn}${F.kids.length?`<div class="hfkids">${F.kids.map(k=>`<span>${k.p.e} ${esc(k.p.n)}: <b>${k.pts} Pkt.</b></span>`).join("")}</div>`:""}</section>`}
+/* Wochen-Challenge & Familienziel */
+function hChallenge(){const a=wkStart(T0),b=addD(a,6);const L=hItems(a,b).filter(i=>!hDaily(i.c));const n=L.filter(i=>i.dn).length;return {n,t:L.length,ok:L.length>0&&n===L.length}}
+function hFamily(){const m=T0.slice(0,7);let pts=hDoneAll().filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+(+x.pts||0),0);
+  let w=wkStart(m+"-01");const end=addD(T0,0);while(w<=end){const L=hItems(w,addD(w,6)).filter(i=>!hDaily(i.c));if(addD(w,6)<T0&&L.length&&L.every(i=>i.dn))pts+=50;w=addD(w,7)}const c=hChallenge();if(c.ok)pts+=50;return pts}
+/* Abzeichen */
+function hBadges(pid){const D=hDoneAll().filter(x=>x.by===pid),ch=Object.fromEntries(hChores().map(c=>[c.cid,c])),cat=x=>x.cat||(ch[x.cid]||{}).cat;
+  return [["🎉","Erster Haken",D.length>=1],["🔟","10 erledigt",D.length>=10],["💯","100 erledigt",D.length>=100],["🛟","Retter (3× übernommen)",D.filter(x=>x.tk).length>=3],
+   ["🔥","4 Wochen am Stück",hStreak(pid)>=4],["🧠","Kopf-Arbeiter (10× Organisation)",D.filter(x=>MENTAL.has(cat(x))).length>=10],["🌳","Gärtner (10× Garten)",D.filter(x=>cat(x)==="garten").length>=10],
+   ["🧽","Putzteufel (20× Haushalt)",D.filter(x=>cat(x)==="haushalt").length>=20],["⏰","Pünktlich (20× rechtzeitig)",D.filter(x=>!x.late).length>=20],["🧒","Kinder-Profi (10× Kinderaufgaben)",D.filter(x=>cat(x)==="kids").length>=10]]}
+/* Abhaken */
+function hCheck(cid,d,undo){const c=SETS["hc:"+cid];if(!c)return;const k="hd:"+cid+":"+d;
+  if(SETS[k]){const old=SETS[k];hset(k,null);renderHomeAll();if(!undo)undoToast("Haken entfernt",()=>{hset(k,old);renderHomeAll()});return}
+  const me=hMe(),who=hWho(c,d),late=d<T0,tk=!!(who&&who!==me&&late&&who!=="rot");const base=+c.pts||hrec(+c.dur||10,c.unpop,c.kid);const pts=Math.round(base*(tk?1.5:1));
+  const lvBefore=hLev(hEarned(me)).L;hset(k,{by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0});
+  hBurst(pts,tk);const lv=hLev(hEarned(me)).L;
+  renderHomeAll();undoToast(`✓ ${c.ti} – +${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}`,()=>{hset(k,null);renderHomeAll()})}
+function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","✨","🎊","💪","🏅"];
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
+  const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300)}
+function renderHomeAll(){if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan()}
+/* Zeile einer Aufgabe */
+function hRow(i,ctx){const {c,d,who,dn,od}=i,me=hMe(),pts=+c.pts||hrec(+c.dur||10,c.unpop,c.kid);const cat=HCAT[c.cat]||["","📌",""];
+  const ck=Array.isArray(c.ck)&&c.ck.length?(()=>{const dd=c.ckd===d?c.ckx||[]:[];return {n:dd.length,t:c.ck.length,dd}})():null;const op=HOPEN.has(c.cid+d);
+  const tk=od&&who&&who!==me;
+  return `<div class="htrow${dn?" dn":""}${od?" od":""}"><button type="button" class="hck" data-hck="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-label="${dn?"Erledigt – antippen zum Zurücknehmen":"Als erledigt abhaken"}">${dn?"✓":""}</button>
+    <div class="hrb"><b>${c.ic||cat[1]} ${esc(c.ti)}</b><small>${od?`<span class="hod">⚠️ überfällig seit ${esc(fmtDate(d))}</span> · `:ctx==="week"?esc(fmtDate(d))+" · ":""}${c.t?esc(c.t)+" Uhr · ":""}${fmH(+c.dur||0)} · ${hChip(who)}${dn&&dn.by!==who?` · erledigt von ${hChip(dn.by)}`:""}${c.f!=="x"?" · "+esc(HFL[c.f]||""):""}${ck?` · <button type="button" class="mbdet" data-hck2="${esc(c.cid)}" data-d="${d}">☑️ ${ck.n}/${ck.t} ${op?"▴":"▾"}</button>`:""}</small>
+      ${ck&&op?`<div class="hcl">${c.ck.map((t,j)=>`<label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label>`).join("")}</div>`:""}${tk&&!dn?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Übernehmen +50 %</button>`:""}</div>
+    <div class="hrr"><span class="hpts">${tk?`<s>${pts}</s> ${Math.round(pts*1.5)}`:dn?dn.pts:pts} P.</span></div></div>`}
+let HOPEN=new Set(),HCATOPEN=null,HSEC=LS.get("hwk-hsec",{});
+/* Hauptansicht */
+function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();const me=hMe(),P=hPeople(),meP=hPer(me);
+  const od=hOverdue(),today=hItems(T0,T0),week=hItems(addD(T0,1),addD(T0,6)).filter(i=>!hDaily(i.c));
+  const ch=hChores(),bal=hBal(me),earned=hEarned(me),lv=hLev(earned),fam=hFamily(),chal=hChallenge();
+  const B=hBlock(),nb=(()=>{for(let i=0;i<14;i++){const s=plus(i);if(B.days.includes(pdate(s).getDay()))return s}return null})();
+  const sec=(id,title,body,open)=>`<details class="hsec2" data-hsec="${id}"${(HSEC[id]!=null?HSEC[id]:open)?" open":""}><summary><h3>${title}</h3></summary>${body}</details>`;
+  const meSel=`<div class="hme" role="group" aria-label="Wer hakt ab?"><span>Ich bin</span>${P.map(p=>`<button type="button" data-hme="${p.id}" aria-pressed="${p.id===me}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}</div>`;
+  const now=(od.length||today.length||week.length)?`${od.map(i=>hRow(i,"od")).join("")}${today.length?`<h4 class="hday">Heute</h4>`+today.map(i=>hRow(i,"today")).join(""):""}${week.length?`<h4 class="hday">Die nächsten Tage</h4>`+week.map(i=>hRow(i,"week")).join(""):""}`
+    :`<p class="pvsub">${ch.length?"Gerade nichts fällig. 🎉":"Noch keine Aufgaben. Unten im Katalog auswählen – mit Turnus, Tag und wer zuständig ist."}</p>`;
+  const meCard=P.map(p=>{const e=hEarned(p.id),b=hBal(p.id),L=hLev(e),st=hStreak(p.id);const prog=L.n?Math.round((e-L.L[0])/(L.n[0]-L.L[0])*100):100;
+    return `<div class="hpcard${p.id===me?" me":""}" style="--pc:${p.c}"><div class="hpav">${p.e}</div><div style="min-width:0"><b>${esc(p.n)}</b><small>${L.L[1]} ${L.L[2]}${st?` · 🔥 ${st} ${st===1?"Woche":"Wochen"}`:""}</small><div class="hprog"><i style="width:${prog}%"></i></div><small>${L.n?`noch ${L.n[0]-e} Punkte bis ${L.n[1]} ${L.n[2]}`:"Höchstes Level erreicht"}</small></div><div class="hpbal"><b>${b}</b><small>Punkte</small></div></div>`}).join("");
+  const RW=HREW.concat(((SETS.hrw||{}).list||[]).map(r=>[r.id,r.ic||"🎁",r.ti,+r.cost||50,"eigen"]));const tiers=[...new Set(RW.map(r=>r[3]))].sort((a,b)=>a-b);
+  const forKid=meP&&meP.kid;const RWf=RW.filter(r=>forKid?(r[4]==="kinder"||r[4]==="genuss"||r[4]==="eigen"):r[4]!=="kinder"||true);
+  const rew=`<p class="hsub">Punkte von <b>${meP?esc(meP.n):"–"}</b>: <b>${bal}</b>. Stufen schalten sich frei, sobald genug Punkte da sind.</p>`+tiers.map(t=>{const L=RWf.filter(r=>r[3]===t);if(!L.length)return "";const ok=bal>=t;
+      return `<div class="htier${ok?" ok":""}"><div class="htl"><b>${ok?"🔓":"🔒"} ${t} Punkte</b>${ok?"":`<small>noch ${t-bal}</small>`}</div><div class="hrw">${L.map(r=>`<button type="button" class="hrwb" data-hred="${esc(r[0])}" data-cost="${r[3]}" data-ti="${esc(r[2])}" data-ic="${esc(r[1])}"${ok?"":" disabled"} title="${esc(HRWC[r[4]]||"")}"><span>${r[1]}</span>${esc(r[2])}</button>`).join("")}</div></div>`}).join("")
+    +`<details class="hown"><summary>✍️ Eigene Belohnung anlegen</summary><div class="hownf"><input type="text" id="hrwT" maxlength="40" placeholder="z. B. Kaffee im Lieblingscafé"><input type="number" id="hrwC" min="5" max="2000" step="5" value="60" aria-label="Punkte"><button type="button" class="pmini" id="hrwAdd">Hinzufügen</button></div>${((SETS.hrw||{}).list||[]).length?`<div class="hownl">${SETS.hrw.list.map(r=>`<span>${esc(r.ic||"🎁")} ${esc(r.ti)} · ${r.cost} P. <button type="button" class="mbx" data-hrwrm="${esc(r.id)}" aria-label="Entfernen">✕</button></span>`).join("")}</div>`:""}</details>`;
+  const open=hReds().filter(r=>!r.done).sort((a,b)=>a.at-b.at);
+  const redOpen=open.length?`<div class="hredl"><h4>Eingelöst – noch offen</h4>${open.map(r=>`<div class="hred">${hChip(r.by)} <span>${esc(r.ic||"🎁")} ${esc(r.ti)}</span><small>${r.cost} P.</small><button type="button" class="pmini" data-hreddone="${esc(r.rid)}">✓ Eingelöst</button></div>`).join("")}</div>`:"";
+  const goal=(()=>{const nx=HGOAL.find(g=>fam<g[0]),max=HGOAL[HGOAL.length-1][0];return `<div class="hgoal"><div class="hgbar"><i style="width:${Math.min(100,fam/max*100)}%"></i>${HGOAL.map(g=>`<span class="hgm${fam>=g[0]?" ok":""}" style="left:${g[0]/max*100}%" title="${g[0]} Punkte: ${esc(g[2])}">${g[1]}</span>`).join("")}</div>
+    <p class="hsub"><b>${fam}</b> Familienpunkte im ${MONL[TODAY.getMonth()]}${nx?` · noch ${nx[0]-fam} bis ${nx[1]} ${esc(nx[2])}`:" · 🎉 alle Ziele erreicht!"}</p>${HGOAL.filter(g=>fam>=g[0]).map(g=>`<p class="hunl">🎉 Freigeschaltet: ${g[1]} ${esc(g[2])}</p>`).join("")}
+    <div class="hchal${chal.ok?" ok":""}"><b>🏁 Wochen-Challenge:</b> alle Aufgaben dieser Woche erledigen → +50 Familienpunkte<div class="hprog"><i style="width:${chal.t?chal.n/chal.t*100:0}%"></i></div><small>${chal.t?`${chal.n} von ${chal.t} erledigt${chal.ok?" – geschafft! 🎉":""}`:"Diese Woche ist nichts Wöchentliches geplant."}</small></div></div>`})();
+  const badges=`<div class="hbdg">${hBadges(me).map(b=>`<span class="${b[2]?"on":""}" title="${esc(b[1])}"><i>${b[0]}</i>${esc(b[1])}</span>`).join("")}</div>`;
+  const act=ch.length?`<div class="hact">${HCATS.map(cc=>{const L=ch.filter(c=>c.cat===cc[0]);return L.length?`<h4 class="hday">${cc[1]} ${cc[2]}</h4>`+L.map(c=>`<div class="hcrow"><div style="min-width:0"><b>${c.ic||cc[1]} ${esc(c.ti)}</b><small>${esc(c.f==="x"?(c.date?fmtDate(c.date)+(c.t?", "+c.t+" Uhr":""):"ohne Datum"):HFL[c.f]+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+WDL[c.wd!=null?+c.wd:6]:"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date):""))} · ${fmH(+c.dur||0)} · ${+c.pts||hrec(+c.dur||10,c.unpop,c.kid)} P. · ${hChip(c.who)}</small></div><button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Ändern</button></div>`).join(""):""}).join("")}</div>`:`<p class="pvsub">Noch nichts ausgewählt.</p>`;
+  const cat=`<p class="hsub">Antippen zum Hinzufügen – Turnus, Tag, Dauer, Person und Punkte lassen sich danach anpassen.</p>${HCATS.map(cc=>{const L=HT.filter(t=>t[1]===cc[0]);const used=new Set(ch.map(c=>c.tpl));
+      return `<details class="hcat"${HCATOPEN===cc[0]?" open":""} data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${L.length}</small></summary><div class="htpl">${L.map(t=>`<button type="button" class="htb${used.has(t[0])?" on":""}" data-hadd="${t[0]}"><span>${t[2]}</span><b>${esc(t[3])}</b><small>${esc(HFL[t[4]])} · ${fmH(t[5])} · ${hrec(t[5],t[6],t[7])} P.${used.has(t[0])?" · ✓ aktiv":""}</small></button>`).join("")}</div></details>`}).join("")}
+      <div class="hownbtns"><button type="button" class="pbtn" data-hadd="_own">➕ Eigene Aufgabe</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`;
+  v.innerHTML=`<h2 class="mtitle">🏠 Zuhause</h2>${hFairHtml()}${meSel}
+    <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${now}</section>
+    <section class="pvsec"><h3>🏆 Punkte & Level</h3><div class="hpcards">${meCard}</div></section>
+    <section class="pvsec">${sec("rew","🎁 Belohnungen",redOpen+rew,true)}</section>
+    <section class="pvsec">${sec("fam","👨‍👩‍👧 Familienziel & Challenge",goal,true)}</section>
+    <section class="pvsec">${sec("bdg","🏅 Abzeichen von "+(meP?esc(meP.n):"dir"),badges,false)}</section>
+    <section class="pvsec">${sec("act","📋 Unsere Aufgaben ("+ch.length+")",act,true)}</section>
+    <section class="pvsec">${sec("cat","➕ Aufgaben-Katalog",cat,!ch.length)}</section>`}
+/* Editor */
+let HED=null;
+function hEdit(c,isNew){HED={c:Object.assign({},c),isNew};const d=$("hdlg");const P=hPeople(),x=HED.c,rec=hrec(+x.dur||10,x.unpop,x.kid);
+  const durs=[5,10,15,20,30,45,60,75,90,120,180,240,300,360,480];if(!durs.includes(+x.dur))durs.push(+x.dur);durs.sort((a,b)=>a-b);
+  d.innerHTML=`<form method="dialog" class="hform"><div class="dlghead"><h3>${isNew?"Aufgabe hinzufügen":"Aufgabe ändern"}</h3><button type="button" class="mbx" data-hclose aria-label="Schließen">✕</button></div>
+   <label>Titel<input type="text" id="heTi" maxlength="60" value="${esc(x.ti||"")}" required></label>
+   <div class="hf2"><label>Kategorie<select id="heCat">${HCATS.map(c=>`<option value="${c[0]}"${c[0]===x.cat?" selected":""}>${c[1]} ${c[2]}</option>`).join("")}</select></label><label>Icon<input type="text" id="heIc" maxlength="4" value="${esc(x.ic||"")}"></label></div>
+   <label>Turnus<select id="heF">${HFREQ.map(f=>`<option value="${f[0]}"${f[0]===x.f?" selected":""}>${f[1]}</option>`).join("")}</select></label>
+   <div id="heWdW"><span class="hlab">Tag</span><div class="dquick" id="heWd">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-wd="${i}" aria-pressed="${(x.wd!=null?+x.wd:6)===i}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div><small class="hhint" id="heWdH"></small></div>
+   <div class="hf2" id="heDateW"><label><span id="heDateL">Datum</span><input type="date" id="heDate" value="${esc(x.date||"")}"></label><label>Uhrzeit (optional)<input type="time" id="heT" value="${esc(x.t||"")}"></label></div>
+   <label id="heLeadW">Wie viele Tage vorher anfangen?<input type="number" id="heLead" min="0" max="90" value="${+x.lead||0}"></label>
+   <div class="hf2"><label>Dauer<select id="heDur">${durs.map(m=>`<option value="${m}"${m===+x.dur?" selected":""}>${fmH(m)}</option>`).join("")}</select></label><label>Punkte <small>(Empfehlung: <span id="heRec">${rec}</span>)</small><input type="number" id="hePts" min="1" max="999" value="${+x.pts||rec}"></label></div>
+   <span class="hlab">Wer ist zuständig?</span><div class="dquick hwho" id="heWho">${P.map(p=>`<button type="button" data-who="${p.id}" aria-pressed="${x.who===p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}<button type="button" data-who="rot" aria-pressed="${x.who==="rot"}">🔄 Abwechselnd</button></div>
+   <label>Checkliste <small>(eine Zeile pro Punkt, optional)</small><textarea id="heCk" rows="4">${esc((x.ck||[]).join("\n"))}</textarea></label>
+   <div class="hfbtn">${isNew?"":`<button type="button" class="pmini hdel" data-hdel>🗑️ Löschen</button>`}<button type="button" class="pbtn" data-hclose>Abbrechen</button><button type="button" class="pbtn hsave" data-hsave>${isNew?"➕ Hinzufügen":"💾 Speichern"}</button></div></form>`;
+  hEdUpd();d.showModal?d.showModal():d.setAttribute("open","")}
+function hEdUpd(){const f=$("heF").value,x=HED.c;$("heWdW").hidden=!["w1","w2","w4","m1","m3","m6"].includes(f);$("heWdH").textContent=f[0]==="m"?"jeweils am ersten dieses Wochentags im Monat":"";
+  $("heDateW").hidden=!(f==="x"||f==="y1");$("heDateL").textContent=f==="y1"?"Datum (z. B. Geburtstag)":"Datum";$("heLeadW").hidden=f!=="y1";
+  const rec=hrec(+$("heDur").value,x.unpop,($("heCat").value==="kids"));$("heRec").textContent=rec}
+function hEdSave(){const x=HED.c;x.ti=$("heTi").value.trim();if(!x.ti){$("heTi").focus();return}x.cat=$("heCat").value;x.ic=$("heIc").value.trim();x.f=$("heF").value;
+  const wb=$("heWd").querySelector('[aria-pressed="true"]');x.wd=wb?+wb.dataset.wd:6;x.date=$("heDate").value||null;x.t=$("heT").value||null;x.lead=+$("heLead").value||0;
+  x.dur=+$("heDur").value;x.pts=+$("hePts").value||hrec(x.dur,x.unpop,x.kid);x.kid=x.cat==="kids"?1:0;const wh=$("heWho").querySelector('[aria-pressed="true"]');x.who=wh?wh.dataset.who:hMe();
+  x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=x.f==="y1"?T0:T0;
+  if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
+  const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"💾 Gespeichert");HED=null;renderHomeAll()}
+/* Tagesansicht in „Unser Plan“ */
+window.homeDay=(dt,L)=>{if(!dt)return "";const B=hBlock(),blk=B.days.includes(pdate(dt).getDay());const I=hItems(dt,dt).filter(i=>!hDaily(i.c)||blk);const O=dt===T0?hOverdue():[];
+  if(!blk&&!I.length&&!O.length)return "";
+  const clash=blk?(L||[]).filter(o=>o.t&&toMin(o.t)<toMin(B.to)&&toMin(o.t)+60>toMin(B.from)):[];
+  return `<div class="hpday"><div class="hpdh">🏠 <b>Zuhause</b>${blk?` · ${esc(B.from)}–${esc(B.to)} Uhr reserviert`:""}<button type="button" class="pall" data-m2="zuhause">Alle Aufgaben →</button></div>
+    ${clash.length?`<p class="hfwarn">⚠️ ${clash.map(o=>esc(o.ti.replace(/^Ausflug: /,""))+" um "+esc(o.t)).join(", ")} liegt im Zuhause-Block – Aufgaben ggf. auf den Nachmittag schieben.</p>`:""}
+    ${O.map(i=>hRow(i,"od")).join("")}${I.map(i=>hRow(i,"today")).join("")}${!I.length&&!O.length?`<p class="pvsub" style="margin:4px 0">Für diesen Block ist noch nichts geplant.</p>`:""}</div>`};
+window.homeDots=s=>hItems(s,s).filter(i=>!hDaily(i.c)).length;
+window.homeBlockDay=s=>hBlock().days.includes(pdate(s).getDay());
+window.homeFairMini=()=>hFairHtml(true);
+/* Einstellungen: Personen & Zuhause-Block */
+function renderHomeSet(){const el=$("homeSet");if(!el)return;const P=hPeople(),B=hBlock();
+  el.innerHTML=`<div class="hppl">${P.map((p,i)=>`<div class="hpr"><select data-hpe="${i}" aria-label="Symbol">${HEMO.concat(HEMO.includes(p.e)?[]:[p.e]).map(e=>`<option${e===p.e?" selected":""}>${e}</option>`).join("")}</select><input type="text" data-hpn="${i}" value="${esc(p.n)}" maxlength="20" aria-label="Name"><label class="hkid"><input type="checkbox" data-hpk="${i}"${p.kid?" checked":""}> Kind</label><button type="button" class="mbx" data-hpx="${i}" aria-label="Entfernen">✕</button></div>`).join("")}</div>
+   <button type="button" class="pmini" data-hpadd>➕ Person</button>
+   <h4 class="seth2">🏠 Zuhause-Block</h4><p class="famnote">In dieser Zeit stehen Haushalt, Garten & Co. in „Unser Plan“. Ausflüge sind trotzdem möglich – es gibt dann einen Hinweis.</p>
+   <div class="dquick freed" id="hbDays">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-hbd="${i}" aria-pressed="${B.days.includes(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div>
+   <div class="hbt"><label>von <input type="time" id="hbFrom" value="${esc(B.from)}"></label><label>bis <input type="time" id="hbTo" value="${esc(B.to)}"></label></div>`}
+function hSavePeople(L){hset("people",{list:L.map(({c,...p})=>p)});renderHomeSet();renderHomeAll()}
+document.addEventListener("click",e=>{const t=e.target;
+  const pa=t.closest("[data-hpadd]");if(pa){const L=hPeople();L.push({id:"p"+Date.now().toString(36),n:"Neue Person",e:HEMO[L.length%HEMO.length],kid:false});hSavePeople(L);return}
+  const px=t.closest("[data-hpx]");if(px){const L=hPeople();L.splice(+px.dataset.hpx,1);hSavePeople(L);return}
+  const bd=t.closest("[data-hbd]");if(bd){const B=hBlock(),i=+bd.dataset.hbd;B.days=B.days.includes(i)?B.days.filter(x=>x!==i):B.days.concat(i);hset("homeblock",B);renderHomeSet();renderHomeAll();return}});
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.dataset.hpn!=null||t.dataset.hpe!=null||t.dataset.hpk!=null){const L=hPeople(),i=+(t.dataset.hpn??t.dataset.hpe??t.dataset.hpk);if(!L[i])return;if(t.dataset.hpn!=null)L[i].n=t.value.trim()||L[i].n;if(t.dataset.hpe!=null)L[i].e=t.value;if(t.dataset.hpk!=null)L[i].kid=t.checked;hSavePeople(L);return}
+  if(t.id==="hbFrom"||t.id==="hbTo"){const B=hBlock();B.from=$("hbFrom").value||"09:00";B.to=$("hbTo").value||"12:00";hset("homeblock",B);renderHomeAll();return}
+  if(t.dataset.hcl!=null){const c=SETS["hc:"+t.dataset.hcl];if(!c)return;const d=t.dataset.d,j=+t.dataset.j;const x=Object.assign({},c);let dd=x.ckd===d?(x.ckx||[]).slice():[];dd=t.checked?dd.concat(j):dd.filter(k=>k!==j);x.ckd=d;x.ckx=[...new Set(dd)];hset("hc:"+t.dataset.hcl,x);
+    if(x.ckx.length===x.ck.length&&!hDone(t.dataset.hcl,d)){hCheck(t.dataset.hcl,d)}else renderHomeAll();return}
+  if(HED&&["heF","heDur","heCat"].includes(t.id))hEdUpd()});
+/* Klicks im Zuhause-Bereich und in „Unser Plan“ */
+document.addEventListener("click",e=>{const t=e.target;
+  const ck=t.closest("[data-hck]");if(ck){e.preventDefault();hCheck(ck.dataset.hck,ck.dataset.d);return}
+  const c2=t.closest("[data-hck2]");if(c2){const k=c2.dataset.hck2+c2.dataset.d;HOPEN.has(k)?HOPEN.delete(k):HOPEN.add(k);renderHomeAll();return}
+  const nv=t.closest(".hfmini[data-m2],.hpday [data-m2]");if(nv){setM2("zuhause");return}
+  if(!t.closest("#homeView")&&!t.closest("#hdlg"))return;
+  const fw=t.closest("[data-hfw]");if(fw){HFW=fw.dataset.hfw;renderHome();return}
+  const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);renderHome();return}
+  const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
+    if(id==="_own"){hEdit({ti:"",cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
+    if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
+    const T=HT.find(x=>x[0]===id);if(!T)return;const kid=!!T[7];const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
+    hEdit({tpl:T[0],cat:T[1],ic:T[2],ti:T[3],f:T[4],wd:hBlock().days[0]??6,dur:T[5],unpop:T[6],kid:T[7],pts:hrec(T[5],T[6],T[7]),who,ck:T[8]||[],date:T[4]==="x"?plus(7):T[4]==="y1"?null:null,lead:T[0]==="f_geburtstag"?21:T[0]==="f_weihn"?30:0},true);return}
+  const ed=t.closest("[data-hedit]");if(ed){const c=SETS["hc:"+ed.dataset.hedit];if(c)hEdit(Object.assign({cid:ed.dataset.hedit},c),false);return}
+  if(t.closest("[data-hclose]")){$("hdlg").close();HED=null;return}
+  if(t.closest("[data-hsave]")){hEdSave();return}
+  if(t.closest("[data-hdel]")&&HED&&HED.c.cid){const cid=HED.c.cid,old=SETS["hc:"+cid];hset("hc:"+cid,null);$("hdlg").close();HED=null;renderHomeAll();undoToast(`„${old.ti}“ gelöscht`,()=>{hset("hc:"+cid,old);renderHomeAll()});return}
+  const wd=t.closest("#heWd [data-wd]");if(wd){$("heWd").querySelectorAll("[data-wd]").forEach(b=>b.setAttribute("aria-pressed",String(b===wd)));return}
+  const wh=t.closest("#heWho [data-who]");if(wh){$("heWho").querySelectorAll("[data-who]").forEach(b=>b.setAttribute("aria-pressed",String(b===wh)));return}
+  const rd=t.closest("[data-hred]");if(rd&&!rd.disabled){const me=hMe(),cost=+rd.dataset.cost;if(hBal(me)<cost)return;const rid="r"+Date.now().toString(36);hset("hr:"+rid,{by:me,rw:rd.dataset.hred,ti:rd.dataset.ti,ic:rd.dataset.ic,cost,at:Date.now()});hBurst(cost,true);renderHome();
+    undoToast(`🎁 ${rd.dataset.ti} eingelöst (−${cost} Punkte)`,()=>{hset("hr:"+rid,null);renderHome()});return}
+  const rdd=t.closest("[data-hreddone]");if(rdd){const k="hr:"+rdd.dataset.hreddone,r=SETS[k];if(r){hset(k,Object.assign({},r,{done:Date.now()}));toast("✓ Schön genossen!");renderHome()}return}
+  if(t.id==="hrwAdd"){const ti=$("hrwT").value.trim(),cost=Math.max(5,+$("hrwC").value||60);if(!ti){$("hrwT").focus();return}const L=((SETS.hrw||{}).list||[]).concat({id:"u"+Date.now().toString(36),ti,cost,ic:"🎁"});hset("hrw",{list:L});renderHome();return}
+  const rr=t.closest("[data-hrwrm]");if(rr){const L=((SETS.hrw||{}).list||[]).filter(r=>r.id!==rr.dataset.hrwrm);hset("hrw",{list:L});renderHome();return}});
+document.addEventListener("toggle",e=>{const d=e.target;if(!d.closest||!d.closest("#homeView"))return;if(d.dataset&&d.dataset.hsec){HSEC[d.dataset.hsec]=d.open;LS.set("hwk-hsec",HSEC)}if(d.dataset&&d.dataset.hcat&&d.open)HCATOPEN=d.dataset.hcat},true);
+window.renderHomeNow=renderHome;window.renderHomeSetNow=renderHomeSet;
+renderHomeSet();if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();
+window.__home={SETS,hBal:id=>hBal(id),hMe:()=>hMe()};
+
+})();
 </script>
