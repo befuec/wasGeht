@@ -4145,15 +4145,14 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const fOk=i=>HF.who==="me"?i.who===me:HF.who==="open"?!i.who:true;
   const all=od.concat(today,week).filter(fOk),nDone=all.filter(i=>i.dn).length,vis=i=>HF.done||!i.dn;
   const UP=hItems(T0,addD(T0,60)),ODL=hOverdue(),opn=ch.filter(c=>!c.who&&!hDaily(c));
-  const BI=opn.map(c=>ODL.find(i=>i.c.cid===c.cid)||UP.find(i=>i.c.cid===c.cid&&!i.dn)).filter(Boolean),OPC=new Set(opn.map(c=>c.cid)),nb0=i=>!OPC.has(i.c.cid);
+  const BI=opn.map(c=>ODL.find(i=>i.c.cid===c.cid)||UP.find(i=>i.c.cid===c.cid&&!i.dn)).filter(Boolean),nb0=()=>true;
   const td=today.filter(fOk).filter(vis).filter(nb0).filter(i=>!hDaily(i.c)),dly=today.filter(fOk).filter(vis).filter(i=>hDaily(i.c)),wk=week.filter(fOk).filter(vis).filter(nb0),odv=od.filter(fOk).filter(nb0);
   const filt=`<div class="hfilt" role="group" aria-label="Filter"><span class="hseg">${[["all","Alle"],["me","Nur meine"],["open","🙋 Offen"]].map(([k,l])=>`<button type="button" data-hfwho="${k}" aria-pressed="${HF.who===k}">${l}</button>`).join("")}</span><label class="hdtog"><input type="checkbox" data-hfdone${HF.done?" checked":""}> ✓ Erledigte zeigen${nDone?` (${nDone})`:""}</label></div>`;
   const nxo=HSEC.next!=null?HSEC.next:true;
   const now=(odv.length||td.length||dly.length||wk.length)?`${odv.map(i=>hRow(i,"od")).join("")}${td.length?`<h4 class="hday">Heute dran</h4>`+td.map(i=>hRow(i,"today")).join(""):""}${dly.length?`<h4 class="hday">Jeden Tag <small class="hhint">– antippen und auswählen, wer es gemacht hat</small></h4><div class="hdaily">${dly.map(hDailyChip).join("")}</div>${hPickHtml(dly.find(i=>HDPICK===i.c.cid+"|"+i.d))}`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Die nächsten Tage (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}`
-    :opn.length?"":`<p class="pvsub">${ch.length?(nDone&&!HF.done?`Alles erledigt 🎉 – ${nDone} erledigte ${nDone===1?"Aufgabe ist":"Aufgaben sind"} ausgeblendet.`:"Gerade nichts fällig. 🎉"):"Noch keine Aufgaben. Unten im Katalog auswählen – mit Turnus, Tag und wer zuständig ist."}</p>`;
+    :`<p class="pvsub">${ch.length?(nDone&&!HF.done?`Alles erledigt 🎉 – ${nDone} erledigte ${nDone===1?"Aufgabe ist":"Aufgaben sind"} ausgeblendet.`:"Gerade nichts fällig. 🎉"):"Noch keine Aufgaben. Unten im Katalog auswählen – mit Turnus, Tag und wer zuständig ist."}</p>`;
   const meCard=P.map(p=>{const e=hEarned(p.id),b=hBal(p.id),L=hLev(e),st=hStreak(p.id);const prog=L.n?Math.round((e-L.L[0])/(L.n[0]-L.L[0])*100):100;
     return `<div class="hpcard${p.id===me?" me":""}" style="--pc:${p.c}"><div class="hpav">${p.e}</div><div style="min-width:0"><b>${esc(p.n)}</b><small>${L.L[1]} ${L.L[2]}${st?` · 🔥 ${st} ${st===1?"Woche":"Wochen"}`:""}</small><div class="hprog"><i style="width:${prog}%"></i></div><small>${L.n?`noch ${L.n[0]-e} Punkte bis ${L.n[1]} ${L.n[2]}`:"Höchstes Level erreicht"}</small></div><div class="hpbal"><b>${b}</b><small>Punkte</small></div></div>`}).join("");
-  const bockHtml=BI.map(i=>hRow(i,i.od?"od":"week")).join("")+opn.filter(c=>!BI.some(i=>i.c.cid===c.cid)).map(c=>`<div class="htrow"><span></span><div class="hrb"><button type="button" class="hrbt" data-hbopen="${esc(c.cid)}|"><b>${c.ic||""} ${esc(c.ti)}</b></button><small>gerade kein Termin fällig · 🙋 offen</small>${HBOPEN.has(c.cid+"|")?hBockPanel(c,null):""}</div><span></span></div>`).join("");
   /* Belohnungen */
   const isKid=meP&&meP.kid,RW=hRewards(isKid?"k":"a"),tiers=[...new Set(RW.map(r=>r[3]))].sort((a,b)=>a-b);
   const rew=`<p class="hsub">Punkte von <b>${meP?esc(meP.n):"–"}</b>: <b>${bal}</b> · ${isKid?"Belohnungen für Kinder":"Belohnungen für Erwachsene"}. Stufen schalten sich frei, sobald genug Punkte da sind.</p>`+(tiers.length?tiers.map(t=>{const L=RW.filter(r=>r[3]===t);const ok=bal>=t;
@@ -4195,7 +4194,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const nProj=hProjects().filter(p=>!hProjDone(p)).length;
   v.innerHTML=`<h2 class="mtitle">🏠 Zuhause</h2>${hFairHtml()}${meSel}
     <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${filt}
-      ${opn.length?`<details class="hsubsec hbock2" data-hsec="bock"${HSEC.bock!=null?(HSEC.bock?" open":""):" open"}><summary><h4 class="hday">🙋 Offen – wer hat Bock? <span class="pvn">${opn.length}</span></h4></summary>${bockHtml}</details>`:""}${now}</section>
+      ${now}</section>
     <section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn" title="offene Projekte">${nProj}</span>`:""),hProjHtml(),true)}</section>
     <section class="pvsec">${sec("lvl","🏆 Punkte & Level",`<div class="hpcards">${meCard}</div>`,true)}</section>
     <section class="pvsec">${sec("rew","🎁 Belohnungen"+(openR.length?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR.length}</span>`:""),redOpen+rew,true)}</section>
