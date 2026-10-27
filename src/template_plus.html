@@ -1451,6 +1451,12 @@ body.kidsmode .kidbtn .kbl{display:inline!important}
 .hbock2{margin:4px 0 8px;padding:6px 12px 8px;border-radius:12px;background:color-mix(in srgb,#EAB308 9%,var(--surface));border:1.5px solid color-mix(in srgb,#EAB308 35%,transparent)}
 .hbock2 .hday{margin:4px 0}.hbock2 .hbrow:first-of-type{border-top:0}
 .hassign button[aria-pressed="true"]{border-color:var(--pc,var(--ink));background:color-mix(in srgb,var(--pc,var(--ink)) 16%,var(--surface))}
+.hctabs{display:flex;width:100%;margin:2px 0 6px}.hctabs button{flex:1;font-size:12.5px;padding:6px 6px;min-height:36px}
+.htbw.on{border-radius:12px;background:color-mix(in srgb,#1F7A3A 7%,var(--surface));border:1.5px solid color-mix(in srgb,#1F7A3A 45%,transparent)}
+.htbw.on .htb{border:0;background:none}
+.hinsts{display:grid;gap:2px;padding:0 10px 8px 46px}
+.hinst{font:inherit;font-size:12.5px;text-align:left;border:0;background:none;color:var(--ink);cursor:pointer;padding:2px 0;border-radius:6px}.hinst:hover{text-decoration:underline}
+.htbx{z-index:1}
 /* Rückgängig-Leiste */
 .undot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:72;width:min(440px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.3);overflow:hidden;font-size:13.5px;font-weight:700}
 .undot[hidden]{display:none}
@@ -4103,7 +4109,7 @@ function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","
   const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300)}
 function renderHomeAll(){HCACHE=null;if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
 /* Zeile einer Aufgabe */
-let HCQ="",HMGR={},HOPEN=new Set(),HACT=new Set(),HCATOPEN=null,HSEC=LS.get("hwk-hsec",{}),HF=Object.assign({who:"all",done:false},LS.get("hwk-hf",{})),HJOPEN=new Set();
+let HCTAB=LS.get("hwk-hctab","all"),HCQ="",HMGR={},HOPEN=new Set(),HACT=new Set(),HCATOPEN=null,HSEC=LS.get("hwk-hsec",{}),HF=Object.assign({who:"all",done:false},LS.get("hwk-hf",{})),HJOPEN=new Set();
 function hBockBtns(c,pid){const b=(c.bock||{})[pid]||0;return `<span class="hbock" role="group" aria-label="Wie gern machst du das?">${HBOCK.map(([v,e,l])=>`<button type="button" data-hbock="${esc(c.cid)}" data-v="${v}" aria-pressed="${b===v}" title="${l}">${e}</button>`).join("")}</span>`}
 function hAssign(c,d,lab,cur){return `<div class="hassign"><span>${lab}</span>${(c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople()).filter(p=>p.id!==cur).map(p=>`<button type="button" data-hwho2="${esc(c.cid)}" data-d="${d}" data-p="${p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}</div>`}
 function hDailyChip(i){const {c,d,who,dn}=i,p=hPer(who),op=HDPICK===c.cid+"|"+d,by=dn&&hPer(dn.by);return `<button type="button" class="hdc${op?" pick":""}" data-hdpick="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-expanded="${op}" title="${esc(c.ti)} – antippen: wer hat's gemacht?"><i>${dn?"✓":""}</i>${c.ic||""} ${esc(c.ti)} <small>${dn?(by?by.e:""):p?p.e:"🙋"}</small></button>`}
@@ -4166,14 +4172,24 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
       <h5>Wochen-Challenges</h5>${hChList().map(c=>mrow("ch",c[0],`${c[1]} ${esc(c[2])} · +${c[3]}`,cfg.ch.includes(c[0]),"data-hchon")).join("")}
       ${cfg.cdel.length?`<p class="hrest">${cfg.cdel.length} gelöscht · <button type="button" data-hrestore="ch">wiederherstellen</button></p>`:""}</div></details>`;
   const badges=`<div class="hbdg">${hBadges(me).map(b=>`<span class="${b[2]?"on":""}" title="${esc(b[1])}"><i>${b[0]}</i>${esc(b[1])}</span>`).join("")}</div>`;
-  const act=ch.length?`<div class="hact">${HCATS.map(cc=>{const L=ch.filter(c=>c.cat===cc[0]);return L.length?`<h4 class="hday">${cc[1]} ${cc[2]}</h4>`+L.map(c=>`<div class="hcrow"><div style="min-width:0"><b>${c.ic||cc[1]} ${esc(c.ti)}</b><small>${esc(c.f==="x"?(c.date?fmtDate(c.date)+(c.t?", "+c.t+" Uhr":""):"ohne Datum"):HFL[c.f]+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+hWdTxt(c):"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date):""))} · ${fmH(+c.dur||0)} · ${hPts(c)} P. · ${hChip(c.who)} · ${hMiss(c)==="lapse"?"💨 verfällt":"⏰ wird überfällig"}</small></div><button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Ändern</button></div>`).join(""):""}).join("")}</div>`:`<p class="pvsub">Noch nichts ausgewählt.</p>`;
-  const TP=hTpls(),used=new Set(ch.map(c=>c.tpl)),cc0=hCcfg();
-  const cat=`<input type="search" class="hcsearch" id="hcQ" placeholder="🔍 Im Katalog suchen, z. B. Fenster, Geburtstag, Kinder …" value="${esc(HCQ)}" aria-label="Im Aufgaben-Katalog suchen">
-      <p class="hsub">Antippen übernimmt die Aufgabe in eure Liste. Mit ✏️ ändert ihr die Vorlage selbst, mit 🗑️ fliegt sie aus dem Katalog.</p>${HCATS.map(cc=>{const L=TP.filter(x=>x.cat===cc[0]);
-      return `<details class="hcat"${HCATOPEN===cc[0]?" open":""} data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${L.length}</small></summary><div class="htpl">${L.map(x=>`<div class="htbw" data-q="${esc((x.ti+" "+cc[2]+" "+(x.ck||[]).join(" ")).toLowerCase())}"><button type="button" class="htb${used.has(x.id)?" on":""}" data-hadd="${esc(x.id)}"><span>${x.ic||cc[1]}</span><b>${esc(x.ti)}</b><small>${esc(HFL[x.f]||"")} · ${fmH(+x.dur||0)} · ${+x.pts||hrec(+x.dur||10,x.unpop,x.kid)} P.${used.has(x.id)?" · ✓ aktiv":""}</small></button><span class="htbx"><button type="button" data-htpe="${esc(x.id)}" aria-label="Vorlage bearbeiten" title="Vorlage bearbeiten">✏️</button><button type="button" data-htpx="${esc(x.id)}" aria-label="Aus dem Katalog löschen" title="Aus dem Katalog löschen">🗑️</button></span></div>`).join("")}</div></details>`}).join("")}
+  const TP=hTpls(),tids=new Set(TP.map(x=>x.id)),cc0=hCcfg(),inst=id=>ch.filter(c=>c.tpl===id),extra=ch.filter(c=>!c.tpl||!tids.has(c.tpl));
+  const turn=c=>c.f==="x"?(c.date?"einmalig · "+fmtDate(c.date):"einmalig"):(HFL[c.f]||"")+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+hWdTxt(c):"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date).replace(/^\S+ /,""):"");
+  const actLine=(c,tt)=>`<button type="button" class="hinst" data-hedit="${esc(c.cid)}" title="Aufgabe ändern">${tt&&c.ti!==tt?`<b>${esc(c.ti)}</b> · `:""}${hChip(c.who)} · ${esc(turn(c))}${hMiss(c)==="lapse"?" · 💨":""} ✏️</button>`;
+  const qOf=(ti,cat,ck,I)=>esc((ti+" "+cat+" "+(ck||[]).join(" ")+" "+I.map(c=>((hPer(c.who)||{}).n||"")+" "+turn(c)).join(" ")).toLowerCase());
+  const tcard=(x,cc)=>{const I=inst(x.id),on=I.length>0;return `<div class="htbw${on?" on":""}" data-q="${qOf(x.ti,cc[2],x.ck,I)}"><button type="button" class="htb${on?" on":""}" ${on?`data-hedit="${esc(I[0].cid)}"`:`data-hadd="${esc(x.id)}"`}><span>${x.ic||cc[1]}</span><b>${esc(x.ti)}</b><small>${on?"✓ ausgewählt":`${esc(HFL[x.f]||"")} · ${fmH(+x.dur||0)} · ${+x.pts||hrec(+x.dur||10,x.unpop,x.kid)} P.`}</small></button>${on?`<div class="hinsts">${I.map(c=>actLine(c,x.ti)).join("")}</div>`:""}<span class="htbx">${on?`<button type="button" data-hadd="${esc(x.id)}" aria-label="Noch einmal hinzufügen" title="Noch einmal hinzufügen (z. B. für ein zweites Kind)">➕</button>`:""}<button type="button" data-htpe="${esc(x.id)}" aria-label="Vorlage bearbeiten" title="Vorlage bearbeiten">✏️</button><button type="button" data-htpx="${esc(x.id)}" aria-label="Aus dem Katalog löschen" title="Aus dem Katalog löschen">🗑️</button></span></div>`};
+  const ccard=c=>{const cc=HCAT[c.cat]||["","📌","Sonstiges"];return `<div class="htbw on" data-q="${qOf(c.ti,cc[2],c.ck,[c])}"><button type="button" class="htb on" data-hedit="${esc(c.cid)}"><span>${c.ic||cc[1]}</span><b>${esc(c.ti)}</b><small>✓ ${fmH(+c.dur||0)} · ${hPts(c)} P.</small></button><div class="hinsts">${actLine(c)}</div></div>`};
+  const nSel=ch.length,TAB=HCTAB==="sel"&&!nSel?"all":HCTAB==="add"&&!extra.length?"all":HCTAB;
+  const tabs=`<div class="hseg hctabs" role="tablist" aria-label="Ansicht">${[["all","📚 Alle"],["sel",`✓ Ausgewählt${nSel?` (${nSel})`:""}`],["add",`📌 Zusätzliche${extra.length?` (${extra.length})`:""}`]].map(([k,l])=>`<button type="button" role="tab" data-hctab="${k}" aria-pressed="${TAB===k}">${l}</button>`).join("")}</div>`;
+  const grp=(L,mk)=>HCATS.map(cc=>{const G=L.filter(x=>x.cat===cc[0]);return G.length?`<details class="hcat" open data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${G.length}</small></summary><div class="htpl">${G.map(x=>mk(x,cc)).join("")}</div></details>`:""}).join("");
+  const body=TAB==="sel"?grp(ch,c=>ccard(c)):TAB==="add"?`<p class="hsub">Eigene Aufgaben und Termine, die nicht aus dem Katalog stammen.</p><details class="hcat" open data-hcat="_extra"><summary>📌 Zusätzliche Aufgaben <small>${extra.length}</small></summary><div class="htpl">${extra.map(ccard).join("")}</div></details>`
+    :HCATS.map(cc=>{const L=TP.filter(x=>x.cat===cc[0]),n=L.filter(x=>inst(x.id).length).length;
+      return `<details class="hcat"${HCATOPEN===cc[0]?" open":""} data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${n?`✓ ${n} von ${L.length}`:L.length}</small></summary><div class="htpl">${L.map(x=>tcard(x,cc)).join("")}</div></details>`}).join("")
+      +(extra.length?`<details class="hcat"${HCATOPEN==="_extra"?" open":""} data-hcat="_extra"><summary>📌 Zusätzliche Aufgaben <small>✓ ${extra.length}</small></summary><div class="htpl">${extra.map(ccard).join("")}</div></details>`:"");
+  const cat=`${tabs}<input type="search" class="hcsearch" id="hcQ" placeholder="🔍 Suchen, z. B. Fenster, Geburtstag, Anna …" value="${esc(HCQ)}" aria-label="Aufgaben suchen">
+      <p class="hsub">${TAB==="all"?"Antippen wählt eine Aufgabe aus – danach Person und Turnus festlegen. Ausgewählte (✓) zeigen, wer zuständig ist und wann; antippen zum Ändern.":TAB==="sel"?"Alle ausgewählten Aufgaben mit zuständiger Person und Turnus – antippen zum Ändern.":""}</p>${body}
       <p class="hsub" id="hcNone" hidden>Nichts gefunden – mit „Neue Vorlage“ selbst anlegen.</p>
-      ${cc0.del.length?`<p class="hrest">${cc0.del.length} Vorlagen gelöscht · <button type="button" data-hrestore="tpl">wiederherstellen</button></p>`:""}
-      <div class="hownbtns"><button type="button" class="pbtn" data-htpnew>➕ Neue Vorlage im Katalog</button><button type="button" class="pbtn" data-hadd="_own">➕ Eigene Aufgabe direkt</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`;
+      ${TAB==="all"&&cc0.del.length?`<p class="hrest">${cc0.del.length} Vorlagen gelöscht · <button type="button" data-hrestore="tpl">wiederherstellen</button></p>`:""}
+      <div class="hownbtns">${TAB==="all"?`<button type="button" class="pbtn" data-htpnew>➕ Neue Vorlage im Katalog</button>`:""}<button type="button" class="pbtn" data-hadd="_own">➕ Zusätzliche Aufgabe</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length;
   v.innerHTML=`<h2 class="mtitle">🏠 Zuhause</h2>${hFairHtml()}${meSel}
     <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${filt}
@@ -4183,9 +4199,8 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
     <section class="pvsec">${sec("rew","🎁 Belohnungen"+(openR.length?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR.length}</span>`:""),redOpen+rew,true)}</section>
     <section class="pvsec">${sec("fam","👨‍👩‍👧 Familienziele & Challenges",goals+chal+gmgr,true)}</section>
     <section class="pvsec">${sec("bdg","🏅 Abzeichen von "+(meP?esc(meP.n):"dir"),badges,false)}</section>
-    <section class="pvsec">${sec("act","📋 Unsere Aufgaben"+(ch.length?` <span class="pvn">${ch.length}</span>`:""),act,true)}</section>
-    <section class="pvsec">${sec("cat","➕ Aufgaben-Katalog",cat,!ch.length)}</section>`;if(HCQ)hCatFilter()}
-function hCatFilter(){const q=HCQ.trim().toLowerCase(),v=$("homeView");if(!v)return;let any=false;v.querySelectorAll(".hcat").forEach(d=>{let n=0;d.querySelectorAll(".htbw").forEach(w=>{const ok=!q||q.split(/\s+/).every(x=>w.dataset.q.includes(x));w.hidden=!ok;if(ok)n++});d.hidden=!!q&&!n;if(q)d.open=n>0;if(n)any=true});const nn=$("hcNone");if(nn)nn.hidden=!q||any}
+    <section class="pvsec">${sec("cat","📋 Aufgaben & Katalog"+(ch.length?` <span class="pvn" title="ausgewählte Aufgaben">${ch.length}</span>`:""),cat,true)}</section>`;if(HCQ)hCatFilter()}
+function hCatFilter(){const q=HCQ.trim().toLowerCase(),v=$("homeView");if(!v)return;let any=false;v.querySelectorAll(".hcat").forEach(d=>{let n=0;d.querySelectorAll(".htbw").forEach(w=>{const ok=!q||q.split(/\s+/).every(x=>w.dataset.q.includes(x));w.hidden=!ok;if(ok)n++});d.hidden=!!q&&!n;if(q)d.open=n>0;else if(HCTAB!=="all")d.open=true;if(n)any=true});const nn=$("hcNone");if(nn)nn.hidden=!q||any}
 /* Belohnungen auswählen */
 const hRcfg=()=>{const r=SETS.hrwcfg||{},old=((SETS.hrw||{}).list||[]).map(x=>Object.assign({t:"a"},x)),a=v=>Array.isArray(v)?v:[];return {off:a(r.off),del:a(r.del),ov:r.ov&&typeof r.ov==="object"?r.ov:{},custom:a(r.custom).concat(old.filter(o=>!a(r.custom).some(c=>c.id===o.id)))}};
 function hRewAll(){const c=hRcfg();return HREW.filter(r=>!c.del.includes(r[0])).map(r=>{const v=c.ov[r[0]]||{};return [r[0],v.ic||r[1],v.ti||r[2],+v.cost||r[3],r[4],v.t||r[5]]}).concat(c.custom.map(x=>[x.id,x.ic||"🎁",x.ti,+x.cost||50,"eigen",x.t||"a"]))}
@@ -4349,6 +4364,7 @@ document.addEventListener("click",e=>{const t=e.target;
   const mi=t.closest("[data-hmini]");if(mi){hMini(mi.dataset.hmini,mi.dataset.id);return}
   const md=t.closest("[data-hmdel]");if(md){hMiniDel(md.dataset.hmdel,md.dataset.id);return}
   if(t.closest("[data-hminisave]")){hMiniSave();return}
+  const ctb=t.closest("[data-hctab]");if(ctb){HCTAB=ctb.dataset.hctab;LS.set("hwk-hctab",HCTAB);renderHome();return}
   const fw=t.closest("[data-hfw]");if(fw){HFW=fw.dataset.hfw;renderHome();return}
   const fwho=t.closest("[data-hfwho]");if(fwho){HF.who=fwho.dataset.hfwho;LS.set("hwk-hf",HF);renderHome();return}
   const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);renderHome();return}
