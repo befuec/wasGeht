@@ -1282,7 +1282,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .hfhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.hfhead h3{margin:0;font-size:var(--fs-h)}
 .hfhead .hseg button{padding:4px 10px;min-height:30px;font-size:12.5px}
 .hfrow{display:grid;grid-template-columns:86px minmax(0,1fr);gap:8px;align-items:center}.hfl{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.hfb{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line);gap:2px}.hfb span{display:block;min-width:0;transition:flex .4s}.hfb.empty{opacity:.5}
+.hfb{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line);gap:2px}.hfb span{display:block;min-width:0;transition:flex .4s}.hfb.hfe{opacity:.5}
 .hfleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;padding-left:94px}.hfleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:0}
 .hfleg.sm{font-size:12px;color:var(--muted)}.hfnote{flex-basis:100%;font-size:11.5px}
 @media (max-width:560px){.hfrow{grid-template-columns:1fr}.hfleg{padding-left:0}}
@@ -1290,7 +1290,8 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .hfok{margin:2px 0 0;font-size:13px;font-weight:700;color:#1F7A3A}
 .hfkids{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;border-top:1px dashed var(--line);padding-top:6px}
 .hfmini{font:inherit;display:flex;align-items:center;gap:8px;width:100%;margin:6px 0 2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--ink);font-size:12.5px}
-.hfmini .hfb{flex:1;height:10px;min-width:60px}.hfmini b{white-space:nowrap}.hfmini>span:last-child{white-space:nowrap}
+.hfmini .hfb{flex:1;height:10px;min-width:40px}.hfmini b{white-space:nowrap}.hfmini>span:last-child{min-width:0;text-align:left}
+.hfmini{box-sizing:border-box;max-width:100%}
 .hme{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin:2px 0}.hme>span{font-weight:700;color:var(--muted)}
 .hme button,.hwho button{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;min-height:34px}
 .hme button[aria-pressed="true"],.hwho button[aria-pressed="true"]{border-color:var(--pc,var(--ink))!important;background:color-mix(in srgb,var(--pc,var(--ink)) 16%,var(--surface))!important;color:var(--ink)!important}
@@ -1364,6 +1365,53 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .hpr select,.hpr input[type=text]{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 .hkid{font-size:12.5px;display:flex;gap:4px;align-items:center}
 .seth2{margin:12px 0 4px;font-size:14px}.hbt{display:flex;gap:12px;margin-top:6px;font-size:13px}.hbt input{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:8px}
+/* Zuhause v2 */
+.hopen{color:#B45309}
+.hfilt{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:4px 0 6px}.hfilt .hseg button{padding:4px 10px;min-height:32px;font-size:12.5px}
+.hdtog{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:700;color:var(--muted)}
+.hsug{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:12.5px;margin-top:4px;color:var(--muted)}.hsugp small{font-size:11.5px}
+.hbock{display:inline-flex;gap:2px}.hbock button{font-size:17px;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;width:34px;height:30px;cursor:pointer;filter:grayscale(.8);opacity:.7}
+.hbock button[aria-pressed="true"]{filter:none;opacity:1;border-color:#EAB308;background:color-mix(in srgb,#EAB308 14%,var(--surface))}
+.hmore{font:inherit;font-size:18px;font-weight:900;border:0;background:none;color:var(--muted);cursor:pointer;min-width:32px;min-height:32px;border-radius:8px}.hmore[aria-expanded="true"]{background:var(--bg);color:var(--ink)}
+.hacts{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:6px;padding:8px;border-radius:10px;background:var(--bg)}
+.hmv{display:flex;gap:6px;align-items:center;font-size:12.5px;font-weight:700}.hmv input{font:inherit;font-size:13px;padding:3px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.hbrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.hbrow b{display:block;font-size:14px}.hbrow small{display:block;color:var(--muted);font-size:12.5px}.hbra{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center}
+@media (max-width:560px){.hbrow{grid-template-columns:1fr}.hbra{justify-content:flex-start}}
+.hpot{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,#16A34A 9%,var(--surface));margin-bottom:8px}
+.hpot>b{font:900 28px/1 var(--f-display);color:#15803D}.hpot span{font-weight:700;font-size:13.5px}.hpot small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.hgl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.hgl b{font-size:14px}.hgl small{color:var(--muted);font-size:12px}.hgi{font-size:24px}.hgl .hprog i{background:linear-gradient(90deg,#22C55E,#16A34A)}.hgl.ok b{color:#15803D}
+.hchal{margin-top:6px}.hbon{font-size:12px;font-weight:800;color:#15803D}
+.hmgr{display:grid;gap:4px;margin-top:6px}.hmgr h5{margin:10px 0 2px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.hmgr label{display:flex;gap:6px;align-items:center;font-size:13px}
+.hownf select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.hproj{border:1.5px solid var(--line);border-radius:14px;margin:6px 0;overflow:hidden;background:var(--bg)}.hproj.dn{opacity:.7}
+.hpjh{font:inherit;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:10px 12px;cursor:pointer;color:var(--ink)}
+.hpji{font-size:26px}.hpjt b{display:block;font-size:14.5px}.hpjt small{display:block;color:var(--muted);font-size:12.5px}.hpjt .hprog{display:block}
+.hpjb{padding:4px 12px 12px;display:grid;gap:6px;background:var(--surface);border-top:1px solid var(--line)}
+.hstep{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.hstep .hck{width:30px;height:30px;border-radius:9px;border:2px solid var(--accent);background:var(--surface);color:#fff;font-weight:900;cursor:pointer;grid-row:span 2}.hstep .hck[aria-pressed="true"]{background:#1F7A3A;border-color:#1F7A3A}
+.hstt{font:inherit;font-weight:700;font-size:14px;border:1px solid transparent;border-radius:8px;padding:4px 6px;background:none;color:var(--ink);min-width:0}.hstt:focus{border-color:var(--line);background:var(--surface)}
+.hstep.dn .hstt{text-decoration:line-through;color:var(--muted)}
+.hstm{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.hstm select,.hstm input{width:auto!important;min-width:0}.hstm select,.hstm input{font:inherit;font-size:12.5px;padding:3px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.hpjf{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.hpjnew{display:flex;gap:6px;margin-top:8px}.hpjnew input,.hpjb .hownf input{min-width:0;width:auto;flex:1;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.hpjtpl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+/* Kinderansicht: Aufgaben */
+.ktasks{background:linear-gradient(135deg,#FFF7D6,#FFE9F2);border-radius:22px;padding:14px;margin:0 0 14px;color:#2B2B2B;display:grid;gap:10px}
+.kth{display:flex;justify-content:space-between;align-items:center;gap:8px}.kth h3{margin:0;font-size:22px;font-family:var(--f-display)}
+.kspeak2{white-space:nowrap;font:inherit;font-weight:800;font-size:15px;border:0;border-radius:999px;background:#fff;padding:8px 14px;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.12)}.kspeak2.sm{padding:6px 10px;font-size:18px}
+.kwho{display:flex;gap:8px;flex-wrap:wrap}.kwho button{font:inherit;font-weight:800;font-size:16px;border:3px solid transparent;border-radius:18px;background:#fff;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:6px}.kwho button span{font-size:26px}
+.kwho button[aria-pressed="true"]{border-color:#F59E0B}
+.kpts{display:flex;align-items:center;gap:10px;font-size:15px}.kpts>b{font:900 34px/1 var(--f-display);color:#B45309}.kstar{font-size:34px}
+.kprog{height:12px;background:#fff}
+.ktl{display:grid;gap:8px}
+.ktask{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 10px;align-items:center;background:#fff;border-radius:18px;padding:10px 12px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.ktask .kti{font-size:34px;grid-row:span 2}.ktask b{font-size:18px}.ktask small{grid-column:2;color:#6B6B6B;font-size:13px}.ktask .kspeak2,.ktask .kck{grid-row:span 2}
+.ktask.od{outline:3px solid #FCA5A5}.ktask.dn{opacity:.6}.ktask.dn b{text-decoration:line-through}
+.kck{width:56px;height:56px;border-radius:18px;border:3px solid #22C55E;background:#fff;font-size:28px;color:#16A34A;cursor:pointer;font-weight:900}.kck[aria-pressed="true"]{background:#22C55E;color:#fff}
+.kempty{margin:0;font-size:16px;font-weight:700}
+.krew summary{cursor:pointer;font-weight:800;font-size:16px}.krew .hrw{margin-top:8px}.krew .hrwb{font-size:14px;border-radius:14px}
 /* Rückgängig-Leiste */
 .undot{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:72;width:min(440px,calc(100% - 24px));background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 22px rgba(0,0,0,.3);overflow:hidden;font-size:13.5px;font-weight:700}
 .undot[hidden]{display:none}
@@ -1601,6 +1649,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
   <section class="mview homeview" id="homeView" hidden aria-label="Zuhause"></section>
   <dialog class="evdlg hdlg" id="hdlg" aria-label="Aufgabe"></dialog>
   <section id="kidview" aria-labelledby="kH">
+    <div class="ktasks" id="kTasks" hidden></div>
     <div class="khead"><h2 id="kH">Wohin geht's?</h2><p>Such dir was aus und zeig es Mama oder Papa!</p></div>
     <div class="ktop"><div class="kwx" id="kWx" aria-live="polite"></div><div id="kStars"></div></div>
     <div class="kchips small kcost" id="kCost" role="group" aria-label="Was darf es kosten?"></div>
@@ -3781,30 +3830,47 @@ const HT=[
 ["ki_tier","kids","🐟","Haustier füttern","d",5,0,1],["ki_muell","kids","🗑️","Müll mit rausbringen","w1",5,0,1],["ki_helfen","kids","🥄","Beim Kochen helfen","w1",20,0,1]];
 const HFREQ=[["x","Einmalig / Termin"],["d","Täglich"],["wd","Mo–Fr"],["w1","Wöchentlich"],["w2","Alle 2 Wochen"],["w4","Alle 4 Wochen"],["m1","Monatlich"],["m3","Alle 3 Monate"],["m6","Alle 6 Monate"],["y1","Jährlich"]];
 const HFL=Object.fromEntries(HFREQ);
+/* Belohnungen: [id, Icon, Titel, Punkte, Gruppe, für: a=Erwachsene k=Kinder b=beide] */
 const HREW=[
- ["r_schulter","💆","15 Min. Schultermassage",30,"erholung"],["r_eis","🍦","Eis essen gehen",30,"genuss"],["r_laenger","🌙","15 Min. länger aufbleiben",30,"kinder"],["r_nachtisch","🍮","Wunsch-Nachtisch",30,"kinder"],
- ["r_ausschlaf","😴","Ausschlafen (bis 9 Uhr)",60,"erholung"],["r_wanne","🛁","Badewanne in Ruhe",60,"erholung"],["r_mittag","💤","Ungestörter Mittagsschlaf",60,"erholung"],["r_stunde","⏳","Eine Stunde nur für mich",60,"freiraum"],["r_kuchen","🍰","Lieblingskuchen backen lassen",60,"genuss"],["r_spielzeit","🎲","Spielzeit mit Mama/Papa nach Wahl",60,"kinder"],
- ["r_massage","💆","30 Min. Massage",100,"erholung"],["r_sport","🏃","Sport allein, ohne schlechtes Gewissen",100,"freiraum"],["r_morgen","☕","Wochenend-Morgen frei",100,"freiraum"],["r_essen","🍝","Lieblingsessen gekocht bekommen",100,"genuss"],["r_fruehst","🥐","Frühstück ans Bett",100,"genuss"],
- ["r_abend","🌆","Abend frei",150,"freiraum"],["r_freunde","🍻","Treffen mit Freunden",150,"freiraum"],["r_kino","🎬","Kino mit den Kindern",150,"kinder"],["r_spielzeug","🧸","Kleines Spielzeug / Buch",150,"kinder"],
- ["r_konzert","🎤","Konzert oder Kino allein/zu zweit",250,"freiraum"],["r_wunschausflug","🗺️","Wunsch-Ausflug aussuchen",250,"kinder"],["r_uebernacht","🏕️","Übernachtungsparty",250,"kinder"],["r_restaurant","🍽️","Essen gehen zu zweit (Babysitter organisiert)",250,"genuss"],
- ["r_wellness","🧖","Wellness-Tag",400,"erholung"],["r_wochenende","🧳","Wochenende allein / zu zweit",600,"freiraum"]];
+ ["r_schulter","💆","15 Min. Schultermassage",30,"erholung","a"],["r_eis","🍦","Eis essen gehen",30,"genuss","b"],["r_kaffee","☕","Kaffee in Ruhe trinken",30,"erholung","a"],
+ ["r_ausschlaf","😴","Ausschlafen (bis 9 Uhr)",60,"erholung","a"],["r_wanne","🛁","Badewanne in Ruhe",60,"erholung","a"],["r_mittag","💤","Ungestörter Mittagsschlaf",60,"erholung","a"],["r_stunde","⏳","Eine Stunde nur für mich",60,"freiraum","a"],["r_kuchen","🍰","Lieblingskuchen backen lassen",60,"genuss","a"],
+ ["r_massage","💆","30 Min. Massage",100,"erholung","a"],["r_sport","🏃","Sport allein, ohne schlechtes Gewissen",100,"freiraum","a"],["r_morgen","☕","Wochenend-Morgen frei",100,"freiraum","a"],["r_essen","🍝","Lieblingsessen gekocht bekommen",100,"genuss","a"],["r_fruehst","🥐","Frühstück ans Bett",100,"genuss","a"],
+ ["r_abend","🌆","Abend frei",150,"freiraum","a"],["r_freunde","🍻","Treffen mit Freunden",150,"freiraum","a"],["r_serie","📺","Serienabend, Fernbedienung gehört mir",150,"freiraum","a"],
+ ["r_konzert","🎤","Konzert oder Kino allein/zu zweit",250,"freiraum","a"],["r_restaurant","🍽️","Essen gehen zu zweit (Babysitter organisiert)",250,"genuss","a"],
+ ["r_wellness","🧖","Wellness-Tag",400,"erholung","a"],["r_wochenende","🧳","Wochenende allein / zu zweit",600,"freiraum","a"],
+ ["k_laenger","🌙","15 Min. länger aufbleiben",20,"kinder","k"],["k_nachtisch","🍮","Wunsch-Nachtisch",20,"kinder","k"],["k_sticker","⭐","Sticker oder Überraschungs-Ei",20,"kinder","k"],
+ ["k_buch","📖","Extra Vorlese-Geschichte",30,"kinder","k"],["k_bildschirm","📱","30 Min. extra Tablet/TV",40,"kinder","k"],["k_spielzeit","🎲","Spielzeit mit Mama/Papa nach Wahl",50,"kinder","k"],["k_fruehst","🥞","Wunsch-Frühstück",50,"kinder","k"],
+ ["k_freund","🤝","Freund/Freundin einladen",80,"kinder","k"],["k_taschengeld","🪙","1 € Taschengeld extra",80,"kinder","k"],["k_kino","🎬","Kino",150,"kinder","k"],["k_spielzeug","🧸","Kleines Spielzeug / Buch",150,"kinder","k"],
+ ["k_ausflug","🗺️","Wunsch-Ausflug aussuchen",250,"kinder","k"],["k_uebernacht","🏕️","Übernachtungsparty",250,"kinder","k"]];
 const HRWC={erholung:"💆 Erholung",freiraum:"🕊️ Freiraum",genuss:"😋 Genuss",kinder:"🧒 Für Kinder",eigen:"✍️ Eigene"};
-const HGOAL=[[300,"🍕","Pizza- & Filmabend"],[600,"🗺️","Familien-Wunschausflug"],[1000,"🎢","Großer Ausflug (z. B. Heide-Park)"]];
+/* Familienziele (gemeinsamer Topf) und Wochen-Challenges */
+const HGOALS=[["g_pizza","🍕","Pizza- & Filmabend",300],["g_kino","🎬","Familien-Kino",400],["g_spassbad","🏊","Spaßbad-Tag",450],["g_zoo","🦁","Zoo / Tierpark",500],["g_ausflug","🗺️","Familien-Wunschausflug",600],["g_park","🎢","Freizeitpark (z. B. Heide-Park)",1000],["g_kurzurlaub","🏡","Kurzurlaub / Ferienhaus",2000]];
+const HGOAL_DEF=["g_pizza","g_ausflug","g_park"];
+const HCH=[["ch_all","🏁","Alle Aufgaben der Woche erledigt",50],["ch_noover","⏰","Keine Aufgabe bleibt überfällig",30],["ch_kids","🧒","Kinder erledigen zusammen 10 Aufgaben",40],["ch_daily","📆","Jeden Tag mindestens eine Aufgabe erledigt",30],
+ ["ch_fair","⚖️","Erwachsenen-Zeit fair verteilt (40–60 %, mind. 2 h)",40],["ch_proj","🛠️","Einen Projekt-Schritt schaffen",20],["ch_mental","🧠","Jeder Erwachsene übernimmt Kopf-Arbeit",20],["ch_points","💯","Zusammen 150 Punkte sammeln",40]];
+const HCH_DEF=["ch_all","ch_kids","ch_fair"];
+/* Projekt-Vorlagen für die Irgendwann-Liste */
+const HPROJ=[["🗄️","Schrankwand aufbauen",["Möbel aussuchen & kaufen","Wand streichen","Schrank aufbauen","Dekorieren"]],["🎨","Zimmer streichen",["Farbe aussuchen & kaufen","Möbel abrücken & abkleben","Streichen","Aufräumen & einräumen"]],
+ ["🧸","Kinderzimmer umgestalten",["Ideen mit den Kindern sammeln","Aussortieren","Möbel & Deko kaufen","Umbauen"]],["🥕","Hochbeet bauen",["Platz & Maße festlegen","Holz & Erde kaufen","Bauen","Bepflanzen"]],
+ ["📦","Keller ausmisten",["Sortieren: behalten / spenden / weg","Spenden wegbringen","Sperrmüll anmelden","Regale ordnen"]],["📸","Fotobuch erstellen",["Fotos auswählen","Layout gestalten","Bestellen"]],
+ ["🔩","Regal anbringen",["Regal kaufen","Dübel & Werkzeug bereitlegen","Anbringen"]],["🪵","Terrasse sanieren",["Angebote einholen","Material bestellen","Alte Beläge entfernen","Neu verlegen"]]];
 const HLEV=[[0,"🌱","Anfänger"],[100,"🧹","Helfer"],[250,"⭐","Profi"],[500,"🦸","Haushalts-Held"],[1000,"🏆","Meister"],[2000,"👑","Legende"]];
 const HCOL=["#2F6FB0","#C2410C","#7C3AED","#15803D","#BE185D","#0E7490","#A16207"];
 const HEMO=["🧔","👩","🧑","👨","👱‍♀️","👧","👦","🧒","👶","🦸","🐻","🦊"];
 const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.round(min/5*(unpop?1.5:1)));
 const HK=k=>"settings/"+k;
+const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
-const isHomeKey=k=>/^(hc|hd|hr):/.test(k)||k==="people"||k==="homeblock"||k==="hrw";
+const HPRE=/^(hc|hd|hr|ho|hj):/;
+const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals"].includes(k);
 {const loc=LS.get("hwk-home",{});for(const k in loc)if(SETS[k]===undefined)SETS[k]=loc[k]}
 function hMirror(){const o={};for(const k in SETS)if(isHomeKey(k))o[k]=SETS[k];LS.set("hwk-home",o)}
 function hset(id,data){if(data==null)delete SETS[id];else SETS[id]=data;hMirror();if(SB)write(HK(id),data)}
 let HFIRST=true;
-window.homeApply=(s,full)=>{if(full){const srv=Object.keys(s).some(k=>/^(hc|hd|hr):/.test(k)||k==="people");
+window.homeApply=(s,full)=>{if(full){const srv=Object.keys(s).some(k=>HPRE.test(k)||k==="people");
     if(HFIRST&&!srv){for(const k of Object.keys(SETS))if(isHomeKey(k))write(HK(k),SETS[k])}
-    else for(const k of Object.keys(SETS))if(/^(hc|hd|hr):/.test(k)&&!(k in s))delete SETS[k];HFIRST=false}
-  hMirror();if(M2==="zuhause"&&typeof renderHome==="function")renderHome()};
+    else for(const k of Object.keys(SETS))if(HPRE.test(k)&&!(k in s))delete SETS[k];HFIRST=false}
+  hMirror();HCACHE=null;if(M2==="zuhause"&&typeof renderHome==="function")renderHome();if(document.body.classList.contains("kidsmode"))renderKidTasks()};
 window.homeIsKey=isHomeKey;
 /* Personen */
 function hPeople(){let L=(SETS.people&&Array.isArray(SETS.people.list))?SETS.people.list.slice():null;
@@ -3815,14 +3881,15 @@ function hEnsureMe(){if(!MYID)return;const L=(SETS.people&&SETS.people.list)||nu
   const base=L?L.slice():hPeople().map(({c,...p})=>p);if(!base.some(p=>p.n.toLowerCase()===MYID.toLowerCase()))base.unshift({id:"p_"+hslug(MYID),n:MYID,e:HEMO[base.length%3],kid:false});hset("people",{list:base})}
 const hPer=id=>hPeople().find(p=>p.id===id);
 const hAdults=()=>hPeople().filter(p=>!p.kid);
+const hKids=()=>hPeople().filter(p=>p.kid);
 function hMe(){const L=hPeople(),s=LS.get("hwk-hme",null);if(s&&L.some(p=>p.id===s))return s;const m=MYID&&L.find(p=>p.n.toLowerCase()===MYID.toLowerCase());return m?m.id:(L[0]||{}).id}
-const hChip=(id,small)=>{const p=hPer(id);if(!p)return id==="rot"?`<span class="hchip">🔄 abwechselnd</span>`:`<span class="hchip">–</span>`;return `<span class="hchip" style="--pc:${p.c}">${p.e} ${small?"":esc(p.n)}</span>`};
+const hChip=(id,small)=>{const p=hPer(id);if(!p)return id==="rot"?`<span class="hchip">🔄 abwechselnd</span>`:`<span class="hchip hopen">🙋 offen</span>`;return `<span class="hchip" style="--pc:${p.c}">${p.e} ${small?"":esc(p.n)}</span>`};
 /* Zuhause-Block */
 function hBlock(){const b=SETS.homeblock||{};return {days:Array.isArray(b.days)?b.days:[6],from:b.from||"09:00",to:b.to||"12:00"}}
 const toMin=t=>{const[h,m]=String(t||"0:0").split(":").map(Number);return h*60+(m||0)};
 /* Aufgaben & Termine */
 const hChores=()=>Object.keys(SETS).filter(k=>k.startsWith("hc:")).map(k=>Object.assign({cid:k.slice(3)},SETS[k])).filter(c=>c&&c.ti);
-const hDone=(cid,d)=>SETS["hd:"+cid+":"+d];
+const hProjects=()=>Object.keys(SETS).filter(k=>k.startsWith("hj:")).map(k=>Object.assign({pid:k.slice(3)},SETS[k])).filter(p=>p&&p.ti).sort((a,b)=>(a.at||0)-(b.at||0));
 const isoD=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const addD=(s,n)=>{const d=pdate(s);d.setDate(d.getDate()+n);return isoD(d)};
 function hOcc(c,from,to){const out=[],st=c.start||c.date||from,f=c.f||"w1";
@@ -3835,144 +3902,241 @@ function hOcc(c,from,to){const out=[],st=c.start||c.date||from,f=c.f||"w1";
     if(f[0]==="w"){const n=+f.slice(1)||1;const wk=Math.floor((pdate(s)-pdate(st))/864e5/7);if(n===1||(wk%n+n)%n===0)out.push(s);continue}
     if(f[0]==="m"){const n=+f.slice(1)||1;if(d.getDate()>7)continue;const mi=(d.getFullYear()*12+d.getMonth())-(pdate(st).getFullYear()*12+pdate(st).getMonth());if(mi%n===0)out.push(s)}}
   return out}
-function hWho(c,d){if(c.who!=="rot")return c.who;const A=hAdults();if(!A.length)return null;const i=Math.abs(Math.floor((pdate(d)-pdate(c.start||d))/864e5/7))+hOcc(c,c.start||d,d).length;return A[i%A.length].id}
+function hWho(c,d){if(c.who==="rot"){const A=hAdults();if(!A.length)return null;const i=Math.abs(Math.floor((pdate(d)-pdate(c.start||d))/864e5/7))+hOcc(c,c.start||d,d).length;return A[i%A.length].id}return c.who||null}
 const hDaily=c=>c.f==="d"||c.f==="wd";
-/* Fällige Einträge (mit Überfälligen) */
-function hItems(from,to){const L=[];hChores().forEach(c=>hOcc(c,from,to).forEach(d=>L.push({c,d,who:hWho(c,d),dn:hDone(c.cid,d)})));return L.sort((a,b)=>(a.d+(a.c.t||"99")).localeCompare(b.d+(b.c.t||"99")))}
-function hOverdue(){const L=[];hChores().forEach(c=>{if(hDaily(c))return;const occ=hOcc(c,addD(T0,-21),addD(T0,-1));const last=occ.pop();const nx0=hOcc(c,T0,addD(T0,60))[0];if(last&&!hDone(c.cid,last)&&nx0!==T0){const nx=nx0;L.push({c,d:last,who:hWho(c,last),od:true,nx})}});return L}
+const hMiss=c=>c.miss||(hDaily(c)?"lapse":"over");
+const hPts=c=>+c.pts||hrec(+c.dur||10,c.unpop,c.kid);
+/* Projekt-Schritte mit Datum verhalten sich wie einmalige Aufgaben */
+function hStepChores(){const L=[];hProjects().forEach(p=>(p.steps||[]).forEach(s=>{if(s.date)L.push({cid:"j:"+p.pid+":"+s.id,ti:p.ti+": "+s.t,ic:p.ic||"🛠️",cat:p.cat||"projekt",f:"x",date:s.date,dur:+s.dur||60,who:s.who||"",pts:+s.pts||hrec(+s.dur||60,0,0),miss:"over",proj:{pid:p.pid,sid:s.id},dn:s.dn||null})}));return L}
+const hDone=(cid,d)=>{if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":");const p=SETS["hj:"+pid];const s=p&&(p.steps||[]).find(x=>x.id===sid);return s&&s.dn||null}return SETS["hd:"+cid+":"+d]};
+/* Fällige Einträge (Verschiebungen und Übernahmen je Termin berücksichtigt) */
+function hItems(from,to){const L=[];hChores().concat(hStepChores()).forEach(c=>hOcc(c,addD(from,-14),addD(to,14)).forEach(d=>{const ov=SETS["ho:"+c.cid+":"+d]||null,disp=(ov&&ov.to)||d;
+    if(disp<from||disp>to)return;L.push({c,d,disp,who:(ov&&ov.who)||hWho(c,d),dn:hDone(c.cid,d),mv:!!(ov&&ov.to)})}));
+  return L.sort((a,b)=>(a.disp+(a.c.t||"99")).localeCompare(b.disp+(b.c.t||"99")))}
+function hOverdue(){const now=new Set(hItems(T0,T0).map(i=>i.c.cid)),seen={};
+  hItems(addD(T0,-28),addD(T0,-1)).forEach(i=>{if(hMiss(i.c)!=="over"||now.has(i.c.cid))return;seen[i.c.cid]=i});return Object.values(seen).filter(i=>!i.dn).map(i=>Object.assign({},i,{od:true}))}
 /* Punkte & Statistik */
-const hDoneAll=()=>Object.keys(SETS).filter(k=>k.startsWith("hd:")).map(k=>{const [,cid,d]=k.split(":");return Object.assign({cid,d},SETS[k])});
+function hDoneAll(){const L=Object.keys(SETS).filter(k=>k.startsWith("hd:")).map(k=>{const [,cid,d]=k.split(":");return Object.assign({cid,d},SETS[k])});
+  hProjects().forEach(p=>{(p.steps||[]).forEach(s=>{if(s.dn)L.push(Object.assign({cid:"j:"+p.pid+":"+s.id,d:s.dn.d,cat:p.cat||"projekt",proj:1},s.dn))});if(p.dn)L.push(Object.assign({cid:"j:"+p.pid,d:p.dn.d,cat:p.cat||"projekt",proj:1},p.dn))});return L}
 function hEarned(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&(!from||x.d>=from)&&(!to||x.d<=to)).reduce((s,x)=>s+(+x.pts||0),0)}
 const hReds=()=>Object.keys(SETS).filter(k=>k.startsWith("hr:")).map(k=>Object.assign({rid:k.slice(3)},SETS[k]));
-const hBal=pid=>hEarned(pid)-hReds().filter(r=>r.by===pid).reduce((s,r)=>s+(+r.cost||0),0);
+const hBal=pid=>hEarned(pid)-hReds().filter(r=>r.by===pid&&!r.fam).reduce((s,r)=>s+(+r.cost||0),0);
 const hLev=pts=>{let L=HLEV[0],n=null;for(let i=0;i<HLEV.length;i++){if(pts>=HLEV[i][0]){L=HLEV[i];n=HLEV[i+1]||null}}return {L,n}};
 const wkStart=s=>{const d=pdate(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return isoD(d)};
 function hStreak(pid){let n=0,w=wkStart(T0);const D=hDoneAll().filter(x=>x.by===pid);const has=a=>D.some(x=>x.d>=a&&x.d<=addD(a,6));if(!has(w))w=addD(w,-7);while(has(w)){n++;w=addD(w,-7)}return n}
 const fmH=m=>m>=60?Math.floor(m/60)+" h"+(m%60?" "+(m%60)+" min":""):m+" min";
+const hMinOf=x=>+x.min||0;
+function hWeekMin(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&x.d>=from&&x.d<=to).reduce((s,x)=>s+hMinOf(x),0)}
+/* Bock: wer macht das lieber? Gleichstand → wer diese Woche weniger Zeit hatte */
+function hSuggest(c){const pool=c.kid||c.cat==="kids"?hKids():hAdults();if(!pool.length)return null;const b=c.bock||{},w=wkStart(T0),e=addD(w,6);
+  const r=pool.map(p=>({p,b:+b[p.id]||0,m:hWeekMin(p.id,w,e)})).sort((x,y)=>(y.b||1.5)-(x.b||1.5)||x.m-y.m);const top=r[0];
+  return {p:top.p,why:r.length>1&&top.b&&r[1].b===top.b?"gleich viel Bock – hatte diese Woche weniger Zeit ⚖️":top.b===3?"hat Bock 😍":top.b===2?"findet es okay 😐":top.b===1?"alle eher ungern – hatte weniger Zeit ⚖️":"hatte diese Woche weniger Zeit ⚖️"}}
 let HFW="w";
 function hFair(){const A=hAdults(),from=HFW==="w"?wkStart(T0):addD(wkStart(T0),-21),to=addD(wkStart(T0),6);
-  const D=hDoneAll().filter(x=>x.d>=from&&x.d<=to);const ch=Object.fromEntries(hChores().map(c=>[c.cid,c]));
-  const st=A.map(p=>{const mine=D.filter(x=>x.by===p.id);const min=mine.reduce((s,x)=>s+(+x.min||((ch[x.cid]||{}).dur)||0),0);
-    const ml=mine.filter(x=>MENTAL.has(x.cat||(ch[x.cid]||{}).cat)).reduce((s,x)=>s+(+x.min||((ch[x.cid]||{}).dur)||0),0);
+  const D=hDoneAll().filter(x=>x.d>=from&&x.d<=to);
+  const st=A.map(p=>{const mine=D.filter(x=>x.by===p.id);const min=mine.reduce((s,x)=>s+hMinOf(x),0);
+    const ml=mine.filter(x=>MENTAL.has(x.cat)).reduce((s,x)=>s+hMinOf(x),0);
     const plan=hItems(from,to).filter(i=>i.who===p.id).reduce((s,i)=>s+(+i.c.dur||0),0);
     return {p,min,ml,plan,pts:mine.reduce((s,x)=>s+(+x.pts||0),0),n:mine.length}});
   const tot=st.reduce((s,x)=>s+x.min,0),tml=st.reduce((s,x)=>s+x.ml,0),tpl=st.reduce((s,x)=>s+x.plan,0);
   st.forEach(x=>{x.sh=tot?Math.round(x.min/tot*100):0;x.shm=tml?Math.round(x.ml/tml*100):0;x.shp=tpl?Math.round(x.plan/tpl*100):0});
-  const kids=hPeople().filter(p=>p.kid).map(p=>({p,pts:D.filter(x=>x.by===p.id).reduce((s,x)=>s+(+x.pts||0),0)}));
+  const kids=hKids().map(p=>({p,pts:D.filter(x=>x.by===p.id).reduce((s,x)=>s+(+x.pts||0),0),n:D.filter(x=>x.by===p.id).length}));
   return {st,tot,tml,tpl,kids,from,to}}
 function hFairHtml(compact){const F=hFair(),A=F.st;if(!A.length)return "";
   const bar=(k,lab)=>`<div class="hfb" role="img" aria-label="${esc(lab)}">${A.map(x=>`<span style="flex:${Math.max(x[k],A.length===1?100:0)||.0001};background:${x.p.c}" title="${esc(x.p.n)}: ${x[k]} %"></span>`).join("")}</div>`;
-  const maxSh=Math.max(...A.map(x=>x.sh));const low=A.slice().sort((a,b)=>a.sh-b.sh)[0];
-  const warn=A.length>1&&F.tot>=60&&maxSh>=65?`<p class="hfwarn">⚖️ Ungleich verteilt – vielleicht übernimmt ${esc(low.p.n)} ${HFW==="w"?"diese Woche":"in nächster Zeit"} etwas mehr?</p>`:A.length>1&&F.tot>=60?`<p class="hfok">✅ Gut verteilt</p>`:"";
+  const srt=A.slice().sort((a,b)=>b.min-a.min),diff=A.length>1?srt[0].min-srt[srt.length-1].min:0,low=srt[srt.length-1];
+  const bal=A.length>1&&F.tot>=30?(diff>=30&&srt[0].sh>=58?`<p class="hfwarn">⏱️ <b>${esc(srt[0].p.n)}</b> hat ${HFW==="w"?"diese Woche":"in 4 Wochen"} <b>${fmH(diff)}</b> mehr übernommen. Zum Ausgleich ist <b>${esc(low.p.n)}</b> bei offenen Aufgaben zuerst dran.</p>`:`<p class="hfok">✅ Zeit gut verteilt (Unterschied ${fmH(diff)})</p>`):"";
   if(compact&&(!F.tot||A.length<2))return `<button type="button" class="hfmini" data-m2="zuhause">⚖️ <b>Fairness</b><span>${A.length<2?"Zweite erwachsene Person unter ⚙️ eintragen":"Diese Woche noch nichts erledigt – zu „Zuhause“ →"}</span></button>`;
-  if(compact)return `<button type="button" class="hfmini" data-m2="zuhause" aria-label="Zur Fairness-Übersicht">⚖️ <b>Diese Woche</b>${bar("sh","Anteil erledigter Zeit")}<span>${A.map(x=>`${x.p.e} ${x.sh} %`).join(" · ")}</span></button>`;
-  return `<section class="hfair" aria-labelledby="hfH"><div class="hfhead"><h3 id="hfH">⚖️ Fairness</h3><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${HFW==="w"}">Diese Woche</button><button type="button" data-hfw="m" aria-pressed="${HFW==="m"}">4 Wochen</button></span></div>
-    <div class="hfrow"><span class="hfl">Erledigt</span>${bar("sh","Erledigte Zeit")}</div>
-    <div class="hfleg">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} <b>${esc(x.p.n)}</b> ${x.sh} % · ${fmH(x.min)} · ${x.pts} Pkt.</span>`).join("")}</div>
-    <div class="hfrow"><span class="hfl">Kopf-Arbeit</span>${F.tml?bar("shm","Kopf-Arbeit"):`<div class="hfb empty"></div>`}</div>
-    <div class="hfleg sm">${F.tml?A.map(x=>`<span>${x.p.e} ${x.shm} %</span>`).join(""):"<span>Noch keine Organisation, Termine oder Geschenke erledigt.</span>"} <span class="hfnote">Termine, Geschenke, Organisation, Kümmern – die unsichtbare Arbeit</span></div>
-    <div class="hfrow"><span class="hfl">Geplant</span>${F.tpl?bar("shp","Geplante Zeit"):`<div class="hfb empty"></div>`}</div>
-    <div class="hfleg sm">${F.tpl?A.map(x=>`<span>${x.p.e} ${x.shp} % · ${fmH(x.plan)}</span>`).join(""):"<span>Noch keine Aufgaben verteilt.</span>"}</div>
-    ${warn}${F.kids.length?`<div class="hfkids">${F.kids.map(k=>`<span>${k.p.e} ${esc(k.p.n)}: <b>${k.pts} Pkt.</b></span>`).join("")}</div>`:""}</section>`}
-/* Wochen-Challenge & Familienziel */
-function hChallenge(){const a=wkStart(T0),b=addD(a,6);const L=hItems(a,b).filter(i=>!hDaily(i.c));const n=L.filter(i=>i.dn).length;return {n,t:L.length,ok:L.length>0&&n===L.length}}
-function hFamily(){const m=T0.slice(0,7);let pts=hDoneAll().filter(x=>x.d.startsWith(m)).reduce((s,x)=>s+(+x.pts||0),0);
-  let w=wkStart(m+"-01");const end=addD(T0,0);while(w<=end){const L=hItems(w,addD(w,6)).filter(i=>!hDaily(i.c));if(addD(w,6)<T0&&L.length&&L.every(i=>i.dn))pts+=50;w=addD(w,7)}const c=hChallenge();if(c.ok)pts+=50;return pts}
+  if(compact)return `<button type="button" class="hfmini" data-m2="zuhause" aria-label="Zur Fairness-Übersicht">⚖️ <b>Zeit diese Woche</b>${bar("sh","Anteil erledigter Zeit")}<span>${A.map(x=>`${x.p.e} ${fmH(x.min)}`).join(" · ")}</span></button>`;
+  return `<section class="hfair" aria-labelledby="hfH"><div class="hfhead"><h3 id="hfH">⚖️ Fairness – wer trägt wie viel Zeit?</h3><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${HFW==="w"}">Diese Woche</button><button type="button" data-hfw="m" aria-pressed="${HFW==="m"}">4 Wochen</button></span></div>
+    <div class="hfrow"><span class="hfl">Zeit erledigt</span>${bar("sh","Erledigte Zeit")}</div>
+    <div class="hfleg">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} <b>${esc(x.p.n)}</b> ${fmH(x.min)} · ${x.sh} %</span>`).join("")}</div>
+    ${bal}
+    <div class="hfrow"><span class="hfl">Kopf-Arbeit</span>${F.tml?bar("shm","Kopf-Arbeit"):`<div class="hfb hfe"></div>`}</div>
+    <div class="hfleg sm">${F.tml?A.map(x=>`<span>${x.p.e} ${fmH(x.ml)} · ${x.shm} %</span>`).join(""):"<span>Noch keine Organisation, Termine oder Geschenke erledigt.</span>"} <span class="hfnote">Termine, Geschenke, Organisation, Kümmern – die unsichtbare Arbeit</span></div>
+    <div class="hfrow"><span class="hfl">Zeit geplant</span>${F.tpl?bar("shp","Geplante Zeit"):`<div class="hfb hfe"></div>`}</div>
+    <div class="hfleg sm">${F.tpl?A.map(x=>`<span>${x.p.e} ${fmH(x.plan)} · ${x.shp} %</span>`).join(""):"<span>Noch keine Aufgaben verteilt.</span>"}</div>
+    ${F.kids.length?`<div class="hfkids"><span>Kinder:</span>${F.kids.map(k=>`<span>${k.p.e} ${esc(k.p.n)}: <b>${k.n} Aufgaben · ${k.pts} Pkt.</b></span>`).join("")}</div>`:""}</section>`}
+/* Familienziele & Challenges */
+const hGcfg=()=>{const g=SETS.hgoals||{};return {on:Array.isArray(g.on)?g.on:HGOAL_DEF,ch:Array.isArray(g.ch)?g.ch:HCH_DEF,custom:Array.isArray(g.custom)?g.custom:[]}};
+const hGoalList=()=>HGOALS.concat(hGcfg().custom.map(c=>[c.id,c.ic||"🎯",c.ti,+c.pts||300]));
+function hChEval(id,w){const a=w,b=addD(w,6),I=hItems(a,b),D=hDoneAll().filter(x=>x.d>=a&&x.d<=b),A=hAdults(),K=new Set(hKids().map(p=>p.id));
+  switch(id){case "ch_all":{const L=I.filter(i=>!hDaily(i.c));return [L.filter(i=>i.dn).length,L.length]}
+    case "ch_noover":{const L=I.filter(i=>hMiss(i.c)==="over");return [L.filter(i=>i.dn).length,L.length]}
+    case "ch_kids":return [Math.min(10,D.filter(x=>K.has(x.by)).length),10];
+    case "ch_daily":{let n=0;for(let i=0;i<7;i++){const s=addD(a,i);if(D.some(x=>x.d===s))n++}return [n,7]}
+    case "ch_fair":{if(A.length<2)return [0,1];const m=A.map(p=>D.filter(x=>x.by===p.id).reduce((s,x)=>s+hMinOf(x),0)),t=m.reduce((s,x)=>s+x,0);return [t>=120&&m.every(x=>x/t>=.4&&x/t<=.6)?1:0,1]}
+    case "ch_proj":return [Math.min(1,D.filter(x=>x.proj).length),1];
+    case "ch_mental":return [A.filter(p=>D.some(x=>x.by===p.id&&MENTAL.has(x.cat))).length,A.length];
+    case "ch_points":return [Math.min(150,D.reduce((s,x)=>s+(+x.pts||0),0)),150]}return [0,1]}
+let HCACHE=null;
+function hFam(){if(HCACHE&&HCACHE.t>Date.now()-1500)return HCACHE.v;const cfg=hGcfg(),all=hDoneAll();let earned=all.reduce((s,x)=>s+(+x.pts||0),0),bonus=0;const first=all.map(x=>x.d).sort()[0];
+  if(first){let w=wkStart(first>addD(T0,-182)?first:addD(T0,-182));while(w<=T0){cfg.ch.forEach(id=>{const ch=HCH.find(c=>c[0]===id);if(!ch)return;const [n,t]=hChEval(id,w);if(t>0&&n>=t&&(addD(w,6)<T0||w===wkStart(T0)))bonus+=ch[3]});w=addD(w,7)}}
+  const spent=hReds().filter(r=>r.fam).reduce((s,r)=>s+(+r.cost||0),0);const v={earned,bonus,spent,bal:earned+bonus-spent};HCACHE={t:Date.now(),v};return v}
 /* Abzeichen */
-function hBadges(pid){const D=hDoneAll().filter(x=>x.by===pid),ch=Object.fromEntries(hChores().map(c=>[c.cid,c])),cat=x=>x.cat||(ch[x.cid]||{}).cat;
+function hBadges(pid){const D=hDoneAll().filter(x=>x.by===pid);
   return [["🎉","Erster Haken",D.length>=1],["🔟","10 erledigt",D.length>=10],["💯","100 erledigt",D.length>=100],["🛟","Retter (3× übernommen)",D.filter(x=>x.tk).length>=3],
-   ["🔥","4 Wochen am Stück",hStreak(pid)>=4],["🧠","Kopf-Arbeiter (10× Organisation)",D.filter(x=>MENTAL.has(cat(x))).length>=10],["🌳","Gärtner (10× Garten)",D.filter(x=>cat(x)==="garten").length>=10],
-   ["🧽","Putzteufel (20× Haushalt)",D.filter(x=>cat(x)==="haushalt").length>=20],["⏰","Pünktlich (20× rechtzeitig)",D.filter(x=>!x.late).length>=20],["🧒","Kinder-Profi (10× Kinderaufgaben)",D.filter(x=>cat(x)==="kids").length>=10]]}
+   ["🔥","4 Wochen am Stück",hStreak(pid)>=4],["🧠","Kopf-Arbeiter (10× Organisation)",D.filter(x=>MENTAL.has(x.cat)).length>=10],["🌳","Gärtner (10× Garten)",D.filter(x=>x.cat==="garten").length>=10],
+   ["🧽","Putzteufel (20× Haushalt)",D.filter(x=>x.cat==="haushalt").length>=20],["⏰","Pünktlich (20× rechtzeitig)",D.filter(x=>!x.late).length>=20],["🛠️","Projekt-Macher (5 Schritte)",D.filter(x=>x.proj).length>=5],["🙋","Freiwillig (5 offene Aufgaben)",D.filter(x=>x.vol).length>=5],["🧒","Kinder-Profi (10× Kinderaufgaben)",D.filter(x=>x.cat==="kids").length>=10]]}
 /* Abhaken */
-function hCheck(cid,d,undo){const c=SETS["hc:"+cid];if(!c)return;const k="hd:"+cid+":"+d;
-  if(SETS[k]){const old=SETS[k];hset(k,null);renderHomeAll();if(!undo)undoToast("Haken entfernt",()=>{hset(k,old);renderHomeAll()});return}
-  const me=hMe(),who=hWho(c,d),late=d<T0,tk=!!(who&&who!==me&&late&&who!=="rot");const base=+c.pts||hrec(+c.dur||10,c.unpop,c.kid);const pts=Math.round(base*(tk?1.5:1));
-  const lvBefore=hLev(hEarned(me)).L;hset(k,{by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0});
+function hCheck(cid,d,opt){opt=opt||{};const me=opt.by||hMe();
+  if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),k="hj:"+pid,p=SETS[k];if(!p)return;const P=JSON.parse(JSON.stringify(p));const s=sid?(P.steps||[]).find(x=>x.id===sid):P;if(!s)return;
+    if(s.dn){const old=p;s.dn=null;hset(k,P);renderHomeAll();undoToast("Haken entfernt",()=>{hset(k,old);renderHomeAll()});return}
+    const pts=+s.pts||hrec(+s.dur||60,0,0);s.dn={by:me,pts,min:+s.dur||60,at:Date.now(),d:T0};hset(k,P);hBurst(pts,false);renderHomeAll();
+    const left=(P.steps||[]).filter(x=>!x.dn).length;undoToast(`✓ ${sid?s.t:P.ti} – +${pts} Punkte${sid&&!left&&(P.steps||[]).length?" · 🎉 Projekt geschafft!":""}`,()=>{hset(k,p);renderHomeAll()});return}
+  const c=SETS["hc:"+cid];if(!c)return;const k="hd:"+cid+":"+d;
+  if(SETS[k]){const old=SETS[k];hset(k,null);renderHomeAll();undoToast("Haken entfernt",()=>{hset(k,old);renderHomeAll()});return}
+  const ov=SETS["ho:"+cid+":"+d]||{},disp=ov.to||d,who=ov.who||hWho(c,d),late=disp<T0,tk=!!(who&&who!==me&&late),vol=!who;const base=hPts(c);const pts=Math.round(base*(tk?1.5:1));
+  const lvBefore=hLev(hEarned(me)).L;hset(k,{by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0,vol:vol?1:0});
   hBurst(pts,tk);const lv=hLev(hEarned(me)).L;
   renderHomeAll();undoToast(`✓ ${c.ti} – +${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}`,()=>{hset(k,null);renderHomeAll()})}
 function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","✨","🎊","💪","🏅"];
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
   const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300)}
-function renderHomeAll(){if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan()}
+function renderHomeAll(){HCACHE=null;if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
 /* Zeile einer Aufgabe */
-function hRow(i,ctx){const {c,d,who,dn,od}=i,me=hMe(),pts=+c.pts||hrec(+c.dur||10,c.unpop,c.kid);const cat=HCAT[c.cat]||["","📌",""];
-  const ck=Array.isArray(c.ck)&&c.ck.length?(()=>{const dd=c.ckd===d?c.ckx||[]:[];return {n:dd.length,t:c.ck.length,dd}})():null;const op=HOPEN.has(c.cid+d);
-  const tk=od&&who&&who!==me;
+let HOPEN=new Set(),HACT=new Set(),HCATOPEN=null,HSEC=LS.get("hwk-hsec",{}),HF=Object.assign({who:"all",done:false},LS.get("hwk-hf",{})),HJOPEN=new Set();
+function hBockBtns(c,pid){const b=(c.bock||{})[pid]||0;return `<span class="hbock" role="group" aria-label="Wie gern machst du das?">${HBOCK.map(([v,e,l])=>`<button type="button" data-hbock="${esc(c.cid)}" data-v="${v}" aria-pressed="${b===v}" title="${l}">${e}</button>`).join("")}</span>`}
+function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c);const cat=HCAT[c.cat]||["","📌",""];
+  const ck=Array.isArray(c.ck)&&c.ck.length?(()=>{const dd=c.ckd===d?c.ckx||[]:[];return {n:dd.length,t:c.ck.length,dd}})():null;const op=HOPEN.has(c.cid+d),ac=HACT.has(c.cid+d);
+  const tk=od&&who&&who!==me,open=!who&&!c.proj?hSuggest(c):null;
   return `<div class="htrow${dn?" dn":""}${od?" od":""}"><button type="button" class="hck" data-hck="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-label="${dn?"Erledigt – antippen zum Zurücknehmen":"Als erledigt abhaken"}">${dn?"✓":""}</button>
-    <div class="hrb"><b>${c.ic||cat[1]} ${esc(c.ti)}</b><small>${od?`<span class="hod">⚠️ überfällig seit ${esc(fmtDate(d))}</span> · `:ctx==="week"?esc(fmtDate(d))+" · ":""}${c.t?esc(c.t)+" Uhr · ":""}${fmH(+c.dur||0)} · ${hChip(who)}${dn&&dn.by!==who?` · erledigt von ${hChip(dn.by)}`:""}${c.f!=="x"?" · "+esc(HFL[c.f]||""):""}${ck?` · <button type="button" class="mbdet" data-hck2="${esc(c.cid)}" data-d="${d}">☑️ ${ck.n}/${ck.t} ${op?"▴":"▾"}</button>`:""}</small>
-      ${ck&&op?`<div class="hcl">${c.ck.map((t,j)=>`<label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label>`).join("")}</div>`:""}${tk&&!dn?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Übernehmen +50 %</button>`:""}</div>
-    <div class="hrr"><span class="hpts">${tk?`<s>${pts}</s> ${Math.round(pts*1.5)}`:dn?dn.pts:pts} P.</span></div></div>`}
-let HOPEN=new Set(),HCATOPEN=null,HSEC=LS.get("hwk-hsec",{});
+    <div class="hrb"><b>${c.ic||cat[1]} ${esc(c.ti)}</b><small>${od?`<span class="hod">⚠️ überfällig seit ${esc(fmtDate(disp))}</span> · `:ctx==="week"?esc(fmtDate(disp))+" · ":""}${mv?"↷ verschoben · ":""}${c.t?esc(c.t)+" Uhr · ":""}${fmH(+c.dur||0)} · ${hChip(who)}${dn&&dn.by!==who?` · erledigt von ${hChip(dn.by)}`:""}${c.f!=="x"?" · "+esc(HFL[c.f]||""):""}${ck?` · <button type="button" class="mbdet" data-hck2="${esc(c.cid)}" data-d="${d}">☑️ ${ck.n}/${ck.t} ${op?"▴":"▾"}</button>`:""}</small>
+      ${open&&!dn?`<div class="hsug">Wer hat Bock? ${hBockBtns(c,me)} <span class="hsugp">Vorschlag: ${hChip(open.p.id)} <small>(${esc(open.why)})</small></span></div>`:""}
+      ${ck&&op?`<div class="hcl">${c.ck.map((t,j)=>`<label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label>`).join("")}</div>`:""}
+      ${tk&&!dn?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Übernehmen +50 %</button>`:""}
+      ${ac&&!dn?`<div class="hacts">${who!==me?`<button type="button" class="pmini" data-hmine="${esc(c.cid)}" data-d="${d}">🙋 Ich mach's</button>`:""}<label class="hmv">📅 Verschieben auf <input type="date" data-hmv="${esc(c.cid)}" data-d="${d}" value="${disp}" min="${T0}"></label>${c.proj?`<button type="button" class="pmini" data-hjopen="${esc(c.proj.pid)}">🛠️ Projekt öffnen</button>`:`<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern</button>`}${mv?`<button type="button" class="pmini" data-hmvx="${esc(c.cid)}" data-d="${d}">↺ Zurück auf ${esc(fmtDate(d))}</button>`:""}</div>`:""}</div>
+    <div class="hrr"><span class="hpts">${tk?`<s>${pts}</s> ${Math.round(pts*1.5)}`:dn?dn.pts:pts} P.</span>${dn?"":`<button type="button" class="hmore" data-hact="${esc(c.cid)}" data-d="${d}" aria-expanded="${ac}" aria-label="Mehr: übernehmen, verschieben, ändern">⋯</button>`}</div></div>`}
 /* Hauptansicht */
-function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();const me=hMe(),P=hPeople(),meP=hPer(me);
+function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null;const me=hMe(),P=hPeople(),meP=hPer(me);
   const od=hOverdue(),today=hItems(T0,T0),week=hItems(addD(T0,1),addD(T0,6)).filter(i=>!hDaily(i.c));
-  const ch=hChores(),bal=hBal(me),earned=hEarned(me),lv=hLev(earned),fam=hFamily(),chal=hChallenge();
+  const ch=hChores(),bal=hBal(me),fam=hFam(),cfg=hGcfg();
   const B=hBlock(),nb=(()=>{for(let i=0;i<14;i++){const s=plus(i);if(B.days.includes(pdate(s).getDay()))return s}return null})();
   const sec=(id,title,body,open)=>`<details class="hsec2" data-hsec="${id}"${(HSEC[id]!=null?HSEC[id]:open)?" open":""}><summary><h3>${title}</h3></summary>${body}</details>`;
   const meSel=`<div class="hme" role="group" aria-label="Wer hakt ab?"><span>Ich bin</span>${P.map(p=>`<button type="button" data-hme="${p.id}" aria-pressed="${p.id===me}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}</div>`;
-  const now=(od.length||today.length||week.length)?`${od.map(i=>hRow(i,"od")).join("")}${today.length?`<h4 class="hday">Heute</h4>`+today.map(i=>hRow(i,"today")).join(""):""}${week.length?`<h4 class="hday">Die nächsten Tage</h4>`+week.map(i=>hRow(i,"week")).join(""):""}`
-    :`<p class="pvsub">${ch.length?"Gerade nichts fällig. 🎉":"Noch keine Aufgaben. Unten im Katalog auswählen – mit Turnus, Tag und wer zuständig ist."}</p>`;
+  const fOk=i=>HF.who==="me"?i.who===me:HF.who==="open"?!i.who:true;
+  const all=od.concat(today,week).filter(fOk),nDone=all.filter(i=>i.dn).length,vis=i=>HF.done||!i.dn;
+  const td=today.filter(fOk).filter(vis),wk=week.filter(fOk).filter(vis),odv=od.filter(fOk);
+  const filt=`<div class="hfilt" role="group" aria-label="Filter"><span class="hseg">${[["all","Alle"],["me","Nur meine"],["open","🙋 Offen"]].map(([k,l])=>`<button type="button" data-hfwho="${k}" aria-pressed="${HF.who===k}">${l}</button>`).join("")}</span><label class="hdtog"><input type="checkbox" data-hfdone${HF.done?" checked":""}> ✓ Erledigte zeigen${nDone?` (${nDone})`:""}</label></div>`;
+  const now=(odv.length||td.length||wk.length)?`${odv.map(i=>hRow(i,"od")).join("")}${td.length?`<h4 class="hday">Heute</h4>`+td.map(i=>hRow(i,"today")).join(""):""}${wk.length?`<h4 class="hday">Die nächsten Tage</h4>`+wk.map(i=>hRow(i,"week")).join(""):""}`
+    :`<p class="pvsub">${ch.length?(nDone&&!HF.done?`Alles erledigt 🎉 – ${nDone} erledigte ${nDone===1?"Aufgabe ist":"Aufgaben sind"} ausgeblendet.`:"Gerade nichts fällig. 🎉"):"Noch keine Aufgaben. Unten im Katalog auswählen – mit Turnus, Tag und wer zuständig ist."}</p>`;
   const meCard=P.map(p=>{const e=hEarned(p.id),b=hBal(p.id),L=hLev(e),st=hStreak(p.id);const prog=L.n?Math.round((e-L.L[0])/(L.n[0]-L.L[0])*100):100;
     return `<div class="hpcard${p.id===me?" me":""}" style="--pc:${p.c}"><div class="hpav">${p.e}</div><div style="min-width:0"><b>${esc(p.n)}</b><small>${L.L[1]} ${L.L[2]}${st?` · 🔥 ${st} ${st===1?"Woche":"Wochen"}`:""}</small><div class="hprog"><i style="width:${prog}%"></i></div><small>${L.n?`noch ${L.n[0]-e} Punkte bis ${L.n[1]} ${L.n[2]}`:"Höchstes Level erreicht"}</small></div><div class="hpbal"><b>${b}</b><small>Punkte</small></div></div>`}).join("");
-  const RW=HREW.concat(((SETS.hrw||{}).list||[]).map(r=>[r.id,r.ic||"🎁",r.ti,+r.cost||50,"eigen"]));const tiers=[...new Set(RW.map(r=>r[3]))].sort((a,b)=>a-b);
-  const forKid=meP&&meP.kid;const RWf=RW.filter(r=>forKid?(r[4]==="kinder"||r[4]==="genuss"||r[4]==="eigen"):r[4]!=="kinder"||true);
-  const rew=`<p class="hsub">Punkte von <b>${meP?esc(meP.n):"–"}</b>: <b>${bal}</b>. Stufen schalten sich frei, sobald genug Punkte da sind.</p>`+tiers.map(t=>{const L=RWf.filter(r=>r[3]===t);if(!L.length)return "";const ok=bal>=t;
-      return `<div class="htier${ok?" ok":""}"><div class="htl"><b>${ok?"🔓":"🔒"} ${t} Punkte</b>${ok?"":`<small>noch ${t-bal}</small>`}</div><div class="hrw">${L.map(r=>`<button type="button" class="hrwb" data-hred="${esc(r[0])}" data-cost="${r[3]}" data-ti="${esc(r[2])}" data-ic="${esc(r[1])}"${ok?"":" disabled"} title="${esc(HRWC[r[4]]||"")}"><span>${r[1]}</span>${esc(r[2])}</button>`).join("")}</div></div>`}).join("")
-    +`<details class="hown"><summary>✍️ Eigene Belohnung anlegen</summary><div class="hownf"><input type="text" id="hrwT" maxlength="40" placeholder="z. B. Kaffee im Lieblingscafé"><input type="number" id="hrwC" min="5" max="2000" step="5" value="60" aria-label="Punkte"><button type="button" class="pmini" id="hrwAdd">Hinzufügen</button></div>${((SETS.hrw||{}).list||[]).length?`<div class="hownl">${SETS.hrw.list.map(r=>`<span>${esc(r.ic||"🎁")} ${esc(r.ti)} · ${r.cost} P. <button type="button" class="mbx" data-hrwrm="${esc(r.id)}" aria-label="Entfernen">✕</button></span>`).join("")}</div>`:""}</details>`;
-  const open=hReds().filter(r=>!r.done).sort((a,b)=>a.at-b.at);
-  const redOpen=open.length?`<div class="hredl"><h4>Eingelöst – noch offen</h4>${open.map(r=>`<div class="hred">${hChip(r.by)} <span>${esc(r.ic||"🎁")} ${esc(r.ti)}</span><small>${r.cost} P.</small><button type="button" class="pmini" data-hreddone="${esc(r.rid)}">✓ Eingelöst</button></div>`).join("")}</div>`:"";
-  const goal=(()=>{const nx=HGOAL.find(g=>fam<g[0]),max=HGOAL[HGOAL.length-1][0];return `<div class="hgoal"><div class="hgbar"><i style="width:${Math.min(100,fam/max*100)}%"></i>${HGOAL.map(g=>`<span class="hgm${fam>=g[0]?" ok":""}" style="left:${g[0]/max*100}%" title="${g[0]} Punkte: ${esc(g[2])}">${g[1]}</span>`).join("")}</div>
-    <p class="hsub"><b>${fam}</b> Familienpunkte im ${MONL[TODAY.getMonth()]}${nx?` · noch ${nx[0]-fam} bis ${nx[1]} ${esc(nx[2])}`:" · 🎉 alle Ziele erreicht!"}</p>${HGOAL.filter(g=>fam>=g[0]).map(g=>`<p class="hunl">🎉 Freigeschaltet: ${g[1]} ${esc(g[2])}</p>`).join("")}
-    <div class="hchal${chal.ok?" ok":""}"><b>🏁 Wochen-Challenge:</b> alle Aufgaben dieser Woche erledigen → +50 Familienpunkte<div class="hprog"><i style="width:${chal.t?chal.n/chal.t*100:0}%"></i></div><small>${chal.t?`${chal.n} von ${chal.t} erledigt${chal.ok?" – geschafft! 🎉":""}`:"Diese Woche ist nichts Wöchentliches geplant."}</small></div></div>`})();
+  /* offene Aufgaben ohne Person: Bock-Abfrage */
+  const opn=ch.filter(c=>!c.who);
+  const bockHtml=opn.length?`<p class="hsub">Diese Aufgaben gehören noch niemandem. Sagt, wie gern ihr sie macht – der Vorschlag berücksichtigt auch, wer diese Woche weniger Zeit hatte.</p>`+opn.map(c=>{const sg=hSuggest(c),pool=c.kid||c.cat==="kids"?hKids():hAdults();
+      return `<div class="hbrow"><div style="min-width:0"><b>${c.ic||""} ${esc(c.ti)}</b><small>${pool.map(p=>`${p.e} ${["–","👎","😐","😍"][+(c.bock||{})[p.id]||0]}`).join(" · ")}${sg?` · Vorschlag: ${hChip(sg.p.id)}`:""}</small></div><div class="hbra">${hBockBtns(c,me)}${sg?`<button type="button" class="pmini" data-hassign="${esc(c.cid)}" data-who="${sg.p.id}">Fest an ${esc(sg.p.n)}</button>`:""}</div></div>`}).join("")
+    :`<p class="pvsub">Alle Aufgaben haben jemanden. Wer beim Anlegen „🙋 Niemand – nach Bock“ wählt, sieht die Aufgabe hier.</p>`;
+  /* Belohnungen */
+  const isKid=meP&&meP.kid,RW=hRewards(isKid?"k":"a"),tiers=[...new Set(RW.map(r=>r[3]))].sort((a,b)=>a-b);
+  const rew=`<p class="hsub">Punkte von <b>${meP?esc(meP.n):"–"}</b>: <b>${bal}</b> · ${isKid?"Belohnungen für Kinder":"Belohnungen für Erwachsene"}. Stufen schalten sich frei, sobald genug Punkte da sind.</p>`+(tiers.length?tiers.map(t=>{const L=RW.filter(r=>r[3]===t);const ok=bal>=t;
+      return `<div class="htier${ok?" ok":""}"><div class="htl"><b>${ok?"🔓":"🔒"} ${t} Punkte</b>${ok?"":`<small>noch ${t-bal}</small>`}</div><div class="hrw">${L.map(r=>`<button type="button" class="hrwb" data-hred="${esc(r[0])}" data-cost="${r[3]}" data-ti="${esc(r[2])}" data-ic="${esc(r[1])}"${ok?"":" disabled"}><span>${r[1]}</span>${esc(r[2])}</button>`).join("")}</div></div>`}).join(""):`<p class="pvsub">Keine Belohnungen ausgewählt – unten unter „Belohnungen auswählen“ einschalten.</p>`)
+    +hRewMgr();
+  const openR=hReds().filter(r=>!r.done).sort((a,b)=>a.at-b.at);
+  const redOpen=openR.length?`<div class="hredl"><h4>Eingelöst – noch offen</h4>${openR.map(r=>`<div class="hred">${r.fam?`<span class="hchip">👨‍👩‍👧 Familie</span>`:hChip(r.by)} <span>${esc(r.ic||"🎁")} ${esc(r.ti)}</span><small>${r.cost} P.</small><button type="button" class="pmini" data-hreddone="${esc(r.rid)}">✓ Eingelöst</button></div>`).join("")}</div>`:"";
+  /* Familienziele & Challenges */
+  const GL=hGoalList().filter(g=>cfg.on.includes(g[0])).sort((a,b)=>a[3]-b[3]);
+  const goals=`<div class="hpot"><b>${fam.bal}</b><span>Familienpunkte im Topf<small>${fam.earned} gesammelt${fam.bonus?` + ${fam.bonus} Challenge-Bonus`:""}${fam.spent?` − ${fam.spent} eingelöst`:""}</small></span></div>`
+    +(GL.length?GL.map(g=>{const ok=fam.bal>=g[3];return `<div class="hgl${ok?" ok":""}"><span class="hgi">${g[1]}</span><div style="min-width:0"><b>${esc(g[2])}</b><div class="hprog"><i style="width:${Math.min(100,fam.bal/g[3]*100)}%"></i></div><small>${ok?"🎉 Erreicht!":`${fam.bal} / ${g[3]} · noch ${g[3]-fam.bal}`}</small></div>${ok?`<button type="button" class="pmini" data-hgred="${esc(g[0])}">🎉 Einlösen</button>`:""}</div>`}).join(""):`<p class="pvsub">Kein Familienziel ausgewählt.</p>`);
+  const w0=wkStart(T0),CL=HCH.filter(c=>cfg.ch.includes(c[0]));
+  const chal=`<h4 class="hday">🏁 Challenges dieser Woche</h4>`+(CL.length?CL.map(c=>{const [n,t]=hChEval(c[0],w0),ok=t>0&&n>=t;return `<div class="hchal${ok?" ok":""}"><b>${c[1]} ${esc(c[2])}</b> <span class="hbon">+${c[3]}</span><div class="hprog"><i style="width:${t?Math.min(100,n/t*100):0}%"></i></div><small>${t?(c[0]==="ch_fair"?(ok?"geschafft 🎉":"noch nicht ausgeglichen"):`${n} von ${t}${ok?" – geschafft! 🎉":""}`):"Diese Woche nichts dazu geplant."}</small></div>`}).join(""):`<p class="pvsub">Keine Challenge ausgewählt.</p>`);
+  const gmgr=`<details class="hown"><summary>⚙️ Ziele & Challenges auswählen</summary><div class="hmgr"><h5>Familienziele</h5>${hGoalList().map(g=>`<label><input type="checkbox" data-hgon="${esc(g[0])}"${cfg.on.includes(g[0])?" checked":""}> ${g[1]} ${esc(g[2])} · ${g[3]} P.${g[0].startsWith("u")?` <button type="button" class="mbx" data-hgrm="${esc(g[0])}" aria-label="Entfernen">✕</button>`:""}</label>`).join("")}
+      <div class="hownf"><input type="text" id="hgT" maxlength="40" placeholder="Eigenes Ziel, z. B. Kletterwald"><input type="number" id="hgP" min="50" max="5000" step="50" value="500" aria-label="Punkte"><button type="button" class="pmini" id="hgAdd">Hinzufügen</button></div>
+      <h5>Wochen-Challenges</h5>${HCH.map(c=>`<label><input type="checkbox" data-hchon="${c[0]}"${cfg.ch.includes(c[0])?" checked":""}> ${c[1]} ${esc(c[2])} · +${c[3]}</label>`).join("")}</div></details>`;
   const badges=`<div class="hbdg">${hBadges(me).map(b=>`<span class="${b[2]?"on":""}" title="${esc(b[1])}"><i>${b[0]}</i>${esc(b[1])}</span>`).join("")}</div>`;
-  const act=ch.length?`<div class="hact">${HCATS.map(cc=>{const L=ch.filter(c=>c.cat===cc[0]);return L.length?`<h4 class="hday">${cc[1]} ${cc[2]}</h4>`+L.map(c=>`<div class="hcrow"><div style="min-width:0"><b>${c.ic||cc[1]} ${esc(c.ti)}</b><small>${esc(c.f==="x"?(c.date?fmtDate(c.date)+(c.t?", "+c.t+" Uhr":""):"ohne Datum"):HFL[c.f]+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+WDL[c.wd!=null?+c.wd:6]:"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date):""))} · ${fmH(+c.dur||0)} · ${+c.pts||hrec(+c.dur||10,c.unpop,c.kid)} P. · ${hChip(c.who)}</small></div><button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Ändern</button></div>`).join(""):""}).join("")}</div>`:`<p class="pvsub">Noch nichts ausgewählt.</p>`;
+  const act=ch.length?`<div class="hact">${HCATS.map(cc=>{const L=ch.filter(c=>c.cat===cc[0]);return L.length?`<h4 class="hday">${cc[1]} ${cc[2]}</h4>`+L.map(c=>`<div class="hcrow"><div style="min-width:0"><b>${c.ic||cc[1]} ${esc(c.ti)}</b><small>${esc(c.f==="x"?(c.date?fmtDate(c.date)+(c.t?", "+c.t+" Uhr":""):"ohne Datum"):HFL[c.f]+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+WDL[c.wd!=null?+c.wd:6]:"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date):""))} · ${fmH(+c.dur||0)} · ${hPts(c)} P. · ${hChip(c.who)} · ${hMiss(c)==="lapse"?"💨 verfällt":"⏰ wird überfällig"}</small></div><button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Ändern</button></div>`).join(""):""}).join("")}</div>`:`<p class="pvsub">Noch nichts ausgewählt.</p>`;
   const cat=`<p class="hsub">Antippen zum Hinzufügen – Turnus, Tag, Dauer, Person und Punkte lassen sich danach anpassen.</p>${HCATS.map(cc=>{const L=HT.filter(t=>t[1]===cc[0]);const used=new Set(ch.map(c=>c.tpl));
       return `<details class="hcat"${HCATOPEN===cc[0]?" open":""} data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${L.length}</small></summary><div class="htpl">${L.map(t=>`<button type="button" class="htb${used.has(t[0])?" on":""}" data-hadd="${t[0]}"><span>${t[2]}</span><b>${esc(t[3])}</b><small>${esc(HFL[t[4]])} · ${fmH(t[5])} · ${hrec(t[5],t[6],t[7])} P.${used.has(t[0])?" · ✓ aktiv":""}</small></button>`).join("")}</div></details>`}).join("")}
       <div class="hownbtns"><button type="button" class="pbtn" data-hadd="_own">➕ Eigene Aufgabe</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`;
   v.innerHTML=`<h2 class="mtitle">🏠 Zuhause</h2>${hFairHtml()}${meSel}
-    <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${now}</section>
+    <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${filt}${now}</section>
+    <section class="pvsec">${sec("bock","🙋 Offen – wer hat Bock?"+(opn.length?` <span class="pvn">${opn.length}</span>`:""),bockHtml,!!opn.length)}</section>
+    <section class="pvsec">${sec("proj","💡 Irgendwann & Projekte",hProjHtml(),true)}</section>
     <section class="pvsec"><h3>🏆 Punkte & Level</h3><div class="hpcards">${meCard}</div></section>
     <section class="pvsec">${sec("rew","🎁 Belohnungen",redOpen+rew,true)}</section>
-    <section class="pvsec">${sec("fam","👨‍👩‍👧 Familienziel & Challenge",goal,true)}</section>
+    <section class="pvsec">${sec("fam","👨‍👩‍👧 Familienziele & Challenges",goals+chal+gmgr,true)}</section>
     <section class="pvsec">${sec("bdg","🏅 Abzeichen von "+(meP?esc(meP.n):"dir"),badges,false)}</section>
     <section class="pvsec">${sec("act","📋 Unsere Aufgaben ("+ch.length+")",act,true)}</section>
     <section class="pvsec">${sec("cat","➕ Aufgaben-Katalog",cat,!ch.length)}</section>`}
+/* Belohnungen auswählen */
+const hRcfg=()=>{const r=SETS.hrwcfg||{},old=((SETS.hrw||{}).list||[]).map(x=>Object.assign({t:"a"},x));return {off:Array.isArray(r.off)?r.off:[],custom:(Array.isArray(r.custom)?r.custom:[]).concat(old.filter(o=>!(r.custom||[]).some(c=>c.id===o.id)))}};
+function hRewards(t){const c=hRcfg();return HREW.filter(r=>(r[5]===t||r[5]==="b")&&!c.off.includes(r[0])).concat(c.custom.filter(x=>x.t===t||x.t==="b").filter(x=>!c.off.includes(x.id)).map(x=>[x.id,x.ic||"🎁",x.ti,+x.cost||50,"eigen",x.t]))}
+function hRewMgr(){const c=hRcfg(),grp=t=>HREW.filter(r=>r[5]===t||r[5]==="b").concat(c.custom.filter(x=>x.t===t).map(x=>[x.id,x.ic||"🎁",x.ti,+x.cost||50,"eigen",x.t]));
+  const list=(t,lab)=>{const L=grp(t);return `<h5>${lab} <button type="button" class="pmini" data-hrwall="${t}" data-on="1">Alle an</button> <button type="button" class="pmini" data-hrwall="${t}" data-on="0">Alle aus</button></h5>${L.map(r=>`<label><input type="checkbox" data-hrwon="${esc(r[0])}"${c.off.includes(r[0])?"":" checked"}> ${r[1]} ${esc(r[2])} · ${r[3]} P.${r[4]==="eigen"?` <button type="button" class="mbx" data-hrwrm="${esc(r[0])}" aria-label="Entfernen">✕</button>`:""}</label>`).join("")}`};
+  return `<details class="hown"><summary>⚙️ Belohnungen auswählen & hinzufügen</summary><div class="hmgr">${list("a","🧑 Für Erwachsene")}${list("k","🧒 Für Kinder")}
+    <h5>Eigene Belohnung</h5><div class="hownf"><input type="text" id="hrwT" maxlength="40" placeholder="z. B. Kaffee im Lieblingscafé"><input type="number" id="hrwC" min="5" max="2000" step="5" value="60" aria-label="Punkte"><select id="hrwF" aria-label="Für wen"><option value="a">Erwachsene</option><option value="k">Kinder</option><option value="b">Alle</option></select><button type="button" class="pmini" id="hrwAdd">Hinzufügen</button></div></div></details>`}
+function hRsave(c){hset("hrwcfg",{off:c.off,custom:c.custom});if(SETS.hrw)hset("hrw",null);renderHome()}
+/* Irgendwann & Projekte */
+function hProjHtml(){const L=hProjects(),openP=L.filter(p=>!hProjDone(p)),doneP=L.filter(hProjDone),P=hPeople(),durs=[15,30,45,60,90,120,180,240,360,480];
+  const card=p=>{const S=p.steps||[],n=S.filter(s=>s.dn).length,op=HJOPEN.has(p.pid),nx=S.find(s=>!s.dn),min=S.filter(s=>!s.dn).reduce((a,s)=>a+(+s.dur||60),0);
+    return `<div class="hproj${hProjDone(p)?" dn":""}"><button type="button" class="hpjh" data-hjopen="${esc(p.pid)}" aria-expanded="${op}"><span class="hpji">${p.ic||"🛠️"}</span><span class="hpjt"><b>${esc(p.ti)}</b><small>${S.length?`${n}/${S.length} Schritte${min?` · noch ca. ${fmH(min)}`:""}${nx&&!op?` · nächster: ${esc(nx.t)}`:""}`:"Irgendwann – noch ohne Schritte"}</small>${S.length?`<span class="hprog"><i style="width:${n/S.length*100}%"></i></span>`:""}</span><span aria-hidden="true">${op?"▴":"▾"}</span></button>
+      ${op?`<div class="hpjb">${S.map(s=>`<div class="hstep${s.dn?" dn":""}"><button type="button" class="hck" data-hck="j:${esc(p.pid)}:${esc(s.id)}" data-d="${s.date||T0}" aria-pressed="${!!s.dn}" aria-label="Schritt abhaken">${s.dn?"✓":""}</button>
+          <input type="text" class="hstt" data-hjt="${esc(p.pid)}" data-s="${esc(s.id)}" value="${esc(s.t)}" maxlength="60" aria-label="Schritt">
+          <div class="hstm"><select data-hjw="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Wer"><option value="">🙋 offen</option>${P.map(x=>`<option value="${x.id}"${s.who===x.id?" selected":""}>${x.e} ${esc(x.n)}</option>`).join("")}</select>
+          <select data-hjm="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Dauer">${durs.concat(durs.includes(+s.dur||60)?[]:[+s.dur]).map(m=>`<option value="${m}"${m===(+s.dur||60)?" selected":""}>${fmH(m)}</option>`).join("")}</select>
+          <input type="date" data-hjd="${esc(p.pid)}" data-s="${esc(s.id)}" value="${esc(s.date||"")}" aria-label="Termin (optional)" title="Termin – dann steht der Schritt in „Jetzt dran“ und im Kalender">
+          <span class="hpts">${+s.pts||hrec(+s.dur||60,0,0)} P.</span><button type="button" class="mbx" data-hjsx="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Schritt löschen">✕</button></div></div>`).join("")}
+        <div class="hownf"><input type="text" data-hjnew="${esc(p.pid)}" maxlength="60" placeholder="Neuer Schritt, z. B. Möbel kaufen"><button type="button" class="pmini" data-hjadd="${esc(p.pid)}">➕ Schritt</button></div>
+        <div class="hpjf">${!S.length?`<button type="button" class="pmini" data-hck="j:${esc(p.pid)}" data-d="${T0}">${p.dn?"↺ Wieder offen":"✓ Erledigt"}</button>`:""}<button type="button" class="pmini hdel" data-hjx="${esc(p.pid)}">🗑️ Projekt löschen</button></div></div>`:""}</div>`};
+  return `<p class="hsub">Größere Vorhaben ohne festen Termin. Schritte mit Datum erscheinen in „Jetzt dran“ und im Kalender; jeder erledigte Schritt bringt Punkte.</p>
+    ${openP.map(card).join("")||`<p class="pvsub">Noch keine Projekte.</p>`}
+    ${doneP.length?(HF.done?`<h4 class="hday">Erledigt</h4>`+doneP.map(card).join(""):`<p class="hsub">✓ ${doneP.length} erledigte ${doneP.length===1?"Projekt":"Projekte"} ausgeblendet – oben „Erledigte zeigen“ einschalten.</p>`):""}
+    <div class="hpjnew"><input type="text" id="hjT" maxlength="50" placeholder="Neues Projekt oder Irgendwann-Idee"><button type="button" class="pmini" id="hjAdd">➕ Anlegen</button></div>
+    <div class="hpjtpl"><span>Vorlagen:</span>${HPROJ.map((t,i)=>`<button type="button" class="pmini" data-hjtpl="${i}">${t[0]} ${esc(t[1])}</button>`).join("")}</div>`}
+const hProjDone=p=>(p.steps||[]).length?(p.steps||[]).every(s=>s.dn):!!p.dn;
+function hProjEdit(pid,fn){const k="hj:"+pid,p=SETS[k];if(!p)return;const P=JSON.parse(JSON.stringify(p));fn(P);hset(k,P);renderHomeAll()}
+const hsid=()=>"s"+Date.now().toString(36)+Math.floor(Math.random()*99);
 /* Editor */
 let HED=null;
 function hEdit(c,isNew){HED={c:Object.assign({},c),isNew};const d=$("hdlg");const P=hPeople(),x=HED.c,rec=hrec(+x.dur||10,x.unpop,x.kid);
-  const durs=[5,10,15,20,30,45,60,75,90,120,180,240,300,360,480];if(!durs.includes(+x.dur))durs.push(+x.dur);durs.sort((a,b)=>a-b);
+  const durs=[5,10,15,20,30,45,60,75,90,120,180,240,300,360,480];if(!durs.includes(+x.dur))durs.push(+x.dur);durs.sort((a,b)=>a-b);const miss=hMiss(Object.assign({f:x.f},x));
   d.innerHTML=`<form method="dialog" class="hform"><div class="dlghead"><h3>${isNew?"Aufgabe hinzufügen":"Aufgabe ändern"}</h3><button type="button" class="mbx" data-hclose aria-label="Schließen">✕</button></div>
    <label>Titel<input type="text" id="heTi" maxlength="60" value="${esc(x.ti||"")}" required></label>
    <div class="hf2"><label>Kategorie<select id="heCat">${HCATS.map(c=>`<option value="${c[0]}"${c[0]===x.cat?" selected":""}>${c[1]} ${c[2]}</option>`).join("")}</select></label><label>Icon<input type="text" id="heIc" maxlength="4" value="${esc(x.ic||"")}"></label></div>
-   <label>Turnus<select id="heF">${HFREQ.map(f=>`<option value="${f[0]}"${f[0]===x.f?" selected":""}>${f[1]}</option>`).join("")}</select></label>
+   <label>Art & Turnus<select id="heF">${HFREQ.map(f=>`<option value="${f[0]}"${f[0]===x.f?" selected":""}>${f[1]}</option>`).join("")}</select></label>
    <div id="heWdW"><span class="hlab">Tag</span><div class="dquick" id="heWd">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-wd="${i}" aria-pressed="${(x.wd!=null?+x.wd:6)===i}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div><small class="hhint" id="heWdH"></small></div>
    <div class="hf2" id="heDateW"><label><span id="heDateL">Datum</span><input type="date" id="heDate" value="${esc(x.date||"")}"></label><label>Uhrzeit (optional)<input type="time" id="heT" value="${esc(x.t||"")}"></label></div>
    <label id="heLeadW">Wie viele Tage vorher anfangen?<input type="number" id="heLead" min="0" max="90" value="${+x.lead||0}"></label>
+   <span class="hlab">Wenn sie nicht erledigt wird …</span><div class="dquick" id="heMiss"><button type="button" data-miss="over" aria-pressed="${miss==="over"}">⏰ wird rot & überfällig</button><button type="button" data-miss="lapse" aria-pressed="${miss==="lapse"}">💨 verfällt nach dem Termin</button></div>
    <div class="hf2"><label>Dauer<select id="heDur">${durs.map(m=>`<option value="${m}"${m===+x.dur?" selected":""}>${fmH(m)}</option>`).join("")}</select></label><label>Punkte <small>(Empfehlung: <span id="heRec">${rec}</span>)</small><input type="number" id="hePts" min="1" max="999" value="${+x.pts||rec}"></label></div>
-   <span class="hlab">Wer ist zuständig?</span><div class="dquick hwho" id="heWho">${P.map(p=>`<button type="button" data-who="${p.id}" aria-pressed="${x.who===p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}<button type="button" data-who="rot" aria-pressed="${x.who==="rot"}">🔄 Abwechselnd</button></div>
+   <span class="hlab">Wer ist zuständig?</span><div class="dquick hwho" id="heWho">${P.map(p=>`<button type="button" data-who="${p.id}" aria-pressed="${x.who===p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}<button type="button" data-who="rot" aria-pressed="${x.who==="rot"}">🔄 Abwechselnd</button><button type="button" data-who="" aria-pressed="${!x.who}">🙋 Niemand – nach Bock</button></div>
    <label>Checkliste <small>(eine Zeile pro Punkt, optional)</small><textarea id="heCk" rows="4">${esc((x.ck||[]).join("\n"))}</textarea></label>
    <div class="hfbtn">${isNew?"":`<button type="button" class="pmini hdel" data-hdel>🗑️ Löschen</button>`}<button type="button" class="pbtn" data-hclose>Abbrechen</button><button type="button" class="pbtn hsave" data-hsave>${isNew?"➕ Hinzufügen":"💾 Speichern"}</button></div></form>`;
   hEdUpd();d.showModal?d.showModal():d.setAttribute("open","")}
 function hEdUpd(){const f=$("heF").value,x=HED.c;$("heWdW").hidden=!["w1","w2","w4","m1","m3","m6"].includes(f);$("heWdH").textContent=f[0]==="m"?"jeweils am ersten dieses Wochentags im Monat":"";
-  $("heDateW").hidden=!(f==="x"||f==="y1");$("heDateL").textContent=f==="y1"?"Datum (z. B. Geburtstag)":"Datum";$("heLeadW").hidden=f!=="y1";
+  $("heDateW").hidden=!(f==="x"||f==="y1");$("heDateL").textContent=f==="y1"?"Datum (z. B. Geburtstag)":"Datum / Deadline";$("heLeadW").hidden=f!=="y1";
   const rec=hrec(+$("heDur").value,x.unpop,($("heCat").value==="kids"));$("heRec").textContent=rec}
 function hEdSave(){const x=HED.c;x.ti=$("heTi").value.trim();if(!x.ti){$("heTi").focus();return}x.cat=$("heCat").value;x.ic=$("heIc").value.trim();x.f=$("heF").value;
   const wb=$("heWd").querySelector('[aria-pressed="true"]');x.wd=wb?+wb.dataset.wd:6;x.date=$("heDate").value||null;x.t=$("heT").value||null;x.lead=+$("heLead").value||0;
+  const mb=$("heMiss").querySelector('[aria-pressed="true"]');x.miss=mb?mb.dataset.miss:null;
   x.dur=+$("heDur").value;x.pts=+$("hePts").value||hrec(x.dur,x.unpop,x.kid);x.kid=x.cat==="kids"?1:0;const wh=$("heWho").querySelector('[aria-pressed="true"]');x.who=wh?wh.dataset.who:hMe();
-  x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=x.f==="y1"?T0:T0;
+  x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;
   if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
-  const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"💾 Gespeichert");HED=null;renderHomeAll()}
+  const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
 /* Tagesansicht in „Unser Plan“ */
-window.homeDay=(dt,L)=>{if(!dt)return "";const B=hBlock(),blk=B.days.includes(pdate(dt).getDay());const I=hItems(dt,dt).filter(i=>!hDaily(i.c)||blk);const O=dt===T0?hOverdue():[];
+window.homeDay=(dt,L)=>{if(!dt)return "";const B=hBlock(),blk=B.days.includes(pdate(dt).getDay());const I=hItems(dt,dt).filter(i=>(!hDaily(i.c)||blk)&&(HF.done||!i.dn));const O=dt===T0?hOverdue():[];
   if(!blk&&!I.length&&!O.length)return "";
   const clash=blk?(L||[]).filter(o=>o.t&&toMin(o.t)<toMin(B.to)&&toMin(o.t)+60>toMin(B.from)):[];
   return `<div class="hpday"><div class="hpdh">🏠 <b>Zuhause</b>${blk?` · ${esc(B.from)}–${esc(B.to)} Uhr reserviert`:""}<button type="button" class="pall" data-m2="zuhause">Alle Aufgaben →</button></div>
     ${clash.length?`<p class="hfwarn">⚠️ ${clash.map(o=>esc(o.ti.replace(/^Ausflug: /,""))+" um "+esc(o.t)).join(", ")} liegt im Zuhause-Block – Aufgaben ggf. auf den Nachmittag schieben.</p>`:""}
-    ${O.map(i=>hRow(i,"od")).join("")}${I.map(i=>hRow(i,"today")).join("")}${!I.length&&!O.length?`<p class="pvsub" style="margin:4px 0">Für diesen Block ist noch nichts geplant.</p>`:""}</div>`};
-window.homeDots=s=>hItems(s,s).filter(i=>!hDaily(i.c)).length;
+    ${O.map(i=>hRow(i,"od")).join("")}${I.map(i=>hRow(i,"today")).join("")}${!I.length&&!O.length?`<p class="pvsub" style="margin:4px 0">Für diesen Block ist noch nichts offen.</p>`:""}</div>`};
+window.homeDots=s=>hItems(s,s).filter(i=>!hDaily(i.c)&&!i.dn).length;
 window.homeBlockDay=s=>hBlock().days.includes(pdate(s).getDay());
 window.homeFairMini=()=>hFairHtml(true);
+/* Kinderansicht: eigene Aufgaben, Punkte, Vorlesen */
+function hSay(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="de-DE";u.rate=.92;const v=speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
+function hKidId(){const K=hKids(),s=LS.get("hwk-kidme",null);return K.some(k=>k.id===s)?s:(K[0]||{}).id}
+function hKidItems(kid){const mine=i=>i.who===kid||(!i.who&&(i.c.kid||i.c.cat==="kids"));return hOverdue().filter(mine).concat(hItems(T0,T0).filter(mine))}
+function renderKidTasks(){const el=$("kTasks");if(!el)return;const K=hKids();if(!K.length){el.innerHTML="";el.hidden=true;return}el.hidden=false;
+  const kid=hKidId(),kp=hPer(kid),L=hKidItems(kid),open=L.filter(i=>!i.dn),bal=hBal(kid),RW=hRewards("k").sort((a,b)=>a[3]-b[3]),nx=RW.find(r=>r[3]>bal);
+  el.innerHTML=`<div class="kth"><h3>⭐ Meine Aufgaben</h3>${window.speechSynthesis?`<button type="button" class="kspeak2" data-ksayall aria-label="Alles vorlesen">🔊 Vorlesen</button>`:""}</div>
+    ${K.length>1?`<div class="kwho" role="group" aria-label="Wer bist du?">${K.map(k=>`<button type="button" data-kme="${k.id}" aria-pressed="${k.id===kid}"><span>${k.e}</span>${esc(k.n)}</button>`).join("")}</div>`:""}
+    <div class="kpts"><span class="kstar">⭐</span><b>${bal}</b><span>Punkte${nx?` · noch <b>${nx[3]-bal}</b> bis ${nx[1]} ${esc(nx[2])}`:""}</span></div>${nx?`<div class="hprog kprog"><i style="width:${Math.min(100,bal/nx[3]*100)}%"></i></div>`:""}
+    <div class="ktl">${L.length?L.map(i=>`<div class="ktask${i.dn?" dn":""}${i.od?" od":""}"><span class="kti">${i.c.ic||"⭐"}</span><b>${esc(i.c.ti)}</b><small>${i.od?"Noch von früher · ":""}${i.dn?"Geschafft! 🎉":`${hPts(i.c)} Punkte`}</small>${window.speechSynthesis?`<button type="button" class="kspeak2 sm" data-ksay="${esc(i.c.ti)}" data-p="${hPts(i.c)}" aria-label="Vorlesen">🔊</button>`:""}<button type="button" class="kck" data-hck="${esc(i.c.cid)}" data-d="${i.d}" data-by="${kid}" aria-pressed="${!!i.dn}" aria-label="${i.dn?"Erledigt":"Geschafft!"}">${i.dn?"✓":"✔︎"}</button></div>`).join(""):`<p class="kempty">Heute keine Aufgaben – frag Mama oder Papa, ob du helfen kannst! 💪</p>`}</div>
+    ${RW.length?`<details class="krew"><summary>🎁 Das kannst du dir verdienen</summary><div class="hrw">${RW.map(r=>`<button type="button" class="hrwb" data-hred="${esc(r[0])}" data-cost="${r[3]}" data-ti="${esc(r[2])}" data-ic="${esc(r[1])}" data-by="${kid}"${bal>=r[3]?"":" disabled"}><span>${r[1]}</span>${esc(r[2])} · ${r[3]} ⭐</button>`).join("")}</div></details>`:""}`;
+  el._say=`${kp?kp.n+", ":""}${open.length?`heute hast du ${open.length===1?"eine Aufgabe":open.length+" Aufgaben"}: ${open.map(i=>i.c.ti).join(", ")}.`:"heute ist alles geschafft. Super!"} Du hast ${bal} Punkte.${nx?` Noch ${nx[3]-bal} Punkte bis ${nx[2]}.`:""}`}
+new MutationObserver(()=>{if(document.body.classList.contains("kidsmode"))renderKidTasks()}).observe(document.body,{attributes:true,attributeFilter:["class"]});
 /* Einstellungen: Personen & Zuhause-Block */
 function renderHomeSet(){const el=$("homeSet");if(!el)return;const P=hPeople(),B=hBlock();
   el.innerHTML=`<div class="hppl">${P.map((p,i)=>`<div class="hpr"><select data-hpe="${i}" aria-label="Symbol">${HEMO.concat(HEMO.includes(p.e)?[]:[p.e]).map(e=>`<option${e===p.e?" selected":""}>${e}</option>`).join("")}</select><input type="text" data-hpn="${i}" value="${esc(p.n)}" maxlength="20" aria-label="Name"><label class="hkid"><input type="checkbox" data-hpk="${i}"${p.kid?" checked":""}> Kind</label><button type="button" class="mbx" data-hpx="${i}" aria-label="Entfernen">✕</button></div>`).join("")}</div>
@@ -3985,40 +4149,69 @@ document.addEventListener("click",e=>{const t=e.target;
   const pa=t.closest("[data-hpadd]");if(pa){const L=hPeople();L.push({id:"p"+Date.now().toString(36),n:"Neue Person",e:HEMO[L.length%HEMO.length],kid:false});hSavePeople(L);return}
   const px=t.closest("[data-hpx]");if(px){const L=hPeople();L.splice(+px.dataset.hpx,1);hSavePeople(L);return}
   const bd=t.closest("[data-hbd]");if(bd){const B=hBlock(),i=+bd.dataset.hbd;B.days=B.days.includes(i)?B.days.filter(x=>x!==i):B.days.concat(i);hset("homeblock",B);renderHomeSet();renderHomeAll();return}});
-document.addEventListener("change",e=>{const t=e.target;
-  if(t.dataset.hpn!=null||t.dataset.hpe!=null||t.dataset.hpk!=null){const L=hPeople(),i=+(t.dataset.hpn??t.dataset.hpe??t.dataset.hpk);if(!L[i])return;if(t.dataset.hpn!=null)L[i].n=t.value.trim()||L[i].n;if(t.dataset.hpe!=null)L[i].e=t.value;if(t.dataset.hpk!=null)L[i].kid=t.checked;hSavePeople(L);return}
+document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
+  if(ds.hpn!=null||ds.hpe!=null||ds.hpk!=null){const L=hPeople(),i=+(ds.hpn??ds.hpe??ds.hpk);if(!L[i])return;if(ds.hpn!=null)L[i].n=t.value.trim()||L[i].n;if(ds.hpe!=null)L[i].e=t.value;if(ds.hpk!=null)L[i].kid=t.checked;hSavePeople(L);return}
   if(t.id==="hbFrom"||t.id==="hbTo"){const B=hBlock();B.from=$("hbFrom").value||"09:00";B.to=$("hbTo").value||"12:00";hset("homeblock",B);renderHomeAll();return}
-  if(t.dataset.hcl!=null){const c=SETS["hc:"+t.dataset.hcl];if(!c)return;const d=t.dataset.d,j=+t.dataset.j;const x=Object.assign({},c);let dd=x.ckd===d?(x.ckx||[]).slice():[];dd=t.checked?dd.concat(j):dd.filter(k=>k!==j);x.ckd=d;x.ckx=[...new Set(dd)];hset("hc:"+t.dataset.hcl,x);
-    if(x.ckx.length===x.ck.length&&!hDone(t.dataset.hcl,d)){hCheck(t.dataset.hcl,d)}else renderHomeAll();return}
+  if(ds.hcl!=null){const c=SETS["hc:"+ds.hcl];if(!c)return;const d=ds.d,j=+ds.j;const x=Object.assign({},c);let dd=x.ckd===d?(x.ckx||[]).slice():[];dd=t.checked?dd.concat(j):dd.filter(k=>k!==j);x.ckd=d;x.ckx=[...new Set(dd)];hset("hc:"+ds.hcl,x);
+    if(x.ckx.length===x.ck.length&&!hDone(ds.hcl,d)){hCheck(ds.hcl,d)}else renderHomeAll();return}
+  if(ds.hmv!=null){const cid=ds.hmv,d=ds.d,to=t.value;if(!to)return;const k="ho:"+cid+":"+d,ov=Object.assign({},SETS[k]||{});if(to===d)delete ov.to;else ov.to=to;hset(k,Object.keys(ov).length?ov:null);HACT.delete(cid+d);toast("📅 Verschoben auf "+fmtDate(to));renderHomeAll();return}
+  if(ds.hfdone!=null){HF.done=t.checked;LS.set("hwk-hf",HF);renderHomeAll();return}
+  if(ds.hgon!=null||ds.hchon!=null){const c=hGcfg();if(ds.hgon!=null)c.on=t.checked?c.on.concat(ds.hgon):c.on.filter(x=>x!==ds.hgon);else c.ch=t.checked?c.ch.concat(ds.hchon):c.ch.filter(x=>x!==ds.hchon);hset("hgoals",c);renderHome();return}
+  if(ds.hrwon!=null){const c=hRcfg();c.off=t.checked?c.off.filter(x=>x!==ds.hrwon):c.off.concat(ds.hrwon);hRsave(c);return}
+  if(ds.hjt!=null){hProjEdit(ds.hjt,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.t=t.value.trim()||s.t});return}
+  if(ds.hjw!=null){hProjEdit(ds.hjw,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.who=t.value});return}
+  if(ds.hjm!=null){hProjEdit(ds.hjm,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.dur=+t.value;delete s.pts}});return}
+  if(ds.hjd!=null){hProjEdit(ds.hjd,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.date=t.value||null});if(t.value)toast("📅 Schritt eingeplant am "+fmtDate(t.value));return}
   if(HED&&["heF","heDur","heCat"].includes(t.id))hEdUpd()});
-/* Klicks im Zuhause-Bereich und in „Unser Plan“ */
+document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const t=e.target;if(t.dataset&&t.dataset.hjnew!=null){e.preventDefault();const b=document.querySelector(`[data-hjadd="${t.dataset.hjnew}"]`);b&&b.click()}if(t.id==="hjT"){e.preventDefault();$("hjAdd").click()}});
+/* Klicks im Zuhause-Bereich, in „Unser Plan“ und in der Kinderansicht */
 document.addEventListener("click",e=>{const t=e.target;
-  const ck=t.closest("[data-hck]");if(ck){e.preventDefault();hCheck(ck.dataset.hck,ck.dataset.d);return}
+  const ck=t.closest("[data-hck]");if(ck){e.preventDefault();hCheck(ck.dataset.hck,ck.dataset.d,{by:ck.dataset.by});return}
   const c2=t.closest("[data-hck2]");if(c2){const k=c2.dataset.hck2+c2.dataset.d;HOPEN.has(k)?HOPEN.delete(k):HOPEN.add(k);renderHomeAll();return}
+  const ha=t.closest("[data-hact]");if(ha){const k=ha.dataset.hact+ha.dataset.d;HACT.has(k)?HACT.delete(k):HACT.add(k);renderHomeAll();return}
+  const hm2=t.closest("[data-hmine]");if(hm2){const k="ho:"+hm2.dataset.hmine+":"+hm2.dataset.d,ov=Object.assign({},SETS[k]||{},{who:hMe()});hset(k,ov);HACT.delete(hm2.dataset.hmine+hm2.dataset.d);toast("🙋 Übernommen – danke!");renderHomeAll();return}
+  const mx=t.closest("[data-hmvx]");if(mx){const k="ho:"+mx.dataset.hmvx+":"+mx.dataset.d,ov=Object.assign({},SETS[k]||{});delete ov.to;hset(k,Object.keys(ov).length?ov:null);renderHomeAll();return}
+  const bk=t.closest("[data-hbock]");if(bk){const k="hc:"+bk.dataset.hbock,c=SETS[k];if(!c)return;const me=hMe(),v=+bk.dataset.v,b=Object.assign({},c.bock||{});if(b[me]===v)delete b[me];else b[me]=v;hset(k,Object.assign({},c,{bock:b}));renderHomeAll();return}
+  const as=t.closest("[data-hassign]");if(as){const k="hc:"+as.dataset.hassign,c=SETS[k];if(!c)return;hset(k,Object.assign({},c,{who:as.dataset.who}));toast("✓ Fest zugeteilt");renderHomeAll();return}
+  const ed0=t.closest("[data-hedit]");if(ed0){const c=SETS["hc:"+ed0.dataset.hedit];if(c)hEdit(Object.assign({cid:ed0.dataset.hedit},c),false);return}
+  const jo=t.closest("[data-hjopen]");if(jo){const id=jo.dataset.hjopen;HJOPEN.has(id)?HJOPEN.delete(id):HJOPEN.add(id);if(M2!=="zuhause"){HJOPEN.add(id);HSEC.proj=true;setM2("zuhause")}else renderHome();return}
   const nv=t.closest(".hfmini[data-m2],.hpday [data-m2]");if(nv){setM2("zuhause");return}
+  const km=t.closest("[data-kme]");if(km){LS.set("hwk-kidme",km.dataset.kme);renderKidTasks();return}
+  const ks=t.closest("[data-ksay]");if(ks){hSay(`${ks.dataset.ksay}. Dafür bekommst du ${ks.dataset.p} Punkte.`);return}
+  if(t.closest("[data-ksayall]")){const el=$("kTasks");hSay(el&&el._say||"");return}
+  const rd=t.closest("[data-hred]");if(rd&&!rd.disabled){const by=rd.dataset.by||hMe(),cost=+rd.dataset.cost;if(hBal(by)<cost)return;const rid="r"+Date.now().toString(36);hset("hr:"+rid,{by,rw:rd.dataset.hred,ti:rd.dataset.ti,ic:rd.dataset.ic,cost,at:Date.now()});hBurst(cost,true);renderHomeAll();
+    undoToast(`🎁 ${rd.dataset.ti} eingelöst (−${cost} Punkte)`,()=>{hset("hr:"+rid,null);renderHomeAll()});return}
   if(!t.closest("#homeView")&&!t.closest("#hdlg"))return;
   const fw=t.closest("[data-hfw]");if(fw){HFW=fw.dataset.hfw;renderHome();return}
+  const fwho=t.closest("[data-hfwho]");if(fwho){HF.who=fwho.dataset.hfwho;LS.set("hwk-hf",HF);renderHome();return}
   const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);renderHome();return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
     if(id==="_own"){hEdit({ti:"",cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
     if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
     const T=HT.find(x=>x[0]===id);if(!T)return;const kid=!!T[7];const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
-    hEdit({tpl:T[0],cat:T[1],ic:T[2],ti:T[3],f:T[4],wd:hBlock().days[0]??6,dur:T[5],unpop:T[6],kid:T[7],pts:hrec(T[5],T[6],T[7]),who,ck:T[8]||[],date:T[4]==="x"?plus(7):T[4]==="y1"?null:null,lead:T[0]==="f_geburtstag"?21:T[0]==="f_weihn"?30:0},true);return}
-  const ed=t.closest("[data-hedit]");if(ed){const c=SETS["hc:"+ed.dataset.hedit];if(c)hEdit(Object.assign({cid:ed.dataset.hedit},c),false);return}
+    hEdit({tpl:T[0],cat:T[1],ic:T[2],ti:T[3],f:T[4],wd:hBlock().days[0]??6,dur:T[5],unpop:T[6],kid:T[7],pts:hrec(T[5],T[6],T[7]),who,ck:T[8]||[],date:T[4]==="x"?plus(7):null,lead:T[0]==="f_geburtstag"?21:T[0]==="f_weihn"?30:0},true);return}
   if(t.closest("[data-hclose]")){$("hdlg").close();HED=null;return}
   if(t.closest("[data-hsave]")){hEdSave();return}
   if(t.closest("[data-hdel]")&&HED&&HED.c.cid){const cid=HED.c.cid,old=SETS["hc:"+cid];hset("hc:"+cid,null);$("hdlg").close();HED=null;renderHomeAll();undoToast(`„${old.ti}“ gelöscht`,()=>{hset("hc:"+cid,old);renderHomeAll()});return}
   const wd=t.closest("#heWd [data-wd]");if(wd){$("heWd").querySelectorAll("[data-wd]").forEach(b=>b.setAttribute("aria-pressed",String(b===wd)));return}
+  const ms=t.closest("#heMiss [data-miss]");if(ms){$("heMiss").querySelectorAll("[data-miss]").forEach(b=>b.setAttribute("aria-pressed",String(b===ms)));return}
   const wh=t.closest("#heWho [data-who]");if(wh){$("heWho").querySelectorAll("[data-who]").forEach(b=>b.setAttribute("aria-pressed",String(b===wh)));return}
-  const rd=t.closest("[data-hred]");if(rd&&!rd.disabled){const me=hMe(),cost=+rd.dataset.cost;if(hBal(me)<cost)return;const rid="r"+Date.now().toString(36);hset("hr:"+rid,{by:me,rw:rd.dataset.hred,ti:rd.dataset.ti,ic:rd.dataset.ic,cost,at:Date.now()});hBurst(cost,true);renderHome();
-    undoToast(`🎁 ${rd.dataset.ti} eingelöst (−${cost} Punkte)`,()=>{hset("hr:"+rid,null);renderHome()});return}
   const rdd=t.closest("[data-hreddone]");if(rdd){const k="hr:"+rdd.dataset.hreddone,r=SETS[k];if(r){hset(k,Object.assign({},r,{done:Date.now()}));toast("✓ Schön genossen!");renderHome()}return}
-  if(t.id==="hrwAdd"){const ti=$("hrwT").value.trim(),cost=Math.max(5,+$("hrwC").value||60);if(!ti){$("hrwT").focus();return}const L=((SETS.hrw||{}).list||[]).concat({id:"u"+Date.now().toString(36),ti,cost,ic:"🎁"});hset("hrw",{list:L});renderHome();return}
-  const rr=t.closest("[data-hrwrm]");if(rr){const L=((SETS.hrw||{}).list||[]).filter(r=>r.id!==rr.dataset.hrwrm);hset("hrw",{list:L});renderHome();return}});
+  const gr=t.closest("[data-hgred]");if(gr){const g=hGoalList().find(x=>x[0]===gr.dataset.hgred);if(!g||hFam().bal<g[3])return;const rid="f"+Date.now().toString(36);hset("hr:"+rid,{fam:1,by:hMe(),rw:g[0],ti:g[2],ic:g[1],cost:g[3],at:Date.now()});hBurst(g[3],true);renderHome();undoToast(`🎉 ${g[2]} eingelöst (−${g[3]} Familienpunkte)`,()=>{hset("hr:"+rid,null);renderHome()});return}
+  if(t.id==="hgAdd"){const ti=$("hgT").value.trim(),pts=Math.max(50,+$("hgP").value||500);if(!ti){$("hgT").focus();return}const c=hGcfg(),id="u"+Date.now().toString(36);c.custom=c.custom.concat({id,ti,pts,ic:"🎯"});c.on=c.on.concat(id);hset("hgoals",c);renderHome();return}
+  const grm=t.closest("[data-hgrm]");if(grm){e.preventDefault();const c=hGcfg();c.custom=c.custom.filter(x=>x.id!==grm.dataset.hgrm);c.on=c.on.filter(x=>x!==grm.dataset.hgrm);hset("hgoals",c);renderHome();return}
+  const ra=t.closest("[data-hrwall]");if(ra){const c=hRcfg(),tg=ra.dataset.hrwall,ids=HREW.filter(r=>r[5]===tg||r[5]==="b").map(r=>r[0]).concat(c.custom.filter(x=>x.t===tg).map(x=>x.id));c.off=ra.dataset.on==="1"?c.off.filter(x=>!ids.includes(x)):[...new Set(c.off.concat(ids))];hRsave(c);return}
+  if(t.id==="hrwAdd"){const ti=$("hrwT").value.trim(),cost=Math.max(5,+$("hrwC").value||60);if(!ti){$("hrwT").focus();return}const c=hRcfg();c.custom=c.custom.concat({id:"u"+Date.now().toString(36),ti,cost,ic:"🎁",t:$("hrwF").value});hRsave(c);return}
+  const rr=t.closest("[data-hrwrm]");if(rr){e.preventDefault();const c=hRcfg();c.custom=c.custom.filter(r=>r.id!==rr.dataset.hrwrm);hRsave(c);return}
+  if(t.id==="hjAdd"){const ti=$("hjT").value.trim();if(!ti){$("hjT").focus();return}const pid="j"+Date.now().toString(36);hset("hj:"+pid,{ti,ic:"💡",cat:"projekt",at:Date.now(),steps:[]});HJOPEN.add(pid);renderHome();return}
+  const tp=t.closest("[data-hjtpl]");if(tp){const T=HPROJ[+tp.dataset.hjtpl];const pid="j"+Date.now().toString(36);hset("hj:"+pid,{ti:T[1],ic:T[0],cat:"projekt",at:Date.now(),steps:T[2].map((s,i)=>({id:"s"+i,t:s,who:"",dur:60}))});HJOPEN.add(pid);toast("💡 Projekt angelegt – Schritte anpassen, Personen und Termine eintragen");renderHome();return}
+  const ja=t.closest("[data-hjadd]");if(ja){const inp=document.querySelector(`[data-hjnew="${ja.dataset.hjadd}"]`),v=inp&&inp.value.trim();if(!v){inp&&inp.focus();return}hProjEdit(ja.dataset.hjadd,P=>{P.steps=(P.steps||[]).concat({id:hsid(),t:v,who:"",dur:60})});setTimeout(()=>{const n=document.querySelector(`[data-hjnew="${ja.dataset.hjadd}"]`);n&&n.focus()},0);return}
+  const js=t.closest("[data-hjsx]");if(js){hProjEdit(js.dataset.hjsx,P=>{P.steps=(P.steps||[]).filter(x=>x.id!==js.dataset.s)});return}
+  const jx=t.closest("[data-hjx]");if(jx){const k="hj:"+jx.dataset.hjx,old=SETS[k];hset(k,null);renderHome();undoToast(`„${old.ti}“ gelöscht`,()=>{hset(k,old);renderHome()});return}});
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.closest||!d.closest("#homeView"))return;if(d.dataset&&d.dataset.hsec){HSEC[d.dataset.hsec]=d.open;LS.set("hwk-hsec",HSEC)}if(d.dataset&&d.dataset.hcat&&d.open)HCATOPEN=d.dataset.hcat},true);
 window.renderHomeNow=renderHome;window.renderHomeSetNow=renderHomeSet;
 renderHomeSet();if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();
-window.__home={SETS,hBal:id=>hBal(id),hMe:()=>hMe()};
+window.__home={SETS,hBal:id=>hBal(id),hMe:()=>hMe(),hFam:()=>hFam()};
 
 })();
 </script>
