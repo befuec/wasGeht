@@ -331,15 +331,16 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
       <p class="hsub" id="hcNone" hidden>Nichts gefunden – mit „Neue Vorlage“ selbst anlegen.</p>
       ${cc0.del.length?`<p class="hrest">${cc0.del.length} Vorlagen gelöscht · <button type="button" data-hrestore="tpl">wiederherstellen</button></p>`:""}
       <div class="hownbtns"><button type="button" class="pbtn" data-htpnew>➕ Neue Vorlage im Katalog</button><button type="button" class="pbtn" data-hadd="_own">➕ Eigene Aufgabe direkt</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`;
+  const nProj=hProjects().filter(p=>!hProjDone(p)).length;
   v.innerHTML=`<h2 class="mtitle">🏠 Zuhause</h2>${hFairHtml()}${meSel}
     <section class="pvsec hnow"><h3>✅ Jetzt dran</h3>${nb?`<p class="hsub">🏠 Nächster Zuhause-Block: <b>${esc(fmtDate(nb))}, ${esc(B.from)}–${esc(B.to)} Uhr</b></p>`:""}${filt}${now}</section>
     <section class="pvsec">${sec("bock","🙋 Offen – wer hat Bock?"+(opn.length?` <span class="pvn">${opn.length}</span>`:""),bockHtml,!!opn.length)}</section>
-    <section class="pvsec">${sec("proj","💡 Irgendwann & Projekte",hProjHtml(),true)}</section>
+    <section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn" title="offene Projekte">${nProj}</span>`:""),hProjHtml(),true)}</section>
     <section class="pvsec">${sec("lvl","🏆 Punkte & Level",`<div class="hpcards">${meCard}</div>`,true)}</section>
-    <section class="pvsec">${sec("rew","🎁 Belohnungen",redOpen+rew,true)}</section>
+    <section class="pvsec">${sec("rew","🎁 Belohnungen"+(openR.length?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR.length}</span>`:""),redOpen+rew,true)}</section>
     <section class="pvsec">${sec("fam","👨‍👩‍👧 Familienziele & Challenges",goals+chal+gmgr,true)}</section>
     <section class="pvsec">${sec("bdg","🏅 Abzeichen von "+(meP?esc(meP.n):"dir"),badges,false)}</section>
-    <section class="pvsec">${sec("act","📋 Unsere Aufgaben ("+ch.length+")",act,true)}</section>
+    <section class="pvsec">${sec("act","📋 Unsere Aufgaben"+(ch.length?` <span class="pvn">${ch.length}</span>`:""),act,true)}</section>
     <section class="pvsec">${sec("cat","➕ Aufgaben-Katalog",cat,!ch.length)}</section>`;if(HCQ)hCatFilter()}
 function hCatFilter(){const q=HCQ.trim().toLowerCase(),v=$("homeView");if(!v)return;let any=false;v.querySelectorAll(".hcat").forEach(d=>{let n=0;d.querySelectorAll(".htbw").forEach(w=>{const ok=!q||q.split(/\s+/).every(x=>w.dataset.q.includes(x));w.hidden=!ok;if(ok)n++});d.hidden=!!q&&!n;if(q)d.open=n>0;if(n)any=true});const nn=$("hcNone");if(nn)nn.hidden=!q||any}
 /* Belohnungen auswählen */
@@ -386,10 +387,10 @@ function hProjHtml(){const L=hProjects(),openP=L.filter(p=>!hProjDone(p)),doneP=
           <span class="hpts">${+s.pts||hrec(+s.dur||60,0,0)} P.</span><button type="button" class="mbx" data-hjsx="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Schritt löschen">✕</button></div></div>`).join("")}
         <div class="hownf"><input type="text" data-hjnew="${esc(p.pid)}" maxlength="60" placeholder="Neuer Schritt, z. B. Möbel kaufen"><button type="button" class="pmini" data-hjadd="${esc(p.pid)}">➕ Schritt</button></div>
         <div class="hpjf">${!S.length?`<button type="button" class="pmini" data-hck="j:${esc(p.pid)}" data-d="${T0}">${p.dn?"↺ Wieder offen":"✓ Erledigt"}</button>`:""}<button type="button" class="pmini hdel" data-hjx="${esc(p.pid)}">🗑️ Projekt löschen</button></div></div>`:""}</div>`};
-  return `<p class="hsub">Größere Vorhaben ohne festen Termin. Schritte mit Datum erscheinen in „Jetzt dran“ und im Kalender; jeder erledigte Schritt bringt Punkte.</p>
+  return `<p class="hsub">Größere Vorhaben, gern auch für irgendwann – ohne festen Termin. Schritte mit Datum erscheinen in „Jetzt dran“ und im Kalender; jeder erledigte Schritt bringt Punkte.</p>
     ${openP.map(card).join("")||`<p class="pvsub">Noch keine Projekte.</p>`}
     ${doneP.length?(HF.done?`<h4 class="hday">Erledigt</h4>`+doneP.map(card).join(""):`<p class="hsub">✓ ${doneP.length} erledigte ${doneP.length===1?"Projekt":"Projekte"} ausgeblendet – oben „Erledigte zeigen“ einschalten.</p>`):""}
-    <div class="hpjnew"><input type="text" id="hjT" maxlength="50" placeholder="Neues Projekt oder Irgendwann-Idee"><button type="button" class="pmini" id="hjAdd">➕ Anlegen</button></div>
+    <div class="hpjnew"><input type="text" id="hjT" maxlength="50" placeholder="Neues Projekt oder Vorhaben"><button type="button" class="pmini" id="hjAdd">➕ Anlegen</button></div>
     <div class="hpjtpl"><span>Vorlagen:</span>${HPROJ.map((t,i)=>`<button type="button" class="pmini" data-hjtpl="${i}">${t[0]} ${esc(t[1])}</button>`).join("")}</div>`}
 const hProjDone=p=>(p.steps||[]).length?(p.steps||[]).every(s=>s.dn):!!p.dn;
 function hProjEdit(pid,fn){const k="hj:"+pid,p=SETS[k];if(!p)return;const P=JSON.parse(JSON.stringify(p));fn(P);hset(k,P);renderHomeAll()}
