@@ -1,4 +1,6 @@
 -- =====================================================================
+-- HINWEIS: Danach zusätzlich supabase/mehrere-familien.sql ausführen – damit
+--          kann jede Familie in der App ihren eigenen Code anlegen.
 -- Ausflugsplaner „Was geht?“ – Supabase-Einrichtung mit Familien-Code
 -- Im Supabase-Dashboard: SQL Editor → New query → alles einfügen → Run
 -- VORHER: unten in Abschnitt 3 euren Familien-Code eintragen (mind. 12 Zeichen,

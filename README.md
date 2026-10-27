@@ -66,3 +66,7 @@ Mit Playwright: `index.html` bei 390 px und 1300 px laden, keine `pageerror`. Su
 Einmalige Einrichtung per SQL-Skript (Tabelle `fam_entries`, `fam_secret` mit gehashtem Familien-Code, Funktionen, gesperrter Direktzugriff). Arten (`kind`): `plans`, `maybe`, `busy`, `evwish`, `places`, `settings` (`family`, `freedays`).
 Kostenlose Projekte pausieren nach 7 Tagen ohne Nutzung – dann im Supabase-Dashboard „Restore“.
 Sicherung: in der Seite unter ⚙️ → „Daten sichern“ (JSON-Datei) / „Wiederherstellen“.
+
+## Familien & Codes
+
+Jede Familie legt in der App („✨ Neue Familie anlegen“) einen eigenen Code an und sieht nur ihre eigenen Einträge. Einrichtung in Supabase: einmal `supabase/mehrere-familien.sql` im SQL-Editor ausführen. Codes werden nur als HMAC-Schlüssel gespeichert; ändern lässt sich der Code in der App unter ⚙️ → Gemeinsamer Plan.
