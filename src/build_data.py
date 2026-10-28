@@ -305,11 +305,13 @@ from np2 import NP2,NH2,NHN2,NPR2,CONS2,STAY2,WEB2,SRCF,MATCHF
 import np2 as _np2; _np2.SRC2["Planetarium Hamburg"]="beide"
 P+=NP2; H.update(NH2); HN.update(NHN2); PR.update(NPR2); CONS.update(CONS2); STAY.update(STAY2); WEB.update(WEB2)
 # Ziele für Erwachsene (erwachsene.py)
-from erwachsene import ERW, ERWN, AUDB
+from erwachsene import ERW, ERWN, AUDB, CONS_E, ERW_CLOSE
+for _k,(_v,_l) in CONS_E.items(): CONS_T[_k]=_v; CONS_L[_k]=_l
 for (_n,_a,_la,_ln,_c,_io,_wx,_s,_de,_h,_pt,_ptx,_cons,_st,_w) in ERW:
     P.append((_n,_a,_la,_ln,_c,_io,_wx,_s,_de,None)); H[_n]=_h; PR[_n]=(_pt,False,_ptx if _pt!="verzehr" else "Kein Eintritt, nur Verzehr")
     if _cons: CONS[_n]=_cons
     STAY[_n]=_st; WEB[_n]=_w
+CLOSE.update(ERW_CLOSE)
 PM["urban apes Norderstedt"]=dict(PM["urban apes Hamburg Ost"]); PR["urban apes Norderstedt"]=("ueber15",False,"wie urban apes Ost: Erw. 16,90 €, Kinder 9,90 €, Familie 34,90 € (vor Ort prüfen)")
 # Planetarium Hamburg (neu in beiden Listen, 24.10.2026)
 _N="Planetarium Hamburg"

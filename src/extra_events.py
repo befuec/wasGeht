@@ -95,8 +95,9 @@ ADD = {
  ("2026-10-25","10:00","20:00","Herbstfest mit Illumination und Kinderaktionen","Erw. 10 €, Kinder bis 16 frei","https://www.kindaling.de/feste/herbstfest-mit-illumination/ellerhoop")],
 }
 
-# Ziele für Erwachsene (erwachsene.py) – Termine laut hamburg-tourism.de, Stand 28.10.2026
+# Ziele für Erwachsene (erwachsene.py) – Termine laut hamburg-tourism.de / hamburg-travel.com, Stand 28.10.2026
 _HT = "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungskalender/"
+_VO = "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungsorte/"
 _TK = "Tickets online"
 ADD["Kampnagel"] = [
  ("2026-10-31","20:00","","Jack Halberstam: Keynote „Anarchitecture After Everything“","Vortrag (engl.); "+_TK,_HT+"jack-halberstam-keynote-anarchitecture-after-everything/"),
@@ -106,25 +107,45 @@ ADD["Kampnagel"] = [
  ("2026-11-11","20:30","","Krimifestival: Nele Neuhaus – Mörder ohne Gnade","Lesung; "+_TK,_HT+"nele-neuhaus-moerder-ohne-gnade-angst-und-schrecken-im-taunus/"),
  ("2026-11-12","17:30","","Krimifestival: Emily Rudolf","Lesung; "+_TK,_HT+"emily-rudolf/"),
  ("2026-11-12","20:30","","Krimifestival: Marc Elsberg","Lesung; "+_TK,_HT+"marc-elsberg/"),
- ("2026-11-13","17:30","","Krimifestival: Josi Wismar & Linda Schipp","Lesung; "+_TK,"https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungsorte/kampnagel-k6/"),
+ ("2026-11-13","17:30","","Krimifestival: Josi Wismar & Linda Schipp","Lesung; "+_TK,_VO+"kampnagel-k6/"),
 ]
-ADD["Thalia Theater"] = [
- ("2026-10-28","20:00","","Deutsches Haus","Schauspiel; "+_TK,_HT+"deutsches-haus-1/"),
- ("2026-10-29","20:00","","The Boys Are Kissing","Schauspiel; "+_TK,_HT+"the-boys-are-kissing/"),
- ("2026-10-30","20:00","","Der Menschenfeind","Schauspiel (Molière); "+_TK,_HT+"der-menschenfeind/"),
- ("2026-10-31","15:00","","Timm Thaler","Schauspiel, auch für Familien; "+_TK,_HT+"timm-thaler-1/"),
- ("2026-11-01","15:00","","Hard Times","Schauspiel; "+_TK,_HT+"hard-times/"),
- ("2026-11-01","20:00","","Einhandsegeln","Schauspiel; "+_TK,_HT+"einhandsegeln-6/"),
- ("2026-11-04","20:00","","Der zerbrochne Krug","Schauspiel (Kleist); "+_TK,_HT+"der-zerbrochne-krug-6/"),
- ("2026-11-06","20:00","","Dschinns","Schauspiel nach Fatma Aydemir; "+_TK,_HT+"dschinns/"),
- ("2026-11-13","20:00","","Martin Suter: „Ein und Alles“","Buchpräsentation; "+_TK,_HT+"buchpraesentation-martin-suter-ein-und-alles/"),
-]
-ADD["Elbphilharmonie Plaza"] = [
+ADD["Elbphilharmonie Hamburg"] = [
  ("2026-11-01","15:00","","Step Into Dabke – gemeinsam tanzen auf der Plaza","Mitmach-Tanz auf der Plaza",_HT+"elbphilharmonie-plus-step-into-dabke-gemeinsam-tanzen-auf-der-plaza/"),
  ("2026-11-11","20:00","","Koninklijk Concertgebouworkest","Konzert im Großen Saal; "+_TK,_HT+"koninklijk-concertgebouworkest/"),
 ]
-# Fischmarkt: jeden Sonntag (Nov.–März ab 7 Uhr)
-import datetime as _dtm
-_d=_dtm.date(2026,11,1); ADD["Hamburger Fischmarkt"]=[]
-while _d<=_dtm.date(2026,12,27):
-    ADD["Hamburger Fischmarkt"].append((_d.isoformat(),"07:00","09:30","Fischmarkt mit Marktschreiern und Livemusik in der Auktionshalle","ohne Anmeldung","https://www.hamburg.de/fischmarkt/")); _d+=_dtm.timedelta(7)
+ADD["Pulverfass Cabaret"] = [
+ ("2026-10-29","19:00","","Pulverlesque – Halloween Edition","Burlesque-Show; "+_TK,_HT+"pulverlesque-halloween-edition/"),
+ ("2026-11-06","19:00","","Santa's Pink Secret – die Pulverfass-Weihnachtsshow","Show; "+_TK,_HT+"santas-pink-secret-die-pulverfass-weihnachtsshow/"),
+ ("2026-12-31","19:00","","Die große Silvester-Gala","Show; "+_TK,_HT+"die-grosse-silvester-gala/"),
+]
+ADD["Centralkomitee"] = [
+ ("2026-11-03","20:00","","Stand Up Komitee","Stand-up-Comedy; "+_TK,_HT+"stand-up-komitee-1-1/"),
+ ("2026-11-07","20:00","","Christian Schulte-Loh: Import Export","Comedy; "+_TK,_HT+"christian-schulte-loh/"),
+ ("2026-11-11","19:00","","Moritz Neumeier – Improvisiert.","Comedy; "+_TK,_HT+"moritz-neumeier-improvisiert-8/"),
+ ("2026-11-13","20:00","","Christine Prayon – Abschiedstour","Kabarett; "+_TK,_VO+"centralkomitee/"),
+ ("2026-11-18","20:00","","Dem Pöbel zur Freude","Kabarett; "+_TK,_HT+"dem-poebel-zur-freude-1/"),
+ ("2026-12-05","20:00","","Julius Fischer & Christian Meyer","Lesebühne/Comedy; "+_TK,_HT+"julius-fischer-christian-meyer/"),
+ ("2026-12-06","20:00","","hidden shakespeare und die Gorillas","Impro-Theater; "+_TK,_HT+"hidden-shakespeare-und-die-gorillas-1/"),
+]
+ADD["Mojo Club"] = [
+ ("2026-10-29","20:00","","Florian Paul & die Kapelle der letzten Hoffnung","Konzert; "+_TK,_HT+"florian-paul-die-kapelle-der-letzten-hoffnung-6/"),
+ ("2026-11-05","21:00","","Etran de L'Aïr","Konzert (Mojo Jazz Café); "+_TK,_VO+"jazz-cafe/"),
+ ("2026-11-16","20:00","","Mic Donet – Memories Tour 2026","Konzert; "+_TK,_HT+"mic-donet-memories-tour-2026/"),
+ ("2026-11-21","23:00","","Pink Inc @ Mojo Club","Party; "+_TK,_HT+"pink-inc-at-mojo-club/"),
+]
+ADD["Laeiszhalle"] = [
+ ("2026-11-05","18:00","","Mareille Merck (Studio E)","Feierabendkonzert; "+_TK,_HT+"mareille-merck/"),
+ ("2026-11-16","18:00","","Noé Tavelli Double Drums Quartet (Studio E)","Jazz; "+_TK,_HT+"noe-tavelli-double-drums-quartet/"),
+ ("2026-12-03","18:00","","Tim Scherer Trio (Studio E)","Jazz; "+_TK,_HT+"tim-scherer-trio/"),
+ ("2026-12-10","18:00","","Alexander Rueß Trio (Studio E)","Jazz; "+_TK,_HT+"alexander-ruess-trio/"),
+]
+ADD["Barclays Arena"] = [
+ ("2026-12-11","20:00","","Night of the Proms 2026","u. a. Holly Johnson, Christopher Cross, The Hooters; "+_TK,_HT+"night-of-the-proms-2026-1/"),
+ ("2026-12-12","20:00","","Night of the Proms 2026","u. a. Holly Johnson, Christopher Cross, The Hooters; "+_TK,_HT+"night-of-the-proms-2026-1/"),
+]
+ADD["Handball Club Hamburg"] = [
+ ("2026-11-22","17:00","","Handball-Bundesliga: Handball Club Hamburg – SC Magdeburg","Heimspiel in der Barclays Arena; "+_TK,_HT+"handball-club-hamburg/"),
+]
+ADD["Reeperbahn Comedy Club"] = [
+ ("2026-10-30","20:00","","Reeperbahn Comedy Club","Stand-up-Comedy; "+_TK,"https://www.hamburg-travel.com/see-explore/events/events-calendar/reeperbahn-comedy-club/"),
+]
