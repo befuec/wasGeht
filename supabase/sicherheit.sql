@@ -278,3 +278,6 @@ grant execute on function public.fam_check(text), public.fam_list(text), public.
 select (select count(*) from public.families) as familien,
        (select count(*) from public.families where code_hash is null) as noch_ohne_bcrypt,
        (select count(*) from public.fam_entries) as eintraege;
+
+-- PostgREST soll die neuen Funktionen sofort kennen
+notify pgrst, 'reload schema';
