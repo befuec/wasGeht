@@ -4199,11 +4199,11 @@ const hPts=c=>+c.pts||hrec(+c.dur||10,c.unpop,c.kid);
 function hStepChores(){const L=[];hProjects().forEach(p=>(p.steps||[]).forEach(s=>{if(s.date)L.push({cid:"j:"+p.pid+":"+s.id,ti:p.ti+": "+s.t,ic:p.ic||"🛠️",cat:p.cat||"projekt",f:"x",date:s.date,dur:+s.dur||60,who:s.who||"",pts:+s.pts||hrec(+s.dur||60,0,0),miss:"over",proj:{pid:p.pid,sid:s.id},dn:s.dn||null})}));return L}
 const hDone=(cid,d)=>{if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":");const p=SETS["hj:"+pid];const s=p&&(p.steps||[]).find(x=>x.id===sid);return s&&s.dn||null}return SETS["hd:"+cid+":"+d]};
 /* Fällige Einträge (Verschiebungen und Übernahmen je Termin berücksichtigt) */
-function hItems(from,to){const L=[];hChores().concat(hStepChores()).forEach(c=>hOcc(c,addD(from,-14),addD(to,14)).forEach(d=>{const ov=SETS["ho:"+c.cid+":"+d]||null,disp=(ov&&ov.to)||d;
-    if(disp<from||disp>to)return;L.push({c,d,disp,who:(ov&&ov.who)||hWho(c,d),dn:hDone(c.cid,d),mv:!!(ov&&ov.to)})}));
+function hItems(from,to,withSkip){const L=[];hChores().concat(hStepChores()).forEach(c=>hOcc(c,addD(from,-14),addD(to,14)).forEach(d=>{const ov=SETS["ho:"+c.cid+":"+d]||null,disp=(ov&&ov.to)||d;
+    if(disp<from||disp>to)return;if(ov&&ov.skip){if(withSkip)L.push({c,d,disp,sk:true});return}L.push({c,d,disp,who:(ov&&ov.who)||hWho(c,d),dn:hDone(c.cid,d),mv:!!(ov&&ov.to)})}));
   return L.sort((a,b)=>(a.disp+(a.c.t||"99")).localeCompare(b.disp+(b.c.t||"99")))}
-function hOverdue(){const now=new Set(hItems(T0,T0).map(i=>i.c.cid)),seen={};
-  hItems(addD(T0,-28),addD(T0,-1)).forEach(i=>{if(hMiss(i.c)!=="over"||now.has(i.c.cid))return;seen[i.c.cid]=i});return Object.values(seen).filter(i=>!i.dn).map(i=>Object.assign({},i,{od:true}))}
+function hOverdue(){const now=new Set(hItems(T0,T0,true).map(i=>i.c.cid)),seen={};
+  hItems(addD(T0,-28),addD(T0,-1),true).forEach(i=>{if(hMiss(i.c)!=="over"||now.has(i.c.cid))return;seen[i.c.cid]=i});return Object.values(seen).filter(i=>!i.dn&&!i.sk).map(i=>Object.assign({},i,{od:true}))}
 /* Punkte & Statistik */
 function hDoneAll(){const L=Object.keys(SETS).filter(k=>k.startsWith("hd:")).map(k=>{const [,cid,d]=k.split(":");return Object.assign({cid,d},SETS[k])});
   /* zusammengefasste Monatssummen (älter als gut ein Jahr) */
@@ -4302,7 +4302,7 @@ function hDailyChip(i){const {c,d,who,dn}=i,p=hPer(who),k=c.cid+"|"+d,op=HDPICK=
 function hPickHtml(i){if(!i)return "";const {c,d,who,dn}=i,P=c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople();const by=dn&&hPer(dn.by);
   return `<div class="hpick"><b>${c.ic||""} ${esc(c.ti)}</b> – ${dn?`erledigt von ${by?by.e+" "+esc(by.n):"?"}. Doch jemand anderes?`:"wer hat's gemacht? Die Person bekommt die Punkte."}
     <div class="hassign">${P.filter(p=>!dn||p.id!==dn.by).map(p=>`<button type="button" ${dn?`data-hredo="${esc(c.cid)}"`:`data-hck="${esc(c.cid)}" data-by="${p.id}"`} data-d="${d}" data-p="${p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}${!dn&&p.id===who?" ★":""}</button>`).join("")}</div>
-    <div class="hpickf">${dn?`<button type="button" class="pmini" data-hck="${esc(c.cid)}" data-d="${d}" data-undo="1">↺ Haken entfernen</button>`:""}<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern (fest zuständig: ${who&&hPer(who)?hPer(who).e+" "+esc(hPer(who).n):"niemand"})</button><button type="button" class="pmini" data-hdpick="${esc(c.cid)}" data-d="${d}">Schließen</button></div></div>`}
+    <div class="hpickf">${dn?`<button type="button" class="pmini" data-hck="${esc(c.cid)}" data-d="${d}" data-undo="1">↺ Haken entfernen</button>`:hSkippable(c)?`<button type="button" class="pmini" data-hskip="${esc(c.cid)}" data-d="${d}">🚫 Entfällt heute</button>`:""}<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern (fest zuständig: ${who&&hPer(who)?hPer(who).e+" "+esc(hPer(who).n):"niemand"})</button><button type="button" class="pmini" data-hdpick="${esc(c.cid)}" data-d="${d}">Schließen</button></div></div>`}
 let HDPICK=null;
 const hTurn=c=>c.f==="x"?(c.date?"einmalig · "+fmtDate(c.date):"einmalig"):(HFL[c.f]||"")+(["w1","w2","w4","m1","m3","m6"].includes(c.f)?" · "+hWdTxt(c):"")+(c.f==="y1"&&c.date?" · "+fmtDate(c.date).replace(/^\S+ /,""):"");
 const hAv=(id,sz)=>{const p=hPer(id);return `<span class="hav${sz?" "+sz:""}" style="--pc:${p?p.c:"#B45309"}" title="${p?esc(p.n):"offen – wer übernimmt?"}">${p?p.e:"🙋"}</span>`};
@@ -4316,7 +4316,7 @@ function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c),cat=HC
       ${!dn&&opnC?hBockPanel(c,i):""}${!dn&&open&&c.proj?hAssign(c,d,"Wer macht's?"):""}
       ${tk?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Ich übernehme (+50 % Punkte)</button>`:""}
       ${!dn&&!opnC&&!(open&&c.proj)?hAssign(c,d,"Diesmal macht's:",who):""}
-      <div class="hacts">${dn?"":`<button type="button" class="pmini" data-hmv1="${esc(c.cid)}" data-d="${d}">↷ Morgen</button><label class="hmv">📅 <input type="date" data-hmv="${esc(c.cid)}" data-d="${d}" value="${disp}" min="${T0}" aria-label="Verschieben auf"></label>`}${c.proj?`<button type="button" class="pmini" data-hjopen="${esc(c.proj.pid)}">🛠️ Projekt öffnen</button>`:`<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern</button>`}${mv?`<button type="button" class="pmini" data-hmvx="${esc(c.cid)}" data-d="${d}">↺ Zurück auf ${esc(fmtDate(d))}</button>`:""}</div></div>`:"";
+      <div class="hacts">${dn?"":`<button type="button" class="pmini" data-hmv1="${esc(c.cid)}" data-d="${d}">↷ Morgen</button><label class="hmv">📅 <input type="date" data-hmv="${esc(c.cid)}" data-d="${d}" value="${disp}" min="${T0}" aria-label="Verschieben auf"></label>${hSkippable(c)?`<button type="button" class="pmini" data-hskip="${esc(c.cid)}" data-d="${d}" title="Nur dieser Termin entfällt – der nächste bleibt wie geplant">🚫 Entfällt diesmal</button>`:""}`}${c.proj?`<button type="button" class="pmini" data-hjopen="${esc(c.proj.pid)}">🛠️ Projekt öffnen</button>`:`<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern</button>`}${mv?`<button type="button" class="pmini" data-hmvx="${esc(c.cid)}" data-d="${d}">↺ Zurück auf ${esc(fmtDate(d))}</button>`:""}</div></div>`:"";
   return `<div class="htrow${dn?" dn":""}${od?" od":""}${ex?" ex":""}" data-sw="${esc(c.cid)}" data-d="${d}"><button type="button" class="hck" data-hck="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-label="${dn?"Erledigt – antippen zum Zurücknehmen":"Als erledigt abhaken"}">${dn?"✓":""}</button>
     <button type="button" class="hrbt" data-hexp="${esc(key)}" aria-expanded="${ex}"><b>${c.ic||cat[1]} ${esc(c.ti)}</b>${meta?`<small>${meta}</small>`:""}</button>
     <span class="hrr">${hAv(dn?dn.by:who)}<span class="hpts${tk?" tk":""}">${tk?Math.round(pts*1.5):dn?dn.pts:pts}</span></span>${det}${hDaily(c)&&HDPICK===key?hPickHtml(i):""}</div>`}
@@ -4647,6 +4647,12 @@ document.addEventListener("click",e=>{const t=e.target;
   const js=t.closest("[data-hjsx]");if(js){hProjEdit(js.dataset.hjsx,P=>{P.steps=(P.steps||[]).filter(x=>x.id!==js.dataset.s)});return}
   const jx=t.closest("[data-hjx]");if(jx){const k="hj:"+jx.dataset.hjx,old=SETS[k];hset(k,null);renderHome();undoToast(`„${old.ti}“ gelöscht`,()=>{hset(k,old);renderHome()});return}});
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.closest||!(d.closest("#homeView")||d.closest("#hcatdlg")))return;if(d.dataset&&d.dataset.hsec){HSEC[d.dataset.hsec]=d.open;LS.set("hwk-hsec",HSEC)}if(d.dataset&&d.dataset.hcat&&d.open&&!HCQ)HCATOPEN=d.dataset.hcat;if(d.dataset&&d.dataset.hmgr)HMGR[d.dataset.hmgr]=d.open},true);
+/* Einzeltermin entfällt: nur dieser Termin wird ausgeblendet (ho:…:{skip}), der Turnus bleibt unverändert */
+const hSkippable=c=>c&&!String(c.cid).startsWith("j:")&&(c.f||"w1")!=="x";
+function hSkip(cid,d){const k="ho:"+cid+":"+d,old=SETS[k]||null,c=hChores().find(x=>x.cid===cid);hset(k,{skip:1});HEXP.delete(cid+"|"+d);if(typeof HDPICK!=="undefined"&&HDPICK===cid+"|"+d)HDPICK=null;renderHomeAll();
+  const nx=c?hOcc(c,addD(d,1),addD(d,400)).find(x=>!(SETS["ho:"+cid+":"+x]||{}).skip):null;
+  undoToast(`🚫 ${c?c.ti:"Aufgabe"} entfällt am ${fmtDate(d)}${nx?" · nächster Termin "+fmtDate(nx):""}`,()=>{hset(k,old);renderHomeAll()})}
+document.addEventListener("click",e=>{const s=e.target.closest&&e.target.closest("[data-hskip]");if(!s)return;e.stopPropagation();hSkip(s.dataset.hskip,s.dataset.d)});
 function hMoveTomorrow(cid,d){if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),p=SETS["hj:"+pid],s=p&&(p.steps||[]).find(x=>x.id===sid);const to=addD(s&&s.date&&s.date>=T0?s.date:T0,1);hProjEdit(pid,P=>{const z=(P.steps||[]).find(x=>x.id===sid);if(z)z.date=to});toast("↷ Auf "+fmtDate(to)+" verschoben");return}
   const k="ho:"+cid+":"+d,old=SETS[k]||null,ov=Object.assign({},old||{}),disp=ov.to||d,to=addD(disp>=T0?disp:T0,1);ov.to=to;hset(k,ov);HEXP.delete(cid+"|"+d);renderHomeAll();undoToast("↷ Auf "+fmtDate(to)+" verschoben",()=>{hset(k,old);renderHomeAll()})}
 let SW=null;
@@ -4661,7 +4667,7 @@ const swEnd=e=>{if(!SW)return;const {r,dx,on}=SW;SW=null;if(!on)return;HSWX=Date
 document.addEventListener("pointerup",swEnd);document.addEventListener("pointercancel",swEnd);
 window.renderHomeNow=renderHome;window.renderHomeSetNow=renderHomeSet;
 renderHomeSet();if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();
-window.__home={SETS,hBal:id=>hBal(id),hMe:()=>hMe(),hFam:()=>hFam()};
+window.__home={SETS,items:(a,b)=>hItems(a,b).map(i=>i.c.cid+"@"+i.disp),hBal:id=>hBal(id),hMe:()=>hMe(),hFam:()=>hFam()};
 
 })();
 </script>
