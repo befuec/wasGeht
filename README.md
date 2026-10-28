@@ -63,10 +63,21 @@ Mit Playwright: `index.html` bei 390 px und 1300 px laden, keine `pageerror`. Su
 
 ## Supabase
 
-Einmalige Einrichtung per SQL-Skript (Tabelle `fam_entries`, `fam_secret` mit gehashtem Familien-Code, Funktionen, gesperrter Direktzugriff). Arten (`kind`): `plans`, `maybe`, `busy`, `evwish`, `places`, `settings` (`family`, `freedays`).
-Kostenlose Projekte pausieren nach 7 Tagen ohne Nutzung – dann im Supabase-Dashboard „Restore“.
+Einrichtung per SQL-Skripten: `schema.sql`, dann `mehrere-familien.sql`, dann `sicherheit.sql` (Tabellen, Funktionen, gesperrter Direktzugriff). Arten (`kind`): `plans`, `maybe`, `busy`, `evwish`, `places`, `settings` (`family`, `freedays`).
+Kostenlose Projekte pausieren nach 7 Tagen ohne Nutzung – der Wachhalter (GitHub Actions) verhindert das; sonst im Supabase-Dashboard „Restore“.
 Sicherung: in der Seite unter ⚙️ → „Daten sichern“ (JSON-Datei) / „Wiederherstellen“.
 
 ## Familien & Codes
 
 Jede Familie legt in der App („✨ Neue Familie anlegen“) einen eigenen Code an und sieht nur ihre eigenen Einträge. Einrichtung in Supabase: einmal `supabase/mehrere-familien.sql` im SQL-Editor ausführen. Codes werden nur als HMAC-Schlüssel gespeichert; ändern lässt sich der Code in der App unter ⚙️ → Gemeinsamer Plan.
+
+## Sicherheit & Datenschutz
+
+Einrichtung: nach `mehrere-familien.sql` einmal `supabase/sicherheit.sql` im SQL-Editor ausführen.
+
+- **Ende-zu-Ende-Verschlüsselung:** Aus dem Familien-Code leitet der Browser per PBKDF2 (210 000 Runden) drei Schlüssel ab: `a` (Anmeldung, geht an den Server), `e` (AES-GCM für die Daten), `m` (HMAC für verschleierte Kennungen). In `fam_entries` stehen nur `{v:2,iv,ct}` und Kennungen wie `e3f…`. Der Code selbst wird weder gespeichert noch gesendet; auf dem Gerät liegen nur die abgeleiteten Schlüssel (`hwk-fam-sb` = `{k:{a,e,m},name}`), bei „nicht angemeldet bleiben“ nur in `sessionStorage`. Alte Geräte (`{code}`) und Klartext-Einträge werden beim ersten Öffnen automatisch umgestellt (`fam_setcode` → `fam_replace_all`).
+- **Server (`sicherheit.sql`):** Code-Schlüssel als HMAC + bcrypt; Sperre bei ≥ 10 Fehlversuchen pro IP und Stunde bzw. 300 insgesamt (`PT429`); höchstens 5 neue Familien pro IP und Tag (50 insgesamt); Eintrag ≤ 40 kB, ≤ 5000 Einträge je Familie. Gelöschtes 30 Tage in `fam_trash`, wöchentliche Sicherung in `fam_snapshots` (letzte 4). `fam_delete` löscht eine Familie vollständig.
+- **Code ändern** (⚙️ → Gemeinsamer Plan) verschlüsselt alles neu und meldet alle anderen Geräte ab.
+- **Aufbewahrung:** Erledigt-Haken (`hd:`) älter als ~13 Monate werden zu Monatssummen `hsum:JJJJ-MM` (`{p:{person:punkte},n:{person:anzahl}}`) zusammengefasst.
+- **Seite:** Content-Security-Policy (nur Supabase und Open-Meteo erreichbar), keine Referrer, Schriften lokal in `fonts/` (OFL), nur http(s)-Links in den Daten, gefährliche Link-Adressen werden beim Klicken blockiert. Startpunkt auf ~1 km gerundet.
+- **Wachhalten:** `.github/workflows/keepalive.yml` ruft alle 3 Tage `fam_ping` auf, damit das kostenlose Projekt nicht pausiert.

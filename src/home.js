@@ -127,7 +127,7 @@ const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.ro
 const HK=k=>"settings/"+k;
 const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
-const HPRE=/^(hc|hd|hr|ho|hj):/;
+const HPRE=/^(hc|hd|hr|ho|hj|hsum):/;
 const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals"].includes(k);
 {const loc=LS.get("hwk-home",{});for(const k in loc)if(SETS[k]===undefined)SETS[k]=loc[k]}
 function hMirror(){const o={};for(const k in SETS)if(isHomeKey(k))o[k]=SETS[k];LS.set("hwk-home",o)}
@@ -135,9 +135,18 @@ function hset(id,data){if(data==null)delete SETS[id];else SETS[id]=data;hMirror(
 let HFIRST=true;
 window.homeApply=(s,full)=>{if(full){const srv=Object.keys(s).some(k=>HPRE.test(k)||k==="people");
     if(HFIRST&&!srv){for(const k of Object.keys(SETS))if(isHomeKey(k))write(HK(k),SETS[k])}
-    else for(const k of Object.keys(SETS))if(HPRE.test(k)&&!(k in s))delete SETS[k];HFIRST=false}
+    else for(const k of Object.keys(SETS))if(HPRE.test(k)&&!(k in s))delete SETS[k];HFIRST=false;setTimeout(()=>{try{hCompact()}catch(_){}} ,3000)}
   hMirror();HCACHE=null;if(SETS.people&&Array.isArray(SETS.people.list))hSyncFam(SETS.people.list);if(typeof renderHomeSet==="function")renderHomeSet();if(M2==="zuhause"&&typeof renderHome==="function")renderHome();if(document.body.classList.contains("kidsmode"))renderKidTasks()};
 window.homeIsKey=isHomeKey;
+/* Aufbewahrung: Erledigt-Haken älter als ~13 Monate werden zu Monatssummen (hsum:JJJJ-MM) zusammengefasst */
+let HCOMPACTED=false;
+function hCompact(){if(HCOMPACTED||!SB)return;HCOMPACTED=true;const lim=addD(T0,-400),G={};
+  Object.keys(SETS).filter(k=>k.startsWith("hd:")).forEach(k=>{const d=k.split(":")[2];if(!d||d>=lim)return;const m=d.slice(0,7);(G[m]=G[m]||[]).push(k)});
+  let n=0;for(const m in G){if(n>400)break;const s=Object.assign({p:{},n:{}},SETS["hsum:"+m]||{});s.p=Object.assign({},s.p);s.n=Object.assign({},s.n);
+    G[m].forEach(k=>{const x=SETS[k]||{};if(!x.by)return;s.p[x.by]=(s.p[x.by]||0)+(+x.pts||0);s.n[x.by]=(s.n[x.by]||0)+1});
+    hset("hsum:"+m,s);G[m].forEach(k=>{hset(k,null);n++})}
+  if(n){HCACHE=null}}
+window.homeCompact=hCompact;
 /* Personen */
 function hPeople(){let L=(SETS.people&&Array.isArray(SETS.people.list))?SETS.people.list.slice():null;
   if(!L){L=[];const n=Math.max(1,FAM.ad||1);for(let i=0;i<n;i++)L.push(i===0&&MYID?{id:"p_"+hslug(MYID),n:MYID,e:"🧔",kid:false}:{id:"a"+(i+1),n:"Elternteil "+(i+1),e:i?"👩":"🧔",kid:false});(FAM.kids||[]).forEach((a,i)=>L.push({id:"k"+(i+1),n:"Kind "+(i+1),age:a,e:i?"👦":"👧",kid:true}))}
@@ -189,6 +198,8 @@ function hOverdue(){const now=new Set(hItems(T0,T0).map(i=>i.c.cid)),seen={};
   hItems(addD(T0,-28),addD(T0,-1)).forEach(i=>{if(hMiss(i.c)!=="over"||now.has(i.c.cid))return;seen[i.c.cid]=i});return Object.values(seen).filter(i=>!i.dn).map(i=>Object.assign({},i,{od:true}))}
 /* Punkte & Statistik */
 function hDoneAll(){const L=Object.keys(SETS).filter(k=>k.startsWith("hd:")).map(k=>{const [,cid,d]=k.split(":");return Object.assign({cid,d},SETS[k])});
+  /* zusammengefasste Monatssummen (älter als gut ein Jahr) */
+  Object.keys(SETS).filter(k=>k.startsWith("hsum:")).forEach(k=>{const s=SETS[k]||{},d=k.slice(5)+"-01";for(const pid in (s.p||{}))L.push({cid:"sum",d,by:pid,pts:s.p[pid],n:(s.n||{})[pid]||1,cat:"",sum:1})});
   hProjects().forEach(p=>{(p.steps||[]).forEach(s=>{if(s.dn)L.push(Object.assign({cid:"j:"+p.pid+":"+s.id,d:s.dn.d,cat:p.cat||"projekt",proj:1},s.dn))});if(p.dn)L.push(Object.assign({cid:"j:"+p.pid,d:p.dn.d,cat:p.cat||"projekt",proj:1},p.dn))});return L}
 function hEarned(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&(!from||x.d>=from)&&(!to||x.d<=to)).reduce((s,x)=>s+(+x.pts||0),0)}
 const hReds=()=>Object.keys(SETS).filter(k=>k.startsWith("hr:")).map(k=>Object.assign({rid:k.slice(3)},SETS[k]));
@@ -244,7 +255,7 @@ function hFam(){if(HCACHE&&HCACHE.t>Date.now()-1500)return HCACHE.v;const cfg=hG
   const spent=hReds().filter(r=>r.fam).reduce((s,r)=>s+(+r.cost||0),0);const v={earned,bonus,spent,bal:earned+bonus-spent};HCACHE={t:Date.now(),v};return v}
 /* Abzeichen */
 function hBadges(pid){const D=hDoneAll().filter(x=>x.by===pid);
-  return [["🎉","Erster Haken",D.length>=1],["🔟","10 erledigt",D.length>=10],["💯","100 erledigt",D.length>=100],["🛟","Retter (3× übernommen)",D.filter(x=>x.tk).length>=3],
+  const DN=D.reduce((s,x)=>s+(x.n||1),0);return [["🎉","Erster Haken",DN>=1],["🔟","10 erledigt",DN>=10],["💯","100 erledigt",DN>=100],["🛟","Retter (3× übernommen)",D.filter(x=>x.tk).length>=3],
    ["🔥","4 Wochen am Stück",hStreak(pid)>=4],["🧠","Kopf-Arbeiter (10× Organisation)",D.filter(x=>MENTAL.has(x.cat)).length>=10],["🌳","Gärtner (10× Garten)",D.filter(x=>x.cat==="garten").length>=10],
    ["🧽","Putzteufel (20× Haushalt)",D.filter(x=>x.cat==="haushalt").length>=20],["⏰","Pünktlich (20× rechtzeitig)",D.filter(x=>!x.late).length>=20],["🛠️","Projekt-Macher (5 Schritte)",D.filter(x=>x.proj).length>=5],["🙋","Freiwillig (5 offene Aufgaben)",D.filter(x=>x.vol).length>=5],["🧒","Kinder-Profi (10× Kinderaufgaben)",D.filter(x=>x.cat==="kids").length>=10]]}
 /* Abhaken */

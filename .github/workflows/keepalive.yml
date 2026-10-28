@@ -1,0 +1,18 @@
+# Hält das kostenlose Supabase-Projekt wach (wird sonst nach 7 Tagen ohne Zugriff pausiert).
+# Ruft nur fam_ping auf – liest und ändert keine Daten. Der öffentliche (publishable) Schlüssel steht ohnehin in index.html.
+name: Supabase wach halten
+on:
+  schedule:
+    - cron: "17 6 */3 * *"
+  workflow_dispatch:
+permissions: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: fam_ping aufrufen
+        run: |
+          curl -fsS -X POST "https://klnjjherjqxiihxwaveh.supabase.co/rest/v1/rpc/fam_ping" \
+            -H "apikey: sb_publishable_mixDdB0UbIg2mTCKfz2dZA_5oQmRxE5" \
+            -H "Content-Type: application/json" -d '{}'

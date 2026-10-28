@@ -1,6 +1,6 @@
 import json, math, re, datetime as dt
 
-HU = (53.76, 10.00)  # Henstedt-Rhen (Ortsmitte laut Google Maps)
+HU = (53.76, 10.00)  # Henstedt-Ulzburg (gerundet, ca. 1 km)
 
 CAL = {
  "karlshoehe": "https://www.gut-karlshoehe.de/aktuelles/veranstaltung/",

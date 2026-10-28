@@ -14,13 +14,41 @@ let DB=null, SHARED=false, CANWRITE=true;
 const pq={}; // eine Schreiboperation je Dokument
 function persistLocal(){LS.set("hwkp-places",ST.places);LS.set("hwkp-plans",ST.plans);LS.set("hwkp-evw",ST.evw);LS.set("hwkp-maybe",ST.maybe);LS.set("hwkp-busy",ST.busy)}
 const SB_URL="https://klnjjherjqxiihxwaveh.supabase.co",SB_KEY="sb_publishable_mixDdB0UbIg2mTCKfz2dZA_5oQmRxE5";
-let SB=LS.get("hwk-fam-sb",null);
+const SBS={get(){try{const s=sessionStorage.getItem("hwk-fam-sb");if(s)return JSON.parse(s)}catch(_){}return LS.get("hwk-fam-sb",null)},
+  set(v,remember){try{sessionStorage.removeItem("hwk-fam-sb")}catch(_){}LS.set("hwk-fam-sb",null);if(!v)return;if(remember===false){try{sessionStorage.setItem("hwk-fam-sb",JSON.stringify(v))}catch(_){}}else LS.set("hwk-fam-sb",v)},
+  remembered(){return !!LS.get("hwk-fam-sb",null)}};
+let SB=SBS.get();
+/* Ende-zu-Ende-Verschlüsselung: Aus dem Familien-Code werden im Browser drei Schlüssel abgeleitet.
+   a = Anmeldeschlüssel (geht an den Server), e = Datenschlüssel (AES-GCM), m = Schlüssel für verschleierte Kennungen.
+   Der Code selbst wird nirgends gespeichert und nie gesendet. */
+/* Schutz: Links mit gefährlichen Adressen (javascript:, data: …) werden nicht geöffnet – auch wenn sie aus gemeinsamen Einträgen stammen */
+document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href]");if(!a)return;const h=(a.getAttribute("href")||"").trim();if(h&&!/^(https?:|mailto:|tel:|#|blob:)/i.test(h)&&/^[a-z][a-z0-9+.-]*:/i.test(h)){e.preventDefault();e.stopImmediatePropagation()}},true);
+const TE=new TextEncoder(),TD=new TextDecoder();
+const b64=u=>{let s="";for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)},unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),hexs=u=>[...u].map(b=>b.toString(16).padStart(2,"0")).join("");
+async function famDerive(code){const base=await crypto.subtle.importKey("raw",TE.encode(String(code).normalize("NFC")),"PBKDF2",false,["deriveBits"]);
+  const bits=async s=>new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",salt:TE.encode("was-geht/"+s+"/v1"),iterations:210000,hash:"SHA-256"},base,256));
+  return {a:hexs(await bits("auth")),e:b64(await bits("enc")),m:b64(await bits("mac"))}}
+async function famKeyObj(K){return {a:K.a,k:await crypto.subtle.importKey("raw",unb64(K.e),"AES-GCM",false,["encrypt","decrypt"]),m:await crypto.subtle.importKey("raw",unb64(K.m),{name:"HMAC",hash:"SHA-256"},false,["sign"])}}
+async function encId(c,kind,id){return "e"+hexs(new Uint8Array(await crypto.subtle.sign("HMAC",c.m,TE.encode(kind+"/"+id)))).slice(0,40)}
+async function encData(c,id,data){const iv=crypto.getRandomValues(new Uint8Array(12));return {v:2,iv:b64(iv),ct:b64(new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},c.k,TE.encode(JSON.stringify({i:id,d:data})))))}}
+async function decRow(c,r){const x=r.data;if(!x||x.v!==2||!x.ct)return {plain:true,kind:r.kind,id:r.id,data:x};
+  try{const o=JSON.parse(TD.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(x.iv)},c.k,unb64(x.ct))));return {kind:r.kind,id:o.i,data:o.d,xid:r.id,at:r.updated_at||r.deleted_at}}catch(_){return {bad:true,kind:r.kind,xid:r.id}}}
+let CK=null,CKP=null,CCMSG=null;
+function famReady(){if(CK)return Promise.resolve(CK);if(CKP)return CKP;if(!SB)return Promise.reject(new Error("nicht verbunden"));
+  CKP=(async()=>{if(SB.k){CK=await famKeyObj(SB.k);return CK}
+    if(SB.code){/* Umstellung eines alten Geräts: Code → Schlüssel */const K=await famDerive(SB.code);let ok=await sbRpc("fam_check",{p_code:K.a});
+      if(!ok){if(await sbRpc("fam_check",{p_code:SB.code}))ok=await sbRpc("fam_setcode",{p_old:SB.code,p_new:K.a})}
+      if(!ok){const e=new Error("Code");e.code="28000";throw e}
+      SB={k:K,name:SB.name};SBS.set(SB,true);CK=await famKeyObj(K);return CK}
+    throw new Error("keine Schlüssel")})();CKP.catch(()=>{CKP=null});return CKP}
 async function sbRpc(fn,args){const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(args)});
   if(!r.ok){let j=null;try{j=await r.json()}catch(_){}const e=new Error((j&&j.message)||("HTTP "+r.status));e.code=j&&j.code;throw e}return r.json()}
 function write(path,body){persistLocal();
   if(SB){const [kind,...rest]=path.split("/"),id=rest.join("/");pq[path]=pq[path]||{busy:false,next:undefined};pq[path].next=body;
-    const run=()=>{const b=pq[path].next;pq[path].next=undefined;pq[path].busy=true;
-      sbRpc("fam_put",{p_code:SB.code,p_kind:kind,p_id:id,p_data:b||null}).then(()=>{sbErr(null)}).catch(e=>{if(e.code==="28000")sbLogout(true);else sbErr("Speichern gerade nicht möglich – wird beim nächsten Mal nachgeholt.")}).finally(()=>{pq[path].busy=false;if(pq[path].next!==undefined)run()})};
+    const run=async()=>{const b=pq[path].next;pq[path].next=undefined;pq[path].busy=true;
+      try{const c=await famReady();const xid=await encId(c,kind,id);const r=await sbRpc("fam_put",{p_code:c.a,p_kind:kind,p_id:xid,p_data:b==null?null:await encData(c,id,b)});if(r===null){sbLogout(true);return}sbErr(null)}
+      catch(e){if(e.code==="28000")sbLogout(true);else if(e.code==="PT429")sbErr("Zu viele Versuche – bitte später nochmal.");else sbErr(e.code==="22023"?"Speichern abgelehnt: "+(e.message||""):"Speichern gerade nicht möglich – wird beim nächsten Mal nachgeholt.")}
+      finally{pq[path].busy=false;if(pq[path].next!==undefined)run()}};
     if(!pq[path].busy)run();return}
   if(!DB||!CANWRITE)return;
   const run=()=>{const b=pq[path].next;pq[path].next=undefined;pq[path].busy=true;
@@ -83,7 +111,11 @@ document.addEventListener("change",e=>{if(e.target.id!=="bkFile")return;const f=
     $("bkInfo").innerHTML=`Sicherung vom ${esc(new Date(d.exported).toLocaleString("de-DE"))} mit ${d.entries.length} Einträgen. Gleiche Einträge werden überschrieben, andere bleiben. <button type="button" class="pmini" id="bkGo">Jetzt wiederherstellen</button>`}
   catch(_){BKPEND=null;$("bkInfo").textContent="Das ist keine Sicherungsdatei von „Was geht?“."}};r.readAsText(f);e.target.value=""});
 function sbErr(m){SBERR=m;const s=$("sbStat");if(s)renderSbStat()}
-async function sbLoad(first){if(!SB)return;try{const rows=await sbRpc("fam_list",{p_code:SB.code});
+let MIGR=false;
+async function sbLoad(first){if(!SB)return;try{const c=await famReady();const raw=await sbRpc("fam_list",{p_code:c.a});if(raw.some(r=>r.kind==="_auth")){sbLogout(true);return}
+    const dec=await Promise.all(raw.map(r=>decRow(c,r))),rows=dec.filter(r=>!r.bad);
+    if(!MIGR&&dec.some(r=>r.plain)){MIGR=true;try{const all=await Promise.all(rows.map(async r=>r.plain?{kind:r.kind,id:await encId(c,r.kind,r.id),data:await encData(c,r.id,r.data)}:{kind:r.kind,id:r.xid,data:raw.find(x=>x.id===r.xid).data}));
+        const n=await sbRpc("fam_replace_all",{p_code:c.a,p_rows:all});if(n>=0)toast("🔒 Eure Daten sind jetzt Ende-zu-Ende verschlüsselt")}catch(e){MIGR=false}}
     const o={places:{},plans:{},evwish:{},maybe:{},busy:{},settings:{}};rows.forEach(r=>{if(o[r.kind])o[r.kind][r.id]=r.data});
     if(first&&!o.settings.family)window.plusSettingsChanged("family");
     if(first&&!o.settings.freedays)window.plusSettingsChanged("freedays");
@@ -91,17 +123,41 @@ async function sbLoad(first){if(!SB)return;try{const rows=await sbRpc("fam_list"
     for(const path in pq){const q=pq[path];if(q.busy||q.next!==undefined){const [k,...r]=path.split("/"),id=r.join("/");const cur={places:ST.places,plans:ST.plans,evwish:ST.evw,maybe:ST.maybe,busy:ST.busy,settings:SETS}[k];if(cur){if(cur[id]!==undefined)o[k][id]=cur[id];else delete o[k][id]}}}
     const sig=JSON.stringify(o);SHARED=true;sbErr(null);if(sig===SBSIG)return;SBSIG=sig;
     ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings,true);persistLocal();syncNote();refresh();renderPlan()}
-  catch(e){if(e.code==="28000")sbLogout(true);else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
-function sbLogout(wrong){SB=null;LS.set("hwk-fam-sb",null);SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
+  catch(e){if(e.code==="28000")sbLogout(true);else if(e.code==="PT429")sbErr("Zu viele falsche Versuche – bitte in einer Stunde nochmal.");else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
+function sbLogout(wrong){SB=null;CK=null;CKP=null;SBS.set(null);SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
 function famAsk(msg){const d=$("famdlg");if(!d)return;$("famErr").textContent=msg||"";$("famName").value=(SB&&SB.name)||LS.get("hwk-fam-name","")||"";d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("famCode").focus(),50)}
 function renderSbStat(){const s=$("sbStat");if(!s)return;
-  s.innerHTML=SB?`<p class="famnote">✅ Verbunden als <b>${esc(SB.name||"–")}</b>. Plan, Vielleicht, verplante Tage, Wünsche und Sterne sind auf allen Geräten mit diesem Code gleich.${SBERR?`<br>⚠️ ${esc(SBERR)}`:""}</p><button type="button" class="pmini" id="sbOut">Abmelden</button>
-    <details class="hown" id="codeChg"><summary>🔑 Familien-Code ändern</summary><div class="hmgr"><input type="password" class="faminp" id="ccOld" autocomplete="current-password" placeholder="Bisheriger Code"><input type="password" class="faminp" id="ccNew" autocomplete="new-password" placeholder="Neuer Code (mind. 10 Zeichen)"><input type="password" class="faminp" id="ccNew2" autocomplete="new-password" placeholder="Neuer Code wiederholen"><button type="button" class="pmini" id="ccGo">Code ändern</button><p class="famnote" id="ccMsg" aria-live="polite"></p><p class="famnote">Danach müssen sich alle anderen Geräte einmal mit dem neuen Code anmelden.</p></div></details>`
-    :`<p class="famnote">Nicht verbunden – Einträge gelten nur auf diesem Gerät.</p><button type="button" class="pmini" id="sbIn">Mit Familien-Code verbinden</button><p class="famnote">Noch keinen Code? Im Anmeldefenster „✨ Neue Familie anlegen“. Code vergessen? Er lässt sich nicht auslesen – dann eine neue Familie anlegen und Einträge über 💾 Sicherung mitnehmen.</p>`}
-document.addEventListener("click",async e=>{if(e.target.id!=="ccGo")return;const m=$("ccMsg"),o=$("ccOld").value,n=$("ccNew").value,n2=$("ccNew2").value;
-  if(n.length<10){m.textContent="Der neue Code braucht mindestens 10 Zeichen.";return}if(n!==n2){m.textContent="Die beiden neuen Codes stimmen nicht überein.";return}
-  m.textContent="Wird geändert …";try{await sbRpc("fam_setcode",{p_old:o,p_new:n});SB.code=n;LS.set("hwk-fam-sb",SB);["ccOld","ccNew","ccNew2"].forEach(id=>$(id).value="");m.textContent="✅ Neuer Code gespeichert. Auf den anderen Geräten einmal neu anmelden.";toast("🔑 Familien-Code geändert")}
-  catch(err){m.textContent=err.code==="28000"?"Der bisherige Code stimmt nicht.":err.code==="22023"?"Der neue Code braucht mindestens 10 Zeichen.":err.code==="23505"?"Diesen Code gibt es schon – bitte einen anderen wählen.":/fam_setcode|PGRST202|42883/.test((err.code||"")+(err.message||""))?"Diese Funktion ist in Supabase noch nicht eingerichtet – einmal supabase/mehrere-familien.sql ausführen.":"Hat nicht geklappt: "+(err.message||"keine Verbindung")}});
+  s.innerHTML=SB?`<p class="famnote">✅ Verbunden als <b>${esc(SB.name||"–")}</b> · 🔒 Ende-zu-Ende verschlüsselt${SBS.remembered()?"":" · nur bis zum Schließen angemeldet"}. Alles ist auf allen Geräten mit diesem Code gleich.${SBERR?`<br>⚠️ ${esc(SBERR)}`:""}</p><button type="button" class="pmini" id="sbOut">Auf diesem Gerät abmelden</button>
+    <details class="hown" id="codeChg"><summary>🔑 Code ändern · auf allen Geräten abmelden</summary><div class="hmgr"><p class="famnote">Mit einem neuen Code werden alle anderen Geräte abgemeldet – z. B. wenn ein Handy verloren ging. Eure Daten werden dabei neu verschlüsselt.</p><input type="password" class="faminp" id="ccOld" autocomplete="current-password" placeholder="Bisheriger Code"><input type="password" class="faminp" id="ccNew" autocomplete="new-password" placeholder="Neuer Code (mind. 12 Zeichen)"><input type="password" class="faminp" id="ccNew2" autocomplete="new-password" placeholder="Neuer Code wiederholen"><button type="button" class="pmini" id="ccGo">Code ändern</button><p class="famnote" id="ccMsg" aria-live="polite"></p></div></details>`
+    :`<p class="famnote">Nicht verbunden – Einträge gelten nur auf diesem Gerät.</p><button type="button" class="pmini" id="sbIn">Mit Familien-Code verbinden</button><p class="famnote">Noch keinen Code? Im Anmeldefenster „✨ Neue Familie anlegen“. Code vergessen? Er lässt sich nicht auslesen – dann eine neue Familie anlegen und Einträge über 💾 Sicherung mitnehmen.</p>`;if(SB&&CCMSG&&CCMSG.t>Date.now()-60000){$("codeChg").open=true;$("ccMsg").textContent=CCMSG.m}}
+document.addEventListener("click",async e=>{if(e.target.id!=="ccGo")return;const say=x=>{CCMSG={t:Date.now(),m:x};const el=$("ccMsg");if(el)el.textContent=x},o=$("ccOld").value.trim(),n=$("ccNew").value.trim(),n2=$("ccNew2").value.trim();
+  if(n.length<12){say("Der neue Code braucht mindestens 12 Zeichen.");return}if(n!==n2){say("Die beiden neuen Codes stimmen nicht überein.");return}
+  say("Prüfe und verschlüssele neu … (bitte warten)");let back=null,c=null;
+  try{c=await famReady();const Ko=await famDerive(o);if(Ko.a!==c.a){say("Der bisherige Code stimmt nicht.");return}
+    const Kn=await famDerive(n),cn=await famKeyObj(Kn),raw=await sbRpc("fam_list",{p_code:c.a});if(raw.some(r=>r.kind==="_auth")){say("Der bisherige Code stimmt nicht.");return}
+    const dec=(await Promise.all(raw.map(r=>decRow(c,r)))).filter(r=>!r.bad);back=raw.map(r=>({kind:r.kind,id:r.id,data:r.data}));
+    const rows=await Promise.all(dec.map(async r=>({kind:r.kind,id:await encId(cn,r.kind,r.id),data:await encData(cn,r.id,r.data)})));
+    if(await sbRpc("fam_replace_all",{p_code:c.a,p_rows:rows})<0)throw new Error("Speichern fehlgeschlagen");
+    const ok=await sbRpc("fam_setcode",{p_old:c.a,p_new:Kn.a});if(!ok)throw new Error("Code-Wechsel fehlgeschlagen");back=null;
+    SB={k:Kn,name:SB.name};SBS.set(SB,SBS.remembered()||true);CK=cn;CKP=null;["ccOld","ccNew","ccNew2"].forEach(id=>$(id).value="");say("✅ Neuer Code aktiv. Alle anderen Geräte müssen sich mit dem neuen Code neu anmelden.");toast("🔑 Familien-Code geändert");SBSIG="";sbLoad()}
+  catch(err){if(back&&c){try{await sbRpc("fam_replace_all",{p_code:c.a,p_rows:back})}catch(_){}}
+    say(err.code==="22023"?"Der neue Code ist zu kurz.":err.code==="23505"?"Diesen Code gibt es schon – bitte einen anderen wählen.":err.code==="PT429"?"Zu viele Versuche – bitte in einer Stunde nochmal.":/PGRST202|42883/.test((err.code||"")+(err.message||""))?"In Supabase fehlt noch das Sicherheitspaket (supabase/sicherheit.sql ausführen).":"Hat nicht geklappt: "+(err.message||"keine Verbindung"))}});
+/* Papierkorb (30 Tage) und wöchentliche Sicherungen in der Datenbank */
+const KLAB={plans:"📅 Plan",maybe:"♡ Vielleicht",busy:"⛔ Verplant",evwish:"🎟️ Wunsch",places:"⭐ Ziel-Notiz",settings:"⚙️"};
+function trLabel(r){const d=r.data||{},id=String(r.id||"");if(id.startsWith("hc:"))return "🏠 Aufgabe: "+(d.ti||"");if(id.startsWith("hj:"))return "🛠️ Projekt: "+(d.ti||"");if(id.startsWith("hd:"))return "✓ Erledigt-Haken "+id.split(":")[2];if(id.startsWith("hr:"))return "🎁 Einlösung: "+(d.ti||"");if(id.startsWith("ho:"))return "↷ Verschiebung";
+  if(r.kind==="places"){const p=byId(+id);return "⭐ "+(p?p.n:"Ziel")}return (KLAB[r.kind]||r.kind)+" "+id}
+async function renderTrash(){const el=$("trBox");if(!el)return;if(!SB){el.innerHTML=`<p class="famnote">Nur mit gemeinsamem Plan verfügbar.</p>`;return}el.innerHTML=`<p class="famnote">Lade …</p>`;
+  try{const c=await famReady(),[tr,sn]=await Promise.all([sbRpc("fam_trash_list",{p_code:c.a}),sbRpc("fam_snap_list",{p_code:c.a})]),dec=(await Promise.all(tr.map(r=>decRow(c,r)))).filter(r=>!r.bad);
+    el.innerHTML=`<h5>🗑️ Papierkorb – 30 Tage</h5>${dec.length?dec.slice(0,80).map(r=>`<div class="hmr"><span style="flex:1;min-width:0">${esc(trLabel(r))} <small class="famnote">· ${esc(new Date(r.at).toLocaleDateString("de-DE"))}</small></span><button type="button" class="pmini" data-trres="${esc(r.kind)}|${esc(r.xid||r.id)}">↩️ Zurückholen</button></div>`).join(""):`<p class="famnote">Leer.</p>`}
+      <h5>🗄️ Automatische Sicherungen (wöchentlich, letzte 4)</h5>${sn.length?sn.map(s=>`<div class="hmr"><span style="flex:1">${esc(new Date(s.at).toLocaleString("de-DE"))} · ${s.n} Einträge</span><button type="button" class="pmini" data-snres="${s.id}">Zurücksetzen auf diesen Stand</button></div>`).join(""):`<p class="famnote">Noch keine – die erste entsteht automatisch beim nächsten Öffnen.</p>`}`}
+  catch(e){el.innerHTML=`<p class="famnote">${/PGRST202|42883/.test((e.code||"")+(e.message||""))?"In Supabase fehlt noch das Sicherheitspaket (supabase/sicherheit.sql ausführen).":"Gerade nicht erreichbar."}</p>`}}
+document.addEventListener("click",async e=>{const t=e.target;
+  if(t.id==="trShow"){renderTrash();return}
+  const tr=t.closest&&t.closest("[data-trres]");if(tr){const [k,id]=tr.dataset.trres.split("|");try{const c=await famReady();await sbRpc("fam_restore",{p_code:c.a,p_kind:k,p_id:id});toast("↩️ Zurückgeholt");SBSIG="";await sbLoad();renderTrash()}catch(_){toast("Hat nicht geklappt")}return}
+  const sr=t.closest&&t.closest("[data-snres]");if(sr){if(sr.dataset.sure!=="1"){sr.dataset.sure="1";sr.textContent="Wirklich? Nochmal tippen";return}try{const c=await famReady();const n=await sbRpc("fam_snap_restore",{p_code:c.a,p_snap:+sr.dataset.snres});toast("🗄️ Stand wiederhergestellt ("+n+" Einträge)");SBSIG="";await sbLoad();renderTrash()}catch(_){toast("Hat nicht geklappt")}return}
+  if(t.id==="famDelGo"){const v=($("famDelTxt")||{}).value||"";if(v.trim().toUpperCase()!=="LÖSCHEN"){$("famDelMsg").textContent="Bitte LÖSCHEN eintippen.";return}
+    try{const c=await famReady();const ok=await sbRpc("fam_delete",{p_code:c.a});if(!ok)throw 0;Object.keys(localStorage).filter(k=>/^hwk/.test(k)).forEach(k=>localStorage.removeItem(k));try{sessionStorage.clear()}catch(_){}SB=null;CK=null;alertDone()}catch(_){$("famDelMsg").textContent="Hat nicht geklappt – bitte später nochmal."}}});
+function alertDone(){const d=$("famDelMsg");if(d)d.textContent="✅ Familie und alle Daten wurden gelöscht. Die Seite lädt neu …";setTimeout(()=>location.reload(),1500)}
 document.addEventListener("click",e=>{if(e.target.id==="sbOut"){sbLogout(false);return}if(e.target.id==="sbIn"){famAsk("");return}});
 function syncNote(){const el=$("oursNote");if(!el)return;el.textContent=SHARED?(CANWRITE?"Sterne, Besuche, Notizen und Ausflugsplan sind für alle mit Zugriff auf diese Seite gleich (geräteübergreifend).":"Du kannst die gemeinsamen Sterne und Besuche sehen, aber nicht ändern."):"Gespeichert auf diesem Gerät. Sobald die Seite gemeinsam gespeichert werden kann, gelten die Angaben für alle Geräte."}
 /* --- Filter „Unsere Ziele“ --- */
@@ -624,13 +680,18 @@ renderOurs();syncView();syncStarsToKids();render();setM2(M2,true);updateFabs();
  document.addEventListener("click",e=>{const b=e.target.closest("[data-famm]");if(b)famMode(b.dataset.famm)});
  const missFn=err=>/PGRST202|42883|Could not find the function/.test((err.code||"")+" "+(err.message||""));
  $("famForm").addEventListener("submit",async e=>{e.preventDefault();const code=$("famCode").value.trim(),name=$("famName").value.trim();if(!code){$("famErr").textContent="Bitte den Familien-Code eingeben.";return}
-   if(FAMM==="new"){if(code.length<10){$("famErr").textContent="Der Code braucht mindestens 10 Zeichen.";return}if(code!==$("famCode2").value.trim()){$("famErr").textContent="Die beiden Codes stimmen nicht überein.";return}
-     $("famErr").textContent="Lege Familie an …";try{await sbRpc("fam_create",{p_code:code,p_name:name})}catch(err){$("famErr").textContent=err.code==="23505"?"Diesen Code gibt es schon – bitte einen anderen ausdenken.":err.code==="22023"?"Der Code braucht mindestens 10 Zeichen.":missFn(err)?"Supabase ist noch nicht für mehrere Familien eingerichtet (einmal supabase/mehrere-familien.sql ausführen).":"Hat nicht geklappt: "+(err.message||err);return}
+   const rem=$("famRemember")?$("famRemember").checked:true;
+   if(FAMM==="new"){if(code.length<12){$("famErr").textContent="Der Code braucht mindestens 12 Zeichen – am besten drei Wörter.";return}if(codeScore(code)<2){$("famErr").textContent="Der Code ist zu leicht zu erraten – bitte drei Wörter oder Wörter mit Zahlen.";return}if(code!==$("famCode2").value.trim()){$("famErr").textContent="Die beiden Codes stimmen nicht überein.";return}
+     $("famErr").textContent="Lege Familie an …";let K;try{K=await famDerive(code);await sbRpc("fam_create",{p_code:K.a,p_name:name})}catch(err){$("famErr").textContent=err.code==="23505"?"Diesen Code gibt es schon – bitte einen anderen ausdenken.":err.code==="PT429"?(err.message||"Zu viele Versuche"):missFn(err)?"Supabase ist noch nicht eingerichtet (supabase/sicherheit.sql ausführen).":"Hat nicht geklappt: "+(err.message||err);return}
      if(!$("famTake").checked){ST.places={};ST.plans={};ST.evw={};ST.maybe={};ST.busy={};for(const k of Object.keys(SETS))if(window.homeIsKey&&homeIsKey(k))delete SETS[k];LS.set("hwk-home",{});persistLocal()}
-     SB={code,name:name||"Familie"};LS.set("hwk-fam-sb",SB);LS.set("hwk-fam-name",SB.name);MYID=SB.name;$("famdlg").close();renderSbStat();toast("🎉 Familie angelegt – Code an die anderen weitergeben");famMode("in");$("famCode2").value="";await sbLoad(true);return}
-   $("famErr").textContent="Prüfe …";try{const ok=await sbRpc("fam_check",{p_code:code});if(!ok){$("famErr").textContent="Dieser Code stimmt nicht. Noch keinen Code? Oben „Neue Familie anlegen“.";return}
-     SB={code,name:name||"Familie"};LS.set("hwk-fam-sb",SB);LS.set("hwk-fam-name",SB.name);MYID=SB.name;$("famdlg").close();renderSbStat();toast("✅ Verbunden – gemeinsamer Plan aktiv");await sbLoad(true)}
-   catch(err){$("famErr").textContent="Keine Verbindung zu Supabase ("+(err.message||err)+")."}});
+     SB={k:K,name:name||"Familie"};SBS.set(SB,rem);CK=null;CKP=null;LS.set("hwk-fam-name",SB.name);MYID=SB.name;$("famdlg").close();$("famCode").value="";renderSbStat();toast("🎉 Familie angelegt – Code an die anderen weitergeben");famMode("in");$("famCode2").value="";await sbLoad(true);return}
+   $("famErr").textContent="Prüfe …";try{const K=await famDerive(code);let ok=await sbRpc("fam_check",{p_code:K.a});
+     if(!ok&&await sbRpc("fam_check",{p_code:code}))ok=await sbRpc("fam_setcode",{p_old:code,p_new:K.a});
+     if(!ok){$("famErr").textContent="Dieser Code stimmt nicht. Noch keinen Code? Oben „Neue Familie anlegen“.";return}
+     SB={k:K,name:name||"Familie"};SBS.set(SB,rem);CK=null;CKP=null;LS.set("hwk-fam-name",SB.name);MYID=SB.name;$("famdlg").close();$("famCode").value="";renderSbStat();toast("✅ Verbunden – gemeinsamer Plan aktiv");await sbLoad(true)}
+   catch(err){$("famErr").textContent=err.code==="PT429"?"Zu viele falsche Versuche – bitte in einer Stunde nochmal.":"Keine Verbindung zu Supabase ("+(err.message||err)+")."}});
+ function codeScore(s){let n=0;if(s.length>=12)n++;if(s.length>=16)n++;if(/[\s\-_.]/.test(s)&&s.split(/[\s\-_.]+/).filter(w=>w.length>=3).length>=3)n++;if(/\d/.test(s)&&/[a-zäöüß]/i.test(s))n++;if(/^(.)\1+$/.test(s)||/^(1234|abcd|qwert|passwort|password)/i.test(s))n=0;return n}
+ document.addEventListener("input",e=>{if(e.target.id!=="famCode"||FAMM!=="new")return;const s=codeScore(e.target.value),el=$("famStrength");if(el){el.textContent=e.target.value?["🔴 zu schwach","🟠 geht so","🟢 gut","🟢 sehr gut","🟢 sehr gut"][s]:"";}});
  $("famSkip").addEventListener("click",()=>{LS.set("hwk-fam-skip",1);$("famdlg").close()});
  renderSbStat();
  if(SB){sbLoad(true);setInterval(()=>{if(!document.hidden)sbLoad()},20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)sbLoad()});addEventListener("focus",()=>sbLoad())}
