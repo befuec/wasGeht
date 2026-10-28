@@ -2049,7 +2049,7 @@ function card(p){
     ${p.d?`<p class="desc">${esc(p.d)}</p>`:""}
     ${S.wx==="mixed"&&rainy(p)?`<div class="rainhint"><span aria-hidden="true">🧥</span> Regenjacke einpacken – nur draußen, Schauer möglich</div>`:""}
     <div class="tags"><span class="tag">${IO_LABEL[p.io]}</span><span class="tag${p.wx==="warm"?" warm":""}">${WX_LABEL[p.wx]}</span>
-      <span class="tag age">${p.amin===0?"bis "+p.amax+" J.":p.amin+"–"+p.amax+" J."}</span></div>
+      ${p.aud==="e"?`<span class="tag age">🍷 Erwachsene</span>`:`<span class="tag age">${p.amin===0?"bis "+p.amax+" J.":p.amin+"–"+p.amax+" J."}</span>`}</div>
     ${priceRow(p,fc,ti)}
     <div class="trip">
       <div class="modes">${p.bike?`<span class="mode" title="Fahrrad, ca. ${p.bike} Min."><span aria-hidden="true">🚲</span> ${p.bike} Min.</span>`:""}<span class="mode" title="Auto, ca. ${p.car} Min."><span aria-hidden="true">🚗</span> ${p.car} Min.</span>${p.st?`<span class="mode oe" title="nächste U- oder S-Bahn"><span aria-hidden="true">🚇</span> ${esc(p.st)}</span>`:""}<span class="mode dur" title="Ausflugsdauer inkl. Fahrt"><span aria-hidden="true">⏱️</span> ca. ${fmtH(p.dur)} h</span></div>
