@@ -458,7 +458,7 @@ function hProjHtml(){const L=hProjects(),openP=L.filter(p=>!hProjDone(p)),doneP=
           <div class="hstm"><select data-hjw="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Wer"><option value="">🙋 offen</option>${P.map(x=>`<option value="${x.id}"${s.who===x.id?" selected":""}>${x.e} ${esc(x.n)}</option>`).join("")}</select>
           <select data-hjm="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Dauer">${durs.concat(durs.includes(+s.dur||60)?[]:[+s.dur]).map(m=>`<option value="${m}"${m===(+s.dur||60)?" selected":""}>${fmH(m)}</option>`).join("")}</select>
           <input type="date" data-hjd="${esc(p.pid)}" data-s="${esc(s.id)}" value="${esc(s.date||"")}" aria-label="Termin (optional)" title="Termin – dann steht der Schritt in „Jetzt dran“ und im Kalender">
-          <span class="hpts">${+s.pts||hrec(+s.dur||60,0,0)}</span><button type="button" class="mbx" data-hjsx="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Schritt löschen">✕</button></div></div>`).join("")}
+          <label class="hptsin" title="Punkte für diesen Schritt"><input type="number" inputmode="numeric" min="0" max="500" step="1" data-hjp="${esc(p.pid)}" data-s="${esc(s.id)}" value="${+s.pts||hrec(+s.dur||60,0,0)}" aria-label="Punkte"><span>P</span></label><button type="button" class="mbx" data-hjsx="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Schritt löschen">✕</button></div></div>`).join("")}
         <div class="hownf"><input type="text" data-hjnew="${esc(p.pid)}" maxlength="60" placeholder="Neuer Schritt, z. B. Möbel kaufen"><button type="button" class="pmini" data-hjadd="${esc(p.pid)}">➕ Schritt</button></div>
         <div class="hpjf">${!S.length?`<button type="button" class="pmini" data-hck="j:${esc(p.pid)}" data-d="${T0}">${p.dn?"↺ Wieder offen":"✓ Erledigt"}</button>`:""}<button type="button" class="pmini hdel" data-hjx="${esc(p.pid)}">🗑️ Projekt löschen</button></div></div>`:""}</div>`};
   return `${openP.map(card).join("")||`<p class="pvsub">Noch keine Projekte – größere Vorhaben, gern auch für irgendwann.</p>`}
@@ -547,6 +547,7 @@ document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
   if(ds.hrwon!=null){const c=hRcfg();c.off=t.checked?c.off.filter(x=>x!==ds.hrwon):c.off.concat(ds.hrwon);hRsave(c);return}
   if(ds.hjt!=null){hProjEdit(ds.hjt,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.t=t.value.trim()||s.t});return}
   if(ds.hjw!=null){hProjEdit(ds.hjw,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.who=t.value});return}
+  if(ds.hjp!=null){let v=Math.round(+t.value);v=Number.isFinite(v)?Math.max(0,Math.min(500,v)):0;hProjEdit(ds.hjp,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.pts=v;if(s.dn&&typeof s.dn==="object")s.dn.pts=v}});return}
   if(ds.hjm!=null){hProjEdit(ds.hjm,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.dur=+t.value;delete s.pts}});return}
   if(ds.hjd!=null){hProjEdit(ds.hjd,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.date=t.value||null});if(t.value)toast("📅 Schritt eingeplant am "+fmtDate(t.value));return}
   if(HED&&["heF","heDur","heCat"].includes(t.id))hEdUpd()});
