@@ -191,3 +191,42 @@ ADD["Amplifire Festival"] = [("2027-08-06","","","Amplifire Festival 2027 (Tag 1
  ("2027-08-07","","","Amplifire Festival 2027 (Tag 2)","Tickets bei infield.live","https://www.openairguide.net/festivals/deutschland/amplifire-festival")]
 ADD["Habitat Festival"] = [("2027-07-31","","","Habitat Festival 2027 (Tag 1)","House & Techno Open Air; Line-up noch offen; Tickets online","https://www.technoairlines.com/festival/habitat-festival-hamburg-germany-2027"),
  ("2027-08-01","","","Habitat Festival 2027 (Tag 2)","Tickets online","https://www.technoairlines.com/festival/habitat-festival-hamburg-germany-2027")]
+
+# Erwachsenen-Angebote an Familien-Zielen (in der App nur unter „Erwachsene“ bzw. „Alle“) – LIFE HAMBURG, Stand 28.10.2026
+ADULT_EV = set()
+def adult(place, items):
+    ADD.setdefault(place, []).extend(items)
+    ADULT_EV.update((place, d, t, ti) for d, t, _e, ti, _n, _u in items)
+_LV = "https://www.life.hamburg/veranstaltungen/life-hamburg-"
+_A = "Anmeldung"
+adult("LIFE HAMBURG Campus", [
+ ("2026-10-28","18:30","20:30","Was wäre, wenn? – Zukunft denken, erleben, gestalten",_A,_LV+"was-waere-wenn-zukunft-denken-erleben-gestalten-2026-10-28"),
+ ("2026-10-29","17:00","18:00","Nachhaltiges Bauen erleben – Führung über den Campus","kostenlos, "+_A+", Warteliste",_LV+"nachhaltiges-bauen-erleben-fuehrung-ueber-den-campus-life-2026-10-29"),
+ ("2026-10-29","17:30","19:30","LIFE singt. Community Singing (ab 14 J.)","5 €, "+_A+", Warteliste",_LV+"f523-s004-t774"),
+ ("2026-11-02","17:30","19:30","Kreativwerkstatt – Drucken, Probieren, Loslegen","12 €, "+_A,_LV+"kreativwerkstatt-drucken-probieren-loslegen-2026-11-02"),
+ ("2026-11-02","18:00","19:15","Geschichtenrunde: Ehrliche Momente","kostenlos, ohne Anmeldung",_LV+"f747-s003-t5629"),
+ ("2026-11-03","13:30","14:30","Qi Gong – In Bewegung Ruhe finden",_A,_LV+"qi-gong-in-bewegung-ruhe-finden-2026-11-03"),
+ ("2026-11-03","17:30","19:00","Mitfühlen, ohne auszubrennen",_A,_LV+"mitfuehlen-ohne-auszubrennen-wie-du-fuer-andere-da-bist-2026-11-03"),
+ ("2026-11-05","15:00","17:00","IT & Technik RepairCafé","kostenlos, ohne Anmeldung",_LV+"it-technik-repaircaf-2026-11-05"),
+ ("2026-11-05","19:30","21:00","Probestunde Salsa – für alle Generationen","kostenlos, "+_A+", Warteliste",_LV+"probestunde-fuer-salsa-kurs-2026-11-05"),
+ ("2026-11-06","16:00","22:00","4. Nacht der Redner – Edition Zukunftsschule",_A,"https://www.life.hamburg/veranstaltungen/4-nacht-der-redner-edition-zukunftsschule-cohost-academyoflife"),
+ ("2026-11-07","11:00","13:00","LIFE tanzt. Community Dance Workshop (ab 16 J.)","kostenlos, "+_A,_LV+"life-tanzt-community-dance-workshop-2026-11-07"),
+ ("2026-11-07","11:00","16:00","Fermentation-Kochworkshop: Vom Gemüseferment zum 3-Gänge-Menü",_A,_LV+"fermentation-kochworkshop-vom-gemueseferment-zum-3-gaenge-2026-11-07"),
+ ("2026-11-07","13:00","16:00","Gemeinsam gärtnern auf dem Campus","kostenlos, "+_A,_LV+"gemeinsam-gaertnern-auf-dem-campus-sei-von-anfang-an-dabei-2026-11-07"),
+ ("2026-11-07","14:00","16:00","Mensch, Maschine, Nachbarschaft – KI und Automatisierung nebenan","kostenlos, "+_A,_LV+"mensch-maschine-nachbarschaft-ki-und-automatisierung-nebenan-2026-11-07"),
+ ("2026-11-07","14:00","17:00","Danebenliegen erwünscht – ein Klimaspiel-Nachmittag",_A,_LV+"danebenliegen-erwuenscht-ein-klimaspiel-nachmittag-2026-11-07"),
+ ("2026-11-07","14:00","17:00","Geräusch, Klang, Beat – wir produzieren einen Technotrack","13 €, "+_A,_LV+"geraeusch-klang-beat-wir-produzieren-einen-technotrack-2026-10-10"),
+ ("2026-11-09","17:30","19:30","Kreativwerkstatt – Drucken, Probieren, Loslegen",_A,_LV+"kreativwerkstatt-drucken-probieren-loslegen-2026-11-09"),
+ ("2026-11-09","18:00","19:30","Frauenrunde: „Hey Ladies, lasst uns reden!“","kostenlos, ohne Anmeldung",_LV+"f748-s005-t5664"),
+ ("2026-11-10","19:00","20:30","Mental Reload – Schreiben gegen Stress",_A,_LV+"schreiben-gegen-stress-mental-reload-2026-11-10"),
+ ("2026-11-14","14:00","16:00","Mensch, Maschine, Nachbarschaft – KI und Automatisierung nebenan","kostenlos, "+_A,_LV+"mensch-maschine-nachbarschaft-ki-und-automatisierung-nebenan-2026-11-14"),
+ ("2026-11-18","18:00","21:00","Kochkurs: Koreanische Küche – Kimchi, Bibimbap & mehr",_A+", Warteliste",_LV+"kochkurs-koreanische-kueche-kimchi-bibimbap-mehr-2026-11-18"),
+ ("2026-11-19","19:00","21:00","Social Fitness After Work",_A,_LV+"social-fitness-after-work-begegnen-verbinden-wachsen-2026-11-19"),
+ ("2026-11-20","13:00","17:00","Von der Idee zum Business – dein Weg zur Durchführung","kostenlos, "+_A,_LV+"von-der-idee-zum-business-dein-weg-zur-durchfuehrung-2026-11-20"),
+ ("2026-11-23","17:30","20:30","Sich frei schreiben – kreativer Schreibworkshop",_A,_LV+"sich-frei-schreiben-ein-kreativer-schreibworkshop-2026-11-23"),
+ ("2026-11-23","18:00","19:30","Frauenrunde: „Hey Ladies, lasst uns reden!“","kostenlos, ohne Anmeldung",_LV+"f748-s006-t5665"),
+ ("2026-11-24","17:30","20:00","Community Kino","kostenlos, "+_A,_LV+"community-kino-2026-11-24"),
+ ("2026-11-24","18:00","20:00","MakerKurs mit Fab City: Origami – Falten, Gestalten, Abschalten",_A,_LV+"makerkurs-mit-fab-city-hamburg-origami-falten-gestalten-2026-11-24"),
+ ("2026-11-25","18:30","20:30","AI @ Work – KI produktiv im Design Thinking einsetzen",_A,_LV+"ai-work-ki-produktiv-im-design-thinking-einsetzen-2026-11-25"),
+ ("2026-11-28","","","Make your own Dumplings – Workshop mit Mulann",_A,_LV+"make-your-own-dumplings-workshop-mit-mulann-2-durchfuehrung-2026-11-28"),
+])

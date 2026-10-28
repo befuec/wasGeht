@@ -355,7 +355,7 @@ for _tm in ["13:00","15:00","17:00"]:
     EVURL.append((_N,"2026-12-20",_tm,_B+"himmelskinder-weihnacht"))
 EV[_N].sort()
 # Ergänzte Termine aus Programmseiten (extra_events.py)
-from extra_events import ADD as _ADD, REPL as _REPL
+from extra_events import ADD as _ADD, REPL as _REPL, ADULT_EV as _ADULT_EV
 _TE={}
 for _n in _REPL:
     EV[_n]=[]; EVURL[:]=[x for x in EVURL if x[0]!=_n]
@@ -374,7 +374,7 @@ for i,(n,a,la,ln,c,io,wx,s,de,ck) in enumerate(P):
     out.append(dict(id=i+1,n=n,a=a,lat=la,lng=ln,c=c,io=io,wx=wx,s=s,d=de,
         cal=CAL.get(ck) if ck else None,
         km=round(hav(HU[0],HU[1],la,ln),1),
-        ev=[dict(dt=x[0],t=x[1],ti=x[2],no=x[3],u=evurl(n,x),an=bool(re.search(r"Anmeld|anmeld|Warteliste|ausgebucht|ausverkauft|Buchung|Ticket",x[3].replace("ohne Anmeldung","")))) for x in EV.get(n,[]) if not any(x[2].startswith(k) for k in REPLACED.get(n,[]))]+expand_rec(n),
+        ev=[dict(dt=x[0],t=x[1],ti=x[2],no=x[3],u=evurl(n,x),**({"aud":"e"} if (n,x[0],x[1],x[2]) in _ADULT_EV else {}),an=bool(re.search(r"Anmeld|anmeld|Warteliste|ausgebucht|ausverkauft|Buchung|Ticket",x[3].replace("ohne Anmeldung","")))) for x in EV.get(n,[]) if not any(x[2].startswith(k) for k in REPLACED.get(n,[]))]+expand_rec(n),
         h=expand(H[n]), hn=HN.get(n), pt=PR[n][0], kf=PR[n][1], src=("erw" if n in ERWN else SRCF(n)), aud=("e" if n in ERWN else "b" if n in AUDB else "f"), **travel(n,c,hav(HU[0],HU[1],la,ln)), **money(n,c,PR[n][0],PR[n][2]), amin=AGE.get(n,AGE_CAT[c])[0], amax=AGE.get(n,AGE_CAT[c])[1],
         web=WEB.get(n) or ('https://www.google.com/search?q='+_u.quote(n+' '+a.split(',')[-1].strip())), ws=n not in WEB,
         cl=(dict(fr=CLOSE[n][0],no=CLOSE[n][1]) if n in CLOSE else None)))

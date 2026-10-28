@@ -139,7 +139,7 @@ ERW = [
 ]
 ERWN = {e[0] for e in ERW}
 # Orte der Liste, die schon in den Familienlisten stehen – passen für beide
-AUDB = {"Hamburger Kunsthalle", "Planetarium Hamburg"}
+AUDB = {"Hamburger Kunsthalle", "Planetarium Hamburg", "LIFE HAMBURG Campus"}
 ERW_CLOSE = {"Museum für Hamburgische Geschichte": ("2026-01-01", "Laut Google vorübergehend geschlossen"),
              "MS Artville": ("2026-01-01", "Laut Google vorübergehend geschlossen")}
 # Nicht übernommen (kein fester Ort/keine Adresse gefunden):

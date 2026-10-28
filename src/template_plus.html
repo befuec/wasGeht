@@ -1867,7 +1867,11 @@ function personPrice(m,age){ if(age>=18) return m.a||0; const cf=m.cf??0, ct=m.c
 /* Für wen? fam = Familie (Standard), erw = nur Erwachsene, "" = alles. Ziele: aud f (Familie), e (Erwachsene), b (beides) */
 let AUD=(()=>{try{const v=localStorage.getItem("hwk-aud");return v===null?"fam":v}catch(e){return "fam"}})();
 const audOk=p=>AUD==="erw"?(p.aud==="e"||p.aud==="b"):AUD==="fam"?p.aud!=="e":true;
-window.audOk=audOk;window.getAud=()=>AUD;window.setAud=v=>{AUD=v||"";try{localStorage.setItem("hwk-aud",AUD)}catch(e){}document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD)));
+/* Termine: an Orten mit eigenen Erwachsenen-Terminen zeigt „Erwachsene“ nur diese, „Familie“ blendet sie aus */
+const hasAdultEv=p=>p._hae??(p._hae=!!(p.ev||[]).some(e=>e.aud==="e"));
+const KIDEV=/\b(ab \d{1,2} ?J|\d{1,2}\s?[–-]\s?\d{1,2} ?J|Kinder|Familie|Kita|Baby|Eltern)/i;
+const evAudOk=(p,e)=>AUD==="erw"?(e.aud==="e"||p.aud==="e"||(p.aud==="b"&&!hasAdultEv(p)&&!KIDEV.test(e.ti+" "+(e.no||"")))):AUD==="fam"?(e.aud!=="e"&&p.aud!=="e"):true;
+window.evAudOk=evAudOk;window.audOk=audOk;window.getAud=()=>AUD;window.setAud=v=>{AUD=v||"";try{localStorage.setItem("hwk-aud",AUD)}catch(e){}document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD)));
   if(window.audFilters)try{audFilters()}catch(_){}if(typeof render==="function")try{render()}catch(_){}if(window.__refresh)window.__refresh();else if(typeof refresh==="function")refresh();if(typeof update==="function")try{update()}catch(_){}if(typeof renderEvents==="function")try{renderEvents()}catch(_){}if(window.renderHeute)try{window.renderHeute()}catch(_){}};
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".audsel [data-aud]");if(b)setAud(b.dataset.aud)});
 setTimeout(()=>document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD))),0);
@@ -2240,7 +2244,7 @@ function saveHidRg(){try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))
 function renderHidRg(){const el=$("hidRg");if(!el)return;const L=Object.entries(HIDRG).sort((x,y)=>(x[1].ti||"").localeCompare(y[1].ti||""));
   el.innerHTML=L.length?L.map(([k,v])=>`<div class="hidrow"><div style="min-width:0"><b>${esc(v.ti||"")}</b><small>${esc(v.pn||"")}${v.rg?" · "+esc(v.rg):""}</small></div><button type="button" class="pmini" data-rgshow="${esc(k)}">↩️ Wieder anzeigen</button></div>`).join("")
     :`<p class="famnote" style="margin:0">Nichts ausgeblendet. Bei regelmäßigen Angeboten unter „Entdecken“ auf „🚫 Kein Interesse“ tippen.</p>`}
-function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
+function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e)&&evAudOk(p,e))a.push({p,e})}));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
 const FULL=/ausgebucht|ausverkauft|nur Warteliste/;
 const MONL=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const WDL=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
@@ -2436,7 +2440,7 @@ function evItem(x){if(EVVIEW!=="list")return evRow(x);const {p,e}=x,full=FULL.te
     <span class="elt">${window.EVFLAT?(()=>{const s=e.dt<T0?T0:e.dt,d=pdate(s);return `${WDN[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}.<br>`})():""}${e.t||"ganzt."}</span><span class="eln"><b>${esc(e.ti)}</b><small>${esc(p.n)} · ${Math.round(p.km)} km${e.to?` · bis ${pdate(e.to).getDate()}.${pdate(e.to).getMonth()+1}.`:""}${p.x?" · nicht in euren Listen":""}</small></span>
     <span class="ela">${kd}${window.plusMaybeBtn?window.plusMaybeBtn(p,e,true):""}${ek?`<button type="button" class="pmini elpin" data-evplan="${p.id}" data-k="${esc(ek)}" aria-pressed="${pl}" aria-label="${pl?"Eingeplant":"Einplanen"}" title="${pl?"Eingeplant – antippen zum Entfernen":"Einplanen"}">${window.IC?IC.pin:"📌"}</button>`:""}<span class="elchev" aria-hidden="true">▾</span></span></div>${open?`<div class="elexp">${evRow(x)}</div>`:""}`}
 function renderAw(){const box=$("awBox");if(!box)return;
-  const ageFit=e=>{if(!FAM.kids.length)return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])};
+  const ageFit=e=>{if(!FAM.kids.length||AUD==="erw"||e.aud==="e")return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])};
   const sc=x=>{const k=window.evKey?window.evKey(x.p,x.e):"";return (window.inPlanEv&&window.inPlanEv(k)?-3:0)+(window.plusWished&&window.plusWished(k)?-2:0)+(/Anmeldung bis/i.test(x.e.no||"")?-1:0)};
   const L=dedupe(allEvs(evBase()).filter(x=>evQOk(x)&&x.e.an&&!x.e.rg&&!FULL.test(x.e.no||"")&&x.e.dt>T0&&x.e.dt<=plus(14)&&ageFit(x.e))).sort((a,b)=>sc(a)-sc(b)||a.e.dt.localeCompare(b.e.dt));
   if(!AWINIT){AWINIT=true;let o=matchMedia("(max-width:900px)").matches?"0":"1";try{o=localStorage.getItem("hwk-aw")||o}catch(_){}box.open=o==="1";box.addEventListener("toggle",()=>{try{localStorage.setItem("hwk-aw",box.open?"1":"0")}catch(_){}})}
@@ -3803,7 +3807,7 @@ function setM2(m,first){const prev=M2;M2=m;window.M2=m;document.body.dataset.m2=
   if(!first&&prev!==m)scrollTo(0,0);updateFabs()}
 window.setM2=setM2;
 $("modeNav").addEventListener("click",e=>{const b=e.target.closest("[data-m2]");if(b)setM2(b.dataset.m2)});
-const ageFit=e=>{if(!FAM.kids.length)return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])};
+const ageFit=e=>{if(!FAM.kids.length||(window.getAud&&getAud()==="erw")||e.aud==="e")return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])};
 /* Highlight-Wert eines Termins */
 function hl(x){const e=x.e,p=x.p;let s=0;let c=[];try{c=evCats(p,e)}catch(_){}
   if(e.rg)s-=5;if(FULL.test(e.no||""))s-=10;
@@ -3855,7 +3859,7 @@ function hqPlace(p){if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+
   if(HQ.mood&&!((window.getAud&&getAud()==="erw")?MOODPE:MOODP)[HQ.mood](p))return false;
   if(HQ.cost){const fc=famCost(p);if(HQ.cost==="free"&&!(p.pk==="free"||fc===0))return false;if(HQ.cost==="low"&&!(p.pk==="free"||(fc!=null&&fc<=30)||p.pt==="frei"||p.pt==="bis5"||p.pt==="bis15"))return false}
   return true}
-function hqEvent(x){const {p,e}=x;if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
+function hqEvent(x){const {p,e}=x;if(window.evAudOk&&!evAudOk(p,e))return false;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
   if(HQ.mood&&!MOODE[HQ.mood].test(e.ti+" "+(e.no||"")+" "+p.n))return false;
   if(HQ.cost){const pr=evPrice(x);if(HQ.cost==="free"&&pr!==0)return false;if(HQ.cost==="low"&&pr>12)return false}
   return true}
