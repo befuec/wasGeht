@@ -128,7 +128,11 @@ const HK=k=>"settings/"+k;
 const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
 const HPRE=/^(hc|hd|hr|ho|hj|hsum):/;
-const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals"].includes(k);
+const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals","hpreset"].includes(k);
+/* Punkte-Reset: alles vor diesem Zeitpunkt zählt nicht mehr für Punkte, Level und Belohnungen (Verlauf bleibt) */
+const hRst=()=>+((SETS.hpreset||{}).t)||0;
+const hAt=x=>+x.at||(x.d?pdate(String(x.d).slice(0,10)).getTime():0);
+const hPtOk=x=>{const r=hRst();return !r||hAt(x)>=r};
 {const loc=LS.get("hwk-home",{});for(const k in loc)if(SETS[k]===undefined)SETS[k]=loc[k]}
 function hMirror(){const o={};for(const k in SETS)if(isHomeKey(k))o[k]=SETS[k];LS.set("hwk-home",o)}
 function hset(id,data){if(data==null)delete SETS[id];else SETS[id]=data;hMirror();if(SB)write(HK(id),data)}
@@ -201,9 +205,9 @@ function hDoneAll(){const L=Object.keys(SETS).filter(k=>k.startsWith("hd:")).map
   /* zusammengefasste Monatssummen (älter als gut ein Jahr) */
   Object.keys(SETS).filter(k=>k.startsWith("hsum:")).forEach(k=>{const s=SETS[k]||{},d=k.slice(5)+"-01";for(const pid in (s.p||{}))L.push({cid:"sum",d,by:pid,pts:s.p[pid],n:(s.n||{})[pid]||1,cat:"",sum:1})});
   hProjects().forEach(p=>{(p.steps||[]).forEach(s=>{if(s.dn)L.push(Object.assign({cid:"j:"+p.pid+":"+s.id,d:s.dn.d,cat:p.cat||"projekt",proj:1},s.dn))});if(p.dn)L.push(Object.assign({cid:"j:"+p.pid,d:p.dn.d,cat:p.cat||"projekt",proj:1},p.dn))});return L}
-function hEarned(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&(!from||x.d>=from)&&(!to||x.d<=to)).reduce((s,x)=>s+(+x.pts||0),0)}
+function hEarned(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&hPtOk(x)&&(!from||x.d>=from)&&(!to||x.d<=to)).reduce((s,x)=>s+(+x.pts||0),0)}
 const hReds=()=>Object.keys(SETS).filter(k=>k.startsWith("hr:")).map(k=>Object.assign({rid:k.slice(3)},SETS[k]));
-const hBal=pid=>hEarned(pid)-hReds().filter(r=>r.by===pid&&!r.fam).reduce((s,r)=>s+(+r.cost||0),0);
+const hBal=pid=>hEarned(pid)-hReds().filter(r=>r.by===pid&&!r.fam&&hPtOk(r)).reduce((s,r)=>s+(+r.cost||0),0);
 const hLev=pts=>{let L=HLEV[0],n=null;for(let i=0;i<HLEV.length;i++){if(pts>=HLEV[i][0]){L=HLEV[i];n=HLEV[i+1]||null}}return {L,n}};
 const wkStart=s=>{const d=pdate(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return isoD(d)};
 function hStreak(pid){let n=0,w=wkStart(T0);const D=hDoneAll().filter(x=>x.by===pid);const has=a=>D.some(x=>x.d>=a&&x.d<=addD(a,6));if(!has(w))w=addD(w,-7);while(has(w)){n++;w=addD(w,-7)}return n}
@@ -250,9 +254,9 @@ function hChEval(id,w){const a=w,b=addD(w,6),I=hItems(a,b),D=hDoneAll().filter(x
     case "ch_mental":return [A.filter(p=>D.some(x=>x.by===p.id&&MENTAL.has(x.cat))).length,A.length];
     case "ch_points":return [Math.min(150,D.reduce((s,x)=>s+(+x.pts||0),0)),150]}return [0,1]}
 let HCACHE=null;
-function hFam(){if(HCACHE&&HCACHE.t>Date.now()-1500)return HCACHE.v;const cfg=hGcfg(),all=hDoneAll();let earned=all.reduce((s,x)=>s+(+x.pts||0),0),bonus=0;const first=all.map(x=>x.d).sort()[0];
-  if(first){let w=wkStart(first>addD(T0,-182)?first:addD(T0,-182));while(w<=T0){const CHL=hChList();cfg.ch.forEach(id=>{const ch=CHL.find(c=>c[0]===id);if(!ch)return;const [n,t]=hChEval(id,w);if(t>0&&n>=t&&(addD(w,6)<T0||w===wkStart(T0)))bonus+=ch[3]});w=addD(w,7)}}
-  const spent=hReds().filter(r=>r.fam).reduce((s,r)=>s+(+r.cost||0),0);const v={earned,bonus,spent,bal:earned+bonus-spent};HCACHE={t:Date.now(),v};return v}
+function hFam(){if(HCACHE&&HCACHE.t>Date.now()-1500)return HCACHE.v;const cfg=hGcfg(),all=hDoneAll().filter(hPtOk),rw=hRst()?wkStart(isoD(new Date(hRst()))):"";let earned=all.reduce((s,x)=>s+(+x.pts||0),0),bonus=0;const first=all.map(x=>x.d).sort()[0];
+  if(first){let w=wkStart(first>addD(T0,-182)?first:addD(T0,-182));if(rw&&w<rw)w=rw;while(w<=T0){const CHL=hChList();cfg.ch.forEach(id=>{const ch=CHL.find(c=>c[0]===id);if(!ch)return;const [n,t]=hChEval(id,w);if(t>0&&n>=t&&(addD(w,6)<T0||w===wkStart(T0)))bonus+=ch[3]});w=addD(w,7)}}
+  const spent=hReds().filter(r=>r.fam&&hPtOk(r)).reduce((s,r)=>s+(+r.cost||0),0);const v={earned,bonus,spent,bal:earned+bonus-spent};HCACHE={t:Date.now(),v};return v}
 /* Abzeichen */
 function hBadges(pid){const D=hDoneAll().filter(x=>x.by===pid);
   const DN=D.reduce((s,x)=>s+(x.n||1),0);return [["🎉","Erster Haken",DN>=1],["🔟","10 erledigt",DN>=10],["💯","100 erledigt",DN>=100],["🛟","Retter (3× übernommen)",D.filter(x=>x.tk).length>=3],
@@ -543,7 +547,15 @@ function renderHomeSet(){const fp=$("famPeople"),el=$("homeSet");const P=hPeople
    <div class="hfpadd"><button type="button" class="pmini" data-hpadd="a">➕ Erwachsene Person</button><button type="button" class="pmini" data-hpadd="k">➕ Kind</button></div>`;
   if(el)el.innerHTML=`<p class="famnote">In dieser Zeit stehen Haushalt, Garten & Co. in „Unser Plan“. Ausflüge sind trotzdem möglich – es gibt dann einen Hinweis.</p>
    <div class="dquick freed" id="hbDays">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-hbd="${i}" aria-pressed="${B.days.includes(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div>
-   <div class="hbt"><label>von <input type="time" id="hbFrom" value="${esc(B.from)}"></label><label>bis <input type="time" id="hbTo" value="${esc(B.to)}"></label></div>`}
+   <div class="hbt"><label>von <input type="time" id="hbFrom" value="${esc(B.from)}"></label><label>bis <input type="time" id="hbTo" value="${esc(B.to)}"></label></div>`;
+  const pr=$("hPtsReset");if(pr){const r=hRst(),sum=P.map(p=>`${p.e} ${esc(p.n)}: <b>${hEarned(p.id)}</b>`).join(" · ");
+    pr.innerHTML=`<p class="famnote">Setzt Punkte, Level, Kontostände und Familienpunkte für alle auf 0 – z. B. zum Monats- oder Jahresstart. Erledigte Aufgaben, Fälligkeiten und Abzeichen bleiben erhalten.</p>
+     <p class="famnote">Aktuell: ${sum||"–"} · Familie: <b>${hFam().bal}</b>${r?`<br>Zuletzt auf 0 gesetzt am ${esc(new Date(r).toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"}))}`:""}</p>
+     <div class="bkrow"><button type="button" class="pmini" id="hPrGo">🔄 Alle Punkte auf 0 setzen</button>${r?`<button type="button" class="pmini" id="hPrUndo">↩️ Zurücksetzen aufheben</button>`:""}</div><p class="famnote" id="hPrMsg" aria-live="polite"></p>`}}
+document.addEventListener("click",e=>{const t=e.target;
+  if(t.id==="hPrGo"){if(t.dataset.sure!=="1"){t.dataset.sure="1";t.textContent="Wirklich alle auf 0? Nochmal tippen";setTimeout(()=>{if(t.isConnected){t.dataset.sure="";t.textContent="🔄 Alle Punkte auf 0 setzen"}},5000);return}
+    const old=SETS.hpreset||null;hset("hpreset",{t:Date.now(),by:hMe()});HCACHE=null;renderHomeSet();renderHomeAll();undoToast("🔄 Alle Punkte auf 0 gesetzt",()=>{hset("hpreset",old);HCACHE=null;renderHomeSet();renderHomeAll()});return}
+  if(t.id==="hPrUndo"){hset("hpreset",null);HCACHE=null;renderHomeSet();renderHomeAll();toast("↩️ Alte Punktestände wieder da");return}});
 function hSavePeople(L){const C=L.map(({c,...p})=>p);hset("people",{list:C});hSyncFam(C);renderHomeSet();renderHomeAll()}
 document.addEventListener("click",e=>{const t=e.target;
   const pa=t.closest("[data-hpadd]");if(pa){const L=hPeople(),k=pa.dataset.hpadd==="k";L.push(k?{id:"k"+Date.now().toString(36),n:"Kind "+(hKids().length+1),e:"🧒",kid:true,age:6}:{id:"p"+Date.now().toString(36),n:"Erwachsene Person",e:HEMO[L.length%4],kid:false});hSavePeople(L);return}
