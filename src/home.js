@@ -384,10 +384,10 @@ function hReview(){const n=new Date(),dw=n.getDay();let w=null;if(dw===0||(dw===
 /* Hauptansicht */
 function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null;const me=hMe(),P=hPeople(),meP=hPer(me);
   const fOk=i=>HF.who==="me"?i.who===me:HF.who==="open"?!i.who:true,vis=i=>HF.done||!i.dn;
-  const od=hOverdue().filter(fOk),today=hItems(T0,T0).filter(fOk),wkAll=hItems(addD(T0,1),addD(T0,6)).filter(i=>!hDaily(i.c)).filter(fOk);
+  const od=hOverdue().filter(fOk),today=hItems(T0,T0).filter(fOk),wkAll=hItems(addD(T0,1),addD(T0,hLeadMax())).filter(i=>!hDaily(i.c)&&i.disp<=addD(T0,hLeadDays(i.c))).filter(fOk).sort((a,b)=>a.disp.localeCompare(b.disp));
   const td=today.filter(i=>!hDaily(i.c)),dly=today.filter(i=>hDaily(i.c)),nTot=today.length,nDn=today.filter(i=>i.dn).length;
   const pend=new Set(od.concat(td).filter(i=>!i.dn).map(i=>i.c.cid));
-  const wk=(()=>{const m=new Map();wkAll.filter(vis).filter(i=>!pend.has(i.c.cid)).forEach(i=>{const k=i.c.cid;if(!m.has(k))m.set(k,Object.assign({},i,{more:[]}));else if(!i.dn)m.get(k).more.push(i.disp)});return [...m.values()]})();
+  const wk=(()=>{const m=new Map();wkAll.filter(vis).filter(i=>!pend.has(i.c.cid)).forEach(i=>{const k=i.c.cid;if(!m.has(k))m.set(k,Object.assign({},i,{more:[]}));else if(!i.dn&&m.get(k).more.length<3)m.get(k).more.push(i.disp)});return [...m.values()]})();
   const nDoneAll=od.concat(today,wkAll).filter(i=>i.dn).length;
   if(nTot&&nDn===nTot&&LS.get("hwk-feier","")!==T0){LS.set("hwk-feier",T0);setTimeout(()=>{hBurst(nDn,true);toast("🎉 Feierabend! Heute ist alles geschafft")},350)}
   const ch=hChores(),B=hBlock(),nb=(()=>{for(let i=0;i<14;i++){const s=plus(i);if(B.days.includes(pdate(s).getDay()))return s}return null})();
@@ -399,7 +399,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const odv=od;
   const odBar=odv.length?`<details class="hodbar" data-hsec="od"${HSEC.od?" open":""}><summary>⚠️ ${odv.length} überfällig <span class="hflc" aria-hidden="true"></span></summary>${odv.map(i=>hRow(i,"od")).join("")}</details>`:"";
   const tdv=td.filter(vis),dlv=dly.filter(vis),nxo=HSEC.next!=null?HSEC.next:true;
-  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag <small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small></h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Die nächsten Tage (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
+  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag <small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small></h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
     ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`}`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
   v.innerHTML=`${head}${hReview()}${hFairLine()}
@@ -560,6 +560,7 @@ function hEdit(c,isNew,mode){HED={c:Object.assign({},c),isNew,mode:mode||"task"}
    <div id="heWdW"><span class="hlab">Tag(e) <small class="hhint">– mehrere möglich, z. B. Di + Sa</small></span><div class="dquick" id="heWd">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-wd="${i}" aria-pressed="${hWds(x).includes(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div><small class="hhint" id="heWdH"></small></div>
    <div class="hf2" id="heDateW"><label><span id="heDateL">Datum</span><input type="date" id="heDate" value="${esc(x.date||"")}"></label></div>
    <label id="heLeadW">Wie viele Tage vorher anfangen?<input type="number" id="heLead" min="0" max="90" value="${+x.lead||0}"></label>
+   <div class="hvor"><span class="hlab">Unter „Demnächst“ zeigen – wie lange vorher?</span><div class="hvorr"><input type="number" id="heVorN" min="1" max="99" inputmode="numeric" value="${x.vor&&+x.vor.n>0?+x.vor.n:6}" aria-label="Vorlauf Anzahl"><select id="heVorU" aria-label="Vorlauf Einheit">${[["d","Tage"],["w","Wochen"],["m","Monate"]].map(([k,l])=>`<option value="${k}"${(x.vor&&x.vor.u||"d")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">vorher</span></div></div>
    ${TPL?`<p class="hsub">Die Vorlage bestimmt, wie die Aufgabe beim Antippen im Katalog vorausgefüllt wird. Bereits übernommene Aufgaben ändern sich nicht.</p>`:""}<div id="heMissW"${TPL?" hidden":""}><span class="hlab">Wenn sie nicht erledigt wird …</span><div class="dquick" id="heMiss"><button type="button" data-miss="over" aria-pressed="${miss==="over"}">⏰ wird rot & überfällig</button><button type="button" data-miss="lapse" aria-pressed="${miss==="lapse"}">💨 verfällt nach dem Termin</button></div></div>
    <div class="hf2"><label>Dauer<select id="heDur">${durs.map(m=>`<option value="${m}"${m===+x.dur?" selected":""}>${fmH(m)}</option>`).join("")}</select></label><label>Punkte <small>(Empfehlung: <span id="heRec">${rec}</span>)</small><input type="number" id="hePts" min="1" max="999" value="${+x.pts||rec}"></label></div>
    <div id="heWhoW"${TPL?" hidden":""}><span class="hlab">Wer ist zuständig?</span><div class="dquick hwho" id="heWho">${P.map(p=>`<button type="button" data-who="${p.id}" aria-pressed="${x.who===p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}<button type="button" data-who="rot" aria-pressed="${x.who==="rot"}">🔄 Abwechselnd</button><button type="button" data-who="" aria-pressed="${!x.who}">🙋 Offen – spontan / nach Bock</button></div></div>
@@ -570,7 +571,7 @@ function hEdUpd(){const f=$("heF").value,x=HED.c;$("heWdW").hidden=!["w1","w2","
   $("heDateW").hidden=!(f==="x"||f==="y1")||HED.mode==="tpl";$("heDateL").textContent=f==="y1"?"Datum (z. B. Geburtstag)":"Datum / Deadline";$("heLeadW").hidden=f!=="y1";
   const rec=hrec(+$("heDur").value,x.unpop,($("heCat").value==="kids"));$("heRec").textContent=rec}
 function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("heTi").value.trim();if(!x.ti){$("heTi").focus();return}x.cat=$("heCat").value;x.ic=$("heIc").value.trim();x.f=$("heF").value;
-  const ws=[...$("heWd").querySelectorAll('[aria-pressed="true"]')].map(b=>+b.dataset.wd);x.wds=ws.length?ws:[6];x.wd=x.wds[0];x.date=$("heDate").value||null;delete x.t;x.lead=+$("heLead").value||0;
+  const ws=[...$("heWd").querySelectorAll('[aria-pressed="true"]')].map(b=>+b.dataset.wd);x.wds=ws.length?ws:[6];x.wd=x.wds[0];x.date=$("heDate").value||null;delete x.t;x.lead=+$("heLead").value||0;{const n=Math.max(1,Math.min(99,Math.round(+$("heVorN").value||6))),u=$("heVorU").value;if(n===6&&u==="d")delete x.vor;else x.vor={n,u}}
   const mb=$("heMiss").querySelector('[aria-pressed="true"]');x.miss=mb?mb.dataset.miss:null;
   x.dur=+$("heDur").value;x.pts=+$("hePts").value||hrec(x.dur,x.unpop,x.kid);x.kid=x.cat==="kids"?1:0;const wh=$("heWho").querySelector('[aria-pressed="true"]');x.who=wh?wh.dataset.who:hMe();
   x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;
@@ -714,6 +715,10 @@ document.addEventListener("click",e=>{const s=e.target.closest&&e.target.closest
 document.addEventListener("change",e=>{if(e.target.id!=="hmTy")return;const f=e.target.closest(".hchf");if(f)f.dataset.ty=e.target.value});
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-hchman]");if(!b)return;const c=hGcfg(),id=b.dataset.hchman,w=wkStart(T0),m=(c.cman[id]||[]).slice(-60);
   c.cman=Object.assign({},c.cman,{[id]:m.includes(w)?m.filter(x=>x!==w):m.concat(w)});hset("hgoals",c);HCACHE=null;if(!m.includes(w))hBurst(+((hChList().find(x=>x[0]===id)||[])[3])||0,true);renderHomeAll()});
+/* Vorlauf: ab wann eine Aufgabe unter „Demnächst“ erscheint (vor = {n, u: d|w|m}); Standard 6 Tage */
+const HVU={d:1,w:7,m:30};
+const hLeadDays=c=>{const v=c&&c.vor;if(!v||!(+v.n>0))return 6;return Math.min(400,Math.round(+v.n*(HVU[v.u]||1)))};
+const hLeadMax=()=>Math.max(6,...hChores().map(hLeadDays));
 function hMoveTomorrow(cid,d){if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),p=SETS["hj:"+pid],s=p&&(p.steps||[]).find(x=>x.id===sid);const to=addD(s&&s.date&&s.date>=T0?s.date:T0,1);hProjEdit(pid,P=>{const z=(P.steps||[]).find(x=>x.id===sid);if(z)z.date=to});toast("↷ Auf "+fmtDate(to)+" verschoben");return}
   const k="ho:"+cid+":"+d,old=SETS[k]||null,ov=Object.assign({},old||{}),disp=ov.to||d,to=addD(disp>=T0?disp:T0,1);ov.to=to;hset(k,ov);HEXP.delete(cid+"|"+d);renderHomeAll();undoToast("↷ Auf "+fmtDate(to)+" verschoben",()=>{hset(k,old);renderHomeAll()})}
 let SW=null;

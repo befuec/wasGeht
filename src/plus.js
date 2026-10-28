@@ -328,7 +328,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
     head=`<b>${PALL?"Alles Geplante":"Alles im "+MONL[m-1]+" "+y}</b>${tog}<span class="pcnt">${L.length} ${L.length===1?"Eintrag":"Einträge"}</span>`;
     let last="",lm="";L.forEach(o=>{if(PALL&&o.d.slice(0,7)!==lm){lm=o.d.slice(0,7);const [yy,mm]=lm.split("-").map(Number);h+=`<h3 class="pmh">${MONL[mm-1]} ${yy}</h3>`}if(o.d!==last){const nw=Object.values(DP[o.d]?DP[o.d].info:{}).filter(v=>v.warn).length;h+=`<h4 class="pdh">${o.d===T0?"Heute · ":o.d===plus(1)?"Morgen · ":""}${fmtDate(o.d)}${nw?` <span class="pwarn" style="display:inline">⚠️ ${nw===1?"1 Überschneidung":nw+" Überschneidungen"}</span>`:""}</h4>`;last=o.d}h+=prow(o,false,I(o))});
     if(!L.length)h=PALL?`<div class="evempty">Noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`:`<div class="evempty">Im ${MONL[m-1]} ist noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`}
-  $("pHead").innerHTML=head;$("pList").innerHTML=h;{const pf=$("pFair");if(pf&&window.homeFairMini)pf.innerHTML=homeFairMini()}
+  $("pHead").innerHTML=head;$("pList").innerHTML=h;{const pf=$("pFair");if(pf){pf.innerHTML="";pf.hidden=true}}
   KL=PDAY?E.filter(o=>o.d===PDAY):PALL?E:E.filter(o=>o.d.startsWith(CALM));const sig=KL.map(o=>o.d+o.x.k).join(",");if(sig!==KSIG){KSIG=sig;KI=0}renderStep();updateFabs()}
 function calUrl(o){const e=o.ev||tripEv(o.p,o.d);return gcal(o.p,Object.assign({},e,{t:o.t||e.t,te2:o.x.te||e.te2,dt:o.d,to:null}),false)}
 function renderStep(){const a=$("pCalStep");if(!a)return;const n=KL.length;a.hidden=!n;if(!n)return;
