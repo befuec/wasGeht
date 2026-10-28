@@ -149,3 +149,45 @@ ADD["Handball Club Hamburg"] = [
 ADD["Reeperbahn Comedy Club"] = [
  ("2026-10-30","20:00","","Reeperbahn Comedy Club","Stand-up-Comedy; "+_TK,"https://www.hamburg-travel.com/see-explore/events/events-calendar/reeperbahn-comedy-club/"),
 ]
+
+# Schmetterball: jeden Mittwoch (laut Partyportalen; aktuelle Infos auf Instagram)
+import datetime as _dtm
+_d=_dtm.date(2026,10,28); ADD["Schmetterball Techno Tischtennis"]=[]
+while _d<=_dtm.date(2026,12,16):
+    ADD["Schmetterball Techno Tischtennis"].append((_d.isoformat(),"19:00","24:00","Schmetterball – Techno-Tischtennis","Abendkasse; ob es stattfindet, vorher auf Instagram prüfen","https://www.instagram.com/schmetter.ball/")); _d+=_dtm.timedelta(7)
+
+# Heimspiele (Stand 28.10.2026): HSV, HSV-Frauen, Handball Club Hamburg (früher HSV Handball), FC St. Pauli, Hamburg Towers
+_O="noch nicht genau terminiert – Anstoß vorher prüfen"
+ADD["Volksparkstadion"] = [
+ ("2026-11-06","20:30","","HSV – Borussia Mönchengladbach","Bundesliga, 9. Spieltag; Tickets bei hsv.de","https://www.hsv.de/"),
+ ("2026-11-28","15:30","","HSV – FC Bayern München","Bundesliga, 11. Spieltag; Tickets bei hsv.de","https://www.hsv.de/"),
+ ("2026-12-12","","","HSV – FC Schalke 04","Bundesliga, 13. Spieltag, Wochenende 11.–13.12.; "+_O,"https://www.hsv.de/"),
+ ("2026-10-31","13:00","","HSV-Frauen – 1. FC Union Berlin","DFB-Pokal Achtelfinale; Spielort laut HSV-Spielplan prüfen; Tickets bei hsv.de","https://www.hsv.de/teams/frauen/spielplan"),
+ ("2026-11-13","18:30","","HSV-Frauen – 1. FSV Mainz 05","Frauen-Bundesliga, 10. Spieltag; Spielort laut HSV-Spielplan prüfen","https://www.hsv.de/teams/frauen/spielplan"),
+ ("2026-12-20","","","HSV-Frauen – FC Bayern München","Frauen-Bundesliga, 13. Spieltag; "+_O+"; Spielort prüfen","https://www.hsv.de/teams/frauen/spielplan"),
+]
+ADD["Millerntor-Stadion"] = [
+ ("2026-10-31","","","FC St. Pauli – 1. FC Nürnberg","Bundesliga, 10. Spieltag (30.10.–1.11.); "+_O,"https://www.fcstpauli.com/news/spielplan-2627"),
+ ("2026-11-21","","","FC St. Pauli – VfL Bochum","Bundesliga, 12. Spieltag (20.–22.11.); "+_O,"https://www.fcstpauli.com/news/spielplan-2627"),
+ ("2026-12-05","","","FC St. Pauli – 1. FC Heidenheim","Bundesliga, 14. Spieltag (4.–6.12.); "+_O,"https://www.fcstpauli.com/news/spielplan-2627"),
+ ("2026-12-19","","","FC St. Pauli – Hertha BSC","Bundesliga, 16. Spieltag (18.–20.12.); "+_O,"https://www.fcstpauli.com/news/spielplan-2627"),
+]
+ADD["Handball Club Hamburg"] = [
+ ("2026-10-30","20:00","","Handball Club Hamburg – Rhein-Neckar Löwen","HBL-Heimspiel in der Sporthalle Hamburg (Krochmannstraße 55); Tickets online","https://hamburg-handball.de/spielplan/"),
+ ("2026-11-22","17:00","","Handball Club Hamburg – SC Magdeburg","HBL-Heimspiel in der Barclays Arena; Tickets online","https://hamburg-handball.de/spielplan/"),
+ ("2026-12-06","15:00","","Handball Club Hamburg – ThSV Eisenach","HBL-Heimspiel in der Sporthalle Hamburg (Krochmannstraße 55); Tickets online","https://hamburg-handball.de/spielplan/"),
+ ("2026-12-19","20:00","","Handball Club Hamburg – VfL Gummersbach","HBL-Heimspiel in der Barclays Arena; Tickets online","https://hamburg-handball.de/spielplan/"),
+ ("2026-12-22","19:00","","Handball Club Hamburg – TSV Hannover-Burgdorf","HBL-Heimspiel in der Barclays Arena; Tickets online","https://hamburg-handball.de/spielplan/"),
+]
+ADD["Hamburg Towers"] = [
+ ("2026-11-01","16:30","","Hamburg Towers – Mitteldeutscher BC","Basketball-Bundesliga, Inselpark Arena; Tickets online","https://www.hamburgtowers.de/saison/"),
+ ("2026-11-14","20:00","","Hamburg Towers – Würzburg Baskets","Basketball-Bundesliga, Inselpark Arena; Tickets online","https://www.hamburgtowers.de/saison/"),
+ ("2026-11-22","16:30","","Hamburg Towers – Phoenix Hagen","Basketball-Bundesliga, Inselpark Arena; Tickets online","https://www.hamburgtowers.de/saison/"),
+ ("2026-12-18","20:00","","Hamburg Towers – MHP Riesen Ludwigsburg","Basketball-Bundesliga; Tickets online","https://www.hamburgtowers.de/saison/"),
+ ("2026-12-27","15:00","","Hamburg Towers – ALBA BERLIN","Basketball-Bundesliga in der Barclays Arena; Tickets online","https://www.hamburgtowers.de/news/das-wird-gross-spielplan-26-27-vorlaeufig-terminiert/"),
+]
+
+ADD["Amplifire Festival"] = [("2027-08-06","","","Amplifire Festival 2027 (Tag 1)","Punkrock, Post-Punk, Singer-Songwriter; Line-up noch offen; Tickets bei infield.live","https://www.openairguide.net/festivals/deutschland/amplifire-festival"),
+ ("2027-08-07","","","Amplifire Festival 2027 (Tag 2)","Tickets bei infield.live","https://www.openairguide.net/festivals/deutschland/amplifire-festival")]
+ADD["Habitat Festival"] = [("2027-07-31","","","Habitat Festival 2027 (Tag 1)","House & Techno Open Air; Line-up noch offen; Tickets online","https://www.technoairlines.com/festival/habitat-festival-hamburg-germany-2027"),
+ ("2027-08-01","","","Habitat Festival 2027 (Tag 2)","Tickets online","https://www.technoairlines.com/festival/habitat-festival-hamburg-germany-2027")]

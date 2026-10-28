@@ -27,6 +27,8 @@ ERW = [
   "Di-Do 17-22; Fr-Sa 17-23",V,"","e45",2,"https://www.tigre-hamburg.com/"),
  ("Klippkroog","Große Bergstraße 255, 22767 Hamburg",53.5513,9.9420,"cafe","beides","egal","FSHW","Rustikales Café in Altona, täglich wechselnde Karte mittags und abends",
   None,V,"","e15",1.5,"http://klippkroog.de/"),
+ ("Café L'Artisan","Eppendorfer Weg 254, 20251 Hamburg",53.5838,9.9783,"cafe","drinnen","egal","FSHW","Französische Patisserie und Café in Eppendorf – Tartes, Croissants, Kaffee",
+  "Di-So 9-18:30",V,"","e15",1,"https://cafelartisan.de/"),
  ("Pinakas Restaurant","Grindelhof 64, 20146 Hamburg",53.5690,9.9845,"cafe","drinnen","egal","FSHW","Griechisch mit vielen kleinen Tellern im Grindelviertel",
   "Di-So 17-24",V,"","e45",2,"https://www.restaurant-pinakas.de/"),
  ("was wir wirklich LIEBEN. Deli","Hegestraße 28, 20251 Hamburg",53.5860,9.9790,"cafe","drinnen","egal","FSHW","Deli in Hoheluft mit Bowls, Salaten und Frühstück",
@@ -37,6 +39,8 @@ ERW = [
   None,V,"","e120",3,"https://www.thefontenay.de/"),
  ("Haus 73","Schulterblatt 73, 20357 Hamburg",53.5615,9.9620,"cafe","drinnen","egal","FSHW","Bar und Kulturhaus im Schanzenviertel – Konzerte, Comedy (SCHNACK Sessions), Partys",
   None,V,"","bar",2,"https://www.haus73.de/"),
+ ("Craft Bier Bar Hamburg","Max-Brauer-Allee 275, 22769 Hamburg",53.5600,9.9580,"cafe","drinnen","egal","FSHW","Craft-Beer-Bar an der Sternbrücke mit vielen wechselnden Zapfhähnen, auch Essen",
+  "Mo-Sa 17-24; So 15-22",V,"","bar",2,"https://craftbierbar.de/"),
  ("Aalhaus","Eggerstedtstraße 39, 22765 Hamburg",53.5560,9.9370,"cafe","beides","egal","FSHW","Eckkneipe, Live-Musikclub und Fußball-Lokal in Altona – mit Kneipenquiz und Biergarten",
   None,V,"","bar",2,"https://www.aalhaus.de/"),
  ("Beyond Beer Hamburg","Weidenallee 55, 20357 Hamburg",53.5660,9.9625,"cafe","drinnen","egal","FSHW","Craft-Beer-Laden mit Ausschank und Tastings im Schanzenviertel",
@@ -85,6 +89,12 @@ ERW = [
   None,U,TK,"",2.5,"https://www.honigfabrik.de/"),
  ("Stadtpark Open Air","Stadtpark, Freilichtbühne, 22303 Hamburg",53.5970,10.0235,"kreativ","draussen","trocken","S","Open-Air-Konzertbühne im Stadtpark (Saison etwa Mai bis September)",
   None,U,TK,"",3,"https://www.stadtparkopenair.de/"),
+ ("SPEKTRUM Festival","Reiherstieg Hauptdeich, 21107 Hamburg",53.5140,9.9650,"kreativ","draussen","trocken","S","Eintägiges Hip-Hop- und Beat-Festival am Reiherstieg in Wilhelmsburg, drei Bühnen (zuletzt Anfang August)",
+  None,U,"Tickets siehe Website","",8,"https://spektrum.ms/"),
+ ("Amplifire Festival","Alte Schleuse 23, 21107 Hamburg",53.5162,10.0168,"kreativ","draussen","trocken","S","Punkrock-, Post-Punk- und Singer-Songwriter-Festival von Karsten Jahnke in Wilhelmsburg (2. Ausgabe 6.–7. August 2027)",
+  None,U,"Tickets bei infield.live","",9,"https://www.openairguide.net/festivals/deutschland/amplifire-festival"),
+ ("Habitat Festival","Hamburg (Gelände siehe Tickets)",53.6300,9.9900,"kreativ","draussen","trocken","S","Open-Air-Festival für House und Techno auf einem dekorierten Gelände im Hamburger Norden (31. Juli – 1. August 2027, genauer Ort mit den Tickets)",
+  None,U,"Tickets bei tickets.habitat-festival.de","",10,"https://habitat-festival.de/"),
  ("Abaton Kino","Allende-Platz 3, 20146 Hamburg",53.5676,9.9827,"kreativ","drinnen","egal","FSHW","Traditionsreiches Programmkino im Grindelviertel, oft Originalfassungen",
   None,"bis15","Kinokarte ca. 10–12 € p. P.","",2.5,"https://www.abaton.de/"),
  ("Zeise Kinos","Friedensallee 7, 22765 Hamburg",53.5545,9.9270,"kreativ","drinnen","egal","FSHW","Programmkino in den Zeisehallen in Ottensen, drei Säle",
@@ -108,6 +118,8 @@ ERW = [
   None,U,"Tickets je nach Spiel","",3.5,"https://www.fcstpauli.com/"),
  ("Mega-Kart Norderstedt","In de Tarpen, 22848 Norderstedt",53.7025,9.9930,"aktiv","drinnen","egal","FSHW","Indoor-Kartbahn in Norderstedt, auch für Gruppen",
   "Di-Fr 14-21; Sa-So 11-21",U,PS,"",1.5,"http://mega-kart.de/"),
+ ("Schmetterball Techno Tischtennis","Karolinenstraße 45, 20357 Hamburg",53.5622,9.9703,"aktiv","drinnen","egal","FSHW","Tischtennis zu Techno-Beats mit DJ, Rundlauf und Mini-Turnieren im Club Karoline 45 (VOLT) – jeden Mittwochabend",
+  "Mi 19-24",U,"Eintritt an der Abendkasse","",3,"https://www.instagram.com/schmetter.ball/"),
  # Baden & Wellness
  ("Bäderland Kaifu-Sole","Hohe Weide 15, 20259 Hamburg",53.5733,9.9635,"baden","beides","egal","FSHW","Sole-Thermalbad mit Saunalandschaft in Eimsbüttel",
   None,U,PS,"",3,"https://www.baederland.de/"),
@@ -130,5 +142,5 @@ ERWN = {e[0] for e in ERW}
 AUDB = {"Hamburger Kunsthalle", "Planetarium Hamburg"}
 ERW_CLOSE = {"Museum für Hamburgische Geschichte": ("2026-01-01", "Laut Google vorübergehend geschlossen"),
              "MS Artville": ("2026-01-01", "Laut Google vorübergehend geschlossen")}
-# Nicht übernommen (kein fester Ort/keine Adresse gefunden): Café L'Artisan, Schmetterball Techno Tischtennis,
-# Craft Bier Bar Hamburg, Monkey Quiz, SPEKTRUM Festival, Amplifire Festival, Habitat Festival
+# Nicht übernommen (kein fester Ort/keine Adresse gefunden):
+# Craft Bier Bar Hamburg, Monkey Quiz
