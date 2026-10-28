@@ -81,3 +81,8 @@ Einrichtung: nach `mehrere-familien.sql` einmal `supabase/sicherheit.sql` im SQL
 - **Aufbewahrung:** Erledigt-Haken (`hd:`) älter als ~13 Monate werden zu Monatssummen `hsum:JJJJ-MM` (`{p:{person:punkte},n:{person:anzahl}}`) zusammengefasst.
 - **Seite:** Content-Security-Policy (nur Supabase und Open-Meteo erreichbar), keine Referrer, Schriften lokal in `fonts/` (OFL), nur http(s)-Links in den Daten, gefährliche Link-Adressen werden beim Klicken blockiert. Startpunkt auf ~1 km gerundet.
 - **Wachhalten:** `.github/workflows/keepalive.yml` ruft alle 3 Tage `fam_ping` auf, damit das kostenlose Projekt nicht pausiert.
+
+## Ziele & Termine für Erwachsene
+
+- `src/erwachsene.py`: Orte aus der Google-Maps-Liste „Erwachsenenveranstaltungen“ (`aud:"e"`); `AUDB` = Orte aus den Familienlisten, die auch für Erwachsene passen (`aud:"b"`). In der App „Für wen? Familie / Erwachsene / Alle“ (Heute und Entdecken).
+- Termine dazu in `src/extra_events.py` (Abschnitt „Ziele für Erwachsene“): Quellen sind die Veranstaltungsort-Seiten auf hamburg-tourism.de (Kampnagel K6, Centralkomitee, Pulverfass, Mojo Jazz Café, Laeiszhalle Studio E, Elbphilharmonie), die Spielpläne von HSV, HSV-Frauen, Handball Club Hamburg, FC St. Pauli und Hamburg Towers, Schmetterball (jeden Mittwoch) sowie die Festivals SPEKTRUM, Amplifire und Habitat.
