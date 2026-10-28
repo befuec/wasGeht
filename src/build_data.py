@@ -304,6 +304,12 @@ EV["WORLD OF BRICKS"]=[("2026-11-01","09:30","Letzter Tag der LEGO-Ausstellung",
 from np2 import NP2,NH2,NHN2,NPR2,CONS2,STAY2,WEB2,SRCF,MATCHF
 import np2 as _np2; _np2.SRC2["Planetarium Hamburg"]="beide"
 P+=NP2; H.update(NH2); HN.update(NHN2); PR.update(NPR2); CONS.update(CONS2); STAY.update(STAY2); WEB.update(WEB2)
+# Ziele für Erwachsene (erwachsene.py)
+from erwachsene import ERW, ERWN, AUDB
+for (_n,_a,_la,_ln,_c,_io,_wx,_s,_de,_h,_pt,_ptx,_cons,_st,_w) in ERW:
+    P.append((_n,_a,_la,_ln,_c,_io,_wx,_s,_de,None)); H[_n]=_h; PR[_n]=(_pt,False,_ptx if _pt!="verzehr" else "Kein Eintritt, nur Verzehr")
+    if _cons: CONS[_n]=_cons
+    STAY[_n]=_st; WEB[_n]=_w
 PM["urban apes Norderstedt"]=dict(PM["urban apes Hamburg Ost"]); PR["urban apes Norderstedt"]=("ueber15",False,"wie urban apes Ost: Erw. 16,90 €, Kinder 9,90 €, Familie 34,90 € (vor Ort prüfen)")
 # Planetarium Hamburg (neu in beiden Listen, 24.10.2026)
 _N="Planetarium Hamburg"
@@ -367,9 +373,10 @@ for i,(n,a,la,ln,c,io,wx,s,de,ck) in enumerate(P):
         cal=CAL.get(ck) if ck else None,
         km=round(hav(HU[0],HU[1],la,ln),1),
         ev=[dict(dt=x[0],t=x[1],ti=x[2],no=x[3],u=evurl(n,x),an=bool(re.search(r"Anmeld|anmeld|Warteliste|ausgebucht|ausverkauft|Buchung|Ticket",x[3].replace("ohne Anmeldung","")))) for x in EV.get(n,[]) if not any(x[2].startswith(k) for k in REPLACED.get(n,[]))]+expand_rec(n),
-        h=expand(H[n]), hn=HN.get(n), pt=PR[n][0], kf=PR[n][1], src=SRCF(n), **travel(n,c,hav(HU[0],HU[1],la,ln)), **money(n,c,PR[n][0],PR[n][2]), amin=AGE.get(n,AGE_CAT[c])[0], amax=AGE.get(n,AGE_CAT[c])[1],
+        h=expand(H[n]), hn=HN.get(n), pt=PR[n][0], kf=PR[n][1], src=("erw" if n in ERWN else SRCF(n)), aud=("e" if n in ERWN else "b" if n in AUDB else "f"), **travel(n,c,hav(HU[0],HU[1],la,ln)), **money(n,c,PR[n][0],PR[n][2]), amin=AGE.get(n,AGE_CAT[c])[0], amax=AGE.get(n,AGE_CAT[c])[1],
         web=WEB.get(n) or ('https://www.google.com/search?q='+_u.quote(n+' '+a.split(',')[-1].strip())), ws=n not in WEB,
         cl=(dict(fr=CLOSE[n][0],no=CLOSE[n][1]) if n in CLOSE else None)))
+for k in AUDB: assert k in names, k
 for k in EV: assert k in names, k
 for k in REC: assert k[0] in names, k
 for k in EVURL: assert k[0] in names, k

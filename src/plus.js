@@ -65,6 +65,7 @@ function syncStarsToKids(){if(typeof KSTAR==="undefined")return;KSTAR.clear();fo
 window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star:on})};
 /* bestehende lokale Sterne übernehmen */
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
+window.__refresh=()=>refresh();
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
   syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
@@ -520,14 +521,16 @@ const HWXT={rain:"Vorgeschlagen werden nur Ziele, die bei jedem Wetter gehen –
 function wxInfo(dt,wc,hh){const src=($("wxSrc")&&$("wxSrc").textContent)||"";
   return `${wc?`<b>${esc(WX[wc])}</b> – ${esc(HWXT[wc]||"")}`:"Für diesen Tag gibt es noch keine Vorhersage."}${hh?`<br>Vorm. = 8–12 Uhr, Nachm. = 12–18 Uhr. Bei Veranstaltungen zählt das Wetter zur jeweiligen Uhrzeit.`:""}${src?`<br><small>${esc(src)}</small>`:""}`}
 function wxBtn(inner,dt,wc,hh){return `<span class="hwxwrap"><button type="button" class="hwxbtn" data-hwx aria-expanded="${HWXOPEN}" title="Was bedeutet das Wetter für die Vorschläge?">${inner}<span class="hwxi" aria-hidden="true">ⓘ</span></button>${HWXOPEN?`<span class="hwxinfo" role="note">${wxInfo(dt,wc,hh)}</span>`:""}</span>`}
-const HQK=["dur","mood","drive","cost"],HQI={dur:"⏱️",mood:"💭",drive:"🚗",cost:"💶"};
-let HSTEP=(()=>{try{return sessionStorage.getItem("hwk-hqdone")?4:0}catch(e){return 0}})();
-const hqDone=()=>{HSTEP=4;try{sessionStorage.setItem("hwk-hqdone","1")}catch(e){}};
+const HQK=["aud","dur","mood","drive","cost"],HQI={aud:"👥",dur:"⏱️",mood:"💭",drive:"🚗",cost:"💶"};
+let HSTEP=(()=>{try{return sessionStorage.getItem("hwk-hqdone")?5:0}catch(e){return 0}})();
+const hqDone=()=>{HSTEP=5;try{sessionStorage.setItem("hwk-hqdone","1")}catch(e){}};
 const HQ=Object.assign({dur:null,mood:null,cost:null,drive:null},LS.get("hwkp-hq",{}));
-const HQO={dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
+const HQO0={aud:["Für wen?",[["fam","👨‍👩‍👧 Familie mit Kindern"],["erw","🍷 Nur wir Erwachsenen"]]],dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
   mood:["Worauf habt ihr Lust?",[["toben","🤸 Austoben"],["cozy","☕ Gemütlich"],["learn","🔬 Was lernen"],["animals","🐐 Tiere"]]],
   drive:["Wie lange fahren?",[["15","🚲 bis 15 Min."],["30","🚗 bis 30 Min."],["60","🚗 bis 1 Stunde"]]],
   cost:["Budget?",[["free","🆓 Kostenlos"],["low","💶 Günstig"],["more","💎 Gerne auch mehr"]]]};
+const HQO=new Proxy(HQO0,{get(o,k){if(k==="mood"&&window.getAud&&getAud()==="erw")return ["Worauf habt ihr Lust?",[["toben","🚴 Aktiv sein"],["cozy","🍷 Genuss & Entspannen"],["learn","🎭 Kultur"],["animals","🌳 Natur"]]];return o[k]}});
+const MOODPE={toben:p=>["aktiv","baden","ausflug"].includes(p.c),cozy:p=>["cafe","baden"].includes(p.c),learn:p=>["museum","kreativ"].includes(p.c),animals:p=>p.c==="natur"||/natur|moor|wander|wald|park/i.test(p.n+" "+(p.d||""))};
 const MOODP={toben:p=>["aktiv","spiel","baden"].includes(p.c)||/spielplatz|toben|trampolin|kletter|bewegung|rutsch/i.test(p.d||""),
   cozy:p=>["cafe","natur","hof"].includes(p.c)||/spazier|gemütlich|café|kuchen/i.test(p.d||""),
   learn:p=>["museum","kreativ"].includes(p.c)||/museum|ausstellung|planetarium|forsch|experiment|bücherei|technik/i.test(p.n+" "+(p.d||"")),
@@ -536,15 +539,16 @@ const MOODE={toben:/spiel|turn|sport|toben|kletter|lauf|rallye|bewegung|schwimm|
   cozy:/lesung|vorles|theater|kino|puppen|märchen|musical|konzert|bastel|laterne|weihnachtsmarkt|adventsmarkt|café/i,
   learn:/workshop|museum|planetarium|führung|ausstellung|forsch|experiment|programmier|robot|3d|wissen|natur|entdeck/i,
   animals:/tier|zoo|hof|bauernhof|schaf|pony|vogel|wildpark|alpaka|fütter|esel|pferd/i};
-function hqPlace(p){if(HQ.drive&&p.car>+HQ.drive)return false;
+function hqPlace(p){if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+HQ.drive)return false;
   if(HQ.dur==="2h"&&p.dur>3)return false;if(HQ.dur==="half"&&p.dur>5.5)return false;if(HQ.dur==="day"&&p.dur<4)return false;
-  if(HQ.mood&&!MOODP[HQ.mood](p))return false;
+  if(HQ.mood&&!((window.getAud&&getAud()==="erw")?MOODPE:MOODP)[HQ.mood](p))return false;
   if(HQ.cost){const fc=famCost(p);if(HQ.cost==="free"&&!(p.pk==="free"||fc===0))return false;if(HQ.cost==="low"&&!(p.pk==="free"||(fc!=null&&fc<=30)||p.pt==="frei"||p.pt==="bis5"||p.pt==="bis15"))return false}
   return true}
-function hqEvent(x){const {p,e}=x;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
+function hqEvent(x){const {p,e}=x;if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
   if(HQ.mood&&!MOODE[HQ.mood].test(e.ti+" "+(e.no||"")+" "+p.n))return false;
   if(HQ.cost){const pr=evPrice(x);if(HQ.cost==="free"&&pr!==0)return false;if(HQ.cost==="low"&&pr>12)return false}
   return true}
+window.renderHeute=()=>renderHeute();
 function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const now=new Date(),nm=now.getHours()*60+now.getMinutes();const late=nm>=18*60;let mode=HD,auto=false;if(late){mode="morgen";auto=false}
   const dt=mode==="jetzt"?T0:plus(1),start=mode==="jetzt"?nm:9*60,w=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===dt):null,di=DIDX(pdate(dt)),wc=w?wxClass(w):null;
@@ -579,12 +583,12 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const any=Object.values(HQ).some(Boolean);
   const qs=Object.entries(HQO).map(([key,[lab,opts]])=>`<div class="hqrow"><span class="hql">${lab}</span><div class="hqo">${opts.map(([val,t])=>`<button type="button" data-hq="${key}" data-v="${val}" aria-pressed="${HQ[key]===val}">${t}</button>`).join("")}</div></div>`).join("");
   /* Lockerungs-Tipps, wenn nichts passt */
-  let relax="";if(!items.length&&any){const save=Object.assign({},HQ);relax=Object.keys(HQ).filter(k=>save[k]).map(k=>{HQ[k]=null;const n=topForAll(dt).filter(o=>hqPlace(o.p)).length;HQ[k]=save[k];return n?`<button type="button" class="evtip" data-hqclr="${k}">„${esc(HQO[k][0].replace("?",""))}“ offen lassen</button>`:""}).join("")}
+  let relax="";if(!items.length&&any){const save=Object.assign({},HQ);relax=Object.keys(HQ).filter(k=>k!=="aud"&&save[k]).map(k=>{HQ[k]=null;const n=topForAll(dt).filter(o=>hqPlace(o.p)).length;HQ[k]=save[k];return n?`<button type="button" class="evtip" data-hqclr="${k}">„${esc(HQO[k][0].replace("?",""))}“ offen lassen</button>`:""}).join("")}
   const headHtml=`<div class="hhead"><h2 class="mtitle">${mode==="jetzt"?"☀️ Heute":"🌅 Morgen"}</h2>
     ${late?"":`<div class="hseg" role="group" aria-label="Tag"><button type="button" data-hd="jetzt" aria-pressed="${mode==="jetzt"}">Heute ab jetzt</button><button type="button" data-hd="morgen" aria-pressed="${mode==="morgen"}">Morgen</button></div>`}
     ${(halfHtml||wl)?wxBtn(halfHtml||`<span class="hwxd">${wl}</span>`,dt,wc,hh):""}<p class="hsub">${mode==="jetzt"?`Jetzt ${fmM(nm)} Uhr – nur, was ihr heute noch schafft`:`${WDL[pdate(dt).getDay()]}, ${pdate(dt).getDate()}. ${MONL[pdate(dt).getMonth()]} – Start ab 9 Uhr`}</p>
     </div>`;
-  if(HSTEP<4){const key=HQK[HSTEP],[lab,opts]=HQO[key],big=t=>{const m=t.match(/^(\S+)\s(.*)$/);return m?`<span class="e">${m[1]}</span><span>${m[2]}</span>`:t};
+  if(HSTEP<HQK.length){const key=HQK[HSTEP],[lab,opts]=HQO[key],big=t=>{const m=t.match(/^(\S+)\s(.*)$/);return m?`<span class="e">${m[1]}</span><span>${m[2]}</span>`:t};
     const wsh=w?`${wxIcon(w.rain,w.code,w.hi)} ${Math.round(w.hi)}° · 💧${Math.round(w.rain)} %`:"";document.body.classList.add("wizon");
     v.innerHTML=`<div class="hwhead">${late?`<span class="hwday">🌅 Ideen für morgen</span>`:`<div class="hseg" role="group" aria-label="Tag"><button type="button" data-hd="jetzt" aria-pressed="${mode==="jetzt"}">Heute</button><button type="button" data-hd="morgen" aria-pressed="${mode==="morgen"}">Morgen</button></div>`}${(halfHtml||wsh)?wxBtn(halfHtml||`<span class="hwx">${wsh}</span>`,dt,wc,hh):""}</div><div class="hwiz"><div class="hwtop"><span>Frage ${HSTEP+1} von ${HQK.length}</span><button type="button" class="hwskip" data-hqskip>Fragen überspringen ›</button></div>
       <div class="hwbar" aria-hidden="true"><i style="width:${(HSTEP+1)/HQK.length*100}%"></i></div>
@@ -592,9 +596,9 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
       <div class="hwopts">${opts.map(([val,t])=>`<button type="button" data-hqa="${key}" data-v="${val}" aria-pressed="${HQ[key]===val}">${big(t)}</button>`).join("")}<button type="button" data-hqa="${key}" data-v="" aria-pressed="${!HQ[key]}"><span class="e">🤷</span><span>Egal</span></button></div>
       ${HSTEP>0?`<button type="button" class="hwback" data-hqback>‹ Zurück</button>`:""}</div>`;return}
   document.body.classList.remove("wizon");
-  const chosen=HQK.filter(k=>HQ[k]).map(k=>HQO[k][1].find(o=>o[0]===HQ[k])[1]);
+  const chosen=HQK.filter(k=>k!=="aud"&&HQ[k]).map(k=>HQO[k][1].find(o=>o[0]===HQ[k])[1]);
   v.innerHTML=headHtml+`
-<div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
+<div class="haud" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="${getAud()==="fam"}">👨‍👩‍👧 Familie</button><button type="button" data-aud="erw" aria-pressed="${getAud()==="erw"}">🍷 Erwachsene</button><button type="button" data-aud="" aria-pressed="${getAud()===""}">Alle</button></div><div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
     ${lateDay?`<p class="hnote">Für einen ganzen Tag ist es heute schon spät – vielleicht morgen?</p>`:""}
     ${items.length?card(items[0],true)+(items.length>1?`<div class="hsec"><h3>Weitere Ideen</h3><div class="hgrid">${items.slice(1,7).map(it=>card(it)).join("")}</div></div>`:"")
       :`<div class="hnote">Dazu passt ${mode==="jetzt"?"heute":"morgen"} leider nichts.${relax?`<div class="evtips" style="margin-top:6px">${relax}</div>`:""}</div>`}
@@ -602,7 +606,8 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
 $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]");if(h){HD=h.dataset.hd;renderHeute();return}
   if(e.target.closest("[data-hwx]")){HWXOPEN=!HWXOPEN;renderHeute();return}
   if(HWXOPEN&&!e.target.closest(".hwxinfo")){HWXOPEN=false;const ib=e.target.closest("button,a");renderHeute();if(!ib)return}
-  const qa=e.target.closest("[data-hqa]");if(qa){HQ[qa.dataset.hqa]=qa.dataset.v||null;LS.set("hwkp-hq",HQ);HSTEP++;if(HSTEP>=HQK.length)hqDone();renderHeute();$("heuteView").scrollIntoView({block:"start"});return}
+  const au=e.target.closest("[data-aud]");if(au&&window.setAud){HQ.aud=au.dataset.aud||null;LS.set("hwkp-hq",HQ);setAud(au.dataset.aud);return}
+  const qa=e.target.closest("[data-hqa]");if(qa){HQ[qa.dataset.hqa]=qa.dataset.v||null;if(qa.dataset.hqa==="aud"&&window.setAud)setAud(qa.dataset.v||"");LS.set("hwkp-hq",HQ);HSTEP++;if(HSTEP>=HQK.length)hqDone();renderHeute();$("heuteView").scrollIntoView({block:"start"});return}
   if(e.target.closest("[data-hqskip]")){hqDone();renderHeute();return}
   if(e.target.closest("[data-hqback]")){HSTEP=Math.max(0,HSTEP-1);renderHeute();return}
   if(e.target.closest("[data-hqredo]")){HSTEP=0;renderHeute();return}

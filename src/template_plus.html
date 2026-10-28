@@ -1308,7 +1308,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .htrow.od{background:color-mix(in srgb,#DC2626 7%,var(--surface));border-left:4px solid #DC2626;padding-left:8px;border-radius:8px}
 .htrow.od .hck{border-color:#DC2626}.hod{color:#B91C1C;font-weight:800}
 .hrb{min-width:0}.hrb b{display:block;font-size:var(--fs-t);line-height:1.3}.hrb small{display:block;color:var(--muted);font-size:12.5px;line-height:1.45}
-.hchf{display:grid;gap:8px}.hchf .hcf-task,.hchf .hcf-who,.hchf .hcf-cat,.hchf .hcf-n{display:none}.hchf:is([data-ty=cnt],[data-ty=pts],[data-ty=days],[data-ty=min]) :is(.hcf-n,.hcf-who,.hcf-cat){display:grid}.hchf[data-ty=task] :is(.hcf-n,.hcf-task,.hcf-who){display:grid}.hchn{display:block;color:var(--muted);font-size:11px}.hbdg span small{display:block;font-size:10.5px;color:var(--muted);font-weight:700}.hbdf[data-ty=cat] .hcf-cat,.hbdf[data-ty=task] .hcf-task{display:grid}.hptsin{display:inline-flex;align-items:center;gap:2px;font-weight:900;color:#A16207;font-size:13px}.hptsin input{width:52px;padding:6px 4px;text-align:center;font:inherit;font-weight:900;color:#A16207;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.hrr{display:grid;justify-items:end;gap:4px}.hpts{font-weight:900;font-size:13px;color:#A16207;white-space:nowrap}.hpts s{color:var(--muted);font-weight:600}
+.hchf{display:grid;gap:8px}.hchf .hcf-task,.hchf .hcf-who,.hchf .hcf-cat,.hchf .hcf-n{display:none}.hchf:is([data-ty=cnt],[data-ty=pts],[data-ty=days],[data-ty=min]) :is(.hcf-n,.hcf-who,.hcf-cat){display:grid}.hchf[data-ty=task] :is(.hcf-n,.hcf-task,.hcf-who){display:grid}.hchn{display:block;color:var(--muted);font-size:11px}.hbdg span small{display:block;font-size:10.5px;color:var(--muted);font-weight:700}.hbdf[data-ty=cat] .hcf-cat,.hbdf[data-ty=task] .hcf-task{display:grid}.audsel{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 10px}.audsel .ft{font-weight:800;margin-right:4px}.audsel button,.haud button{font:inherit;font-size:13px;font-weight:700;padding:6px 11px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.audsel button[aria-pressed="true"],.haud button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}.haud{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}.hptsin{display:inline-flex;align-items:center;gap:2px;font-weight:900;color:#A16207;font-size:13px}.hptsin input{width:52px;padding:6px 4px;text-align:center;font:inherit;font-weight:900;color:#A16207;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.hrr{display:grid;justify-items:end;gap:4px}.hpts{font-weight:900;font-size:13px;color:#A16207;white-space:nowrap}.hpts s{color:var(--muted);font-weight:600}
 .htk{border-color:#DC2626!important;color:#B91C1C!important}
 .hcl{display:grid;gap:4px;margin-top:6px;font-size:13px}.hcl label{display:flex;gap:8px;align-items:center}
 .hpcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
@@ -1587,6 +1587,7 @@ body:not([data-m2="zuhause"]) .hfab,body.kidsmode .hfab{display:none}
         <svg class="chev" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="m6 9 6 6 6-6"/></svg></summary>
       <div class="fbody">
         <div class="fsecctl"><button type="button" id="secOpen">Alle aufklappen</button><button type="button" id="secClose">Alle zuklappen</button></div>
+        <div class="audsel" role="group" aria-label="Für wen?"><span class="ft">Für wen?</span><button type="button" data-aud="fam" aria-pressed="false">👨‍👩‍👧 Familie</button><button type="button" data-aud="erw" aria-pressed="false">🍷 Erwachsene</button><button type="button" data-aud="" aria-pressed="false">Alle</button></div>
         <details class="fsec" data-k="agefit" open>
           <summary><span class="ft">Alter der Kinder</span><svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="m6 9 6 6 6-6"/></svg></summary>
           <div class="chips"><label class="chip"><input type="checkbox" id="agefit"><span>Nur Ziele passend zum Alter der Kinder</span></label></div>
@@ -1863,7 +1864,14 @@ const SEASON = (()=>{const m=new Date().getMonth()+1;return m>=3&&m<=5?"F":m>=6&
 let FAM={ad:2,kids:[]}; try{const f=JSON.parse(localStorage.getItem("hwk-fam")||"null"); if(f&&Number.isFinite(f.ad)&&Array.isArray(f.kids)) FAM=f;}catch(e){}
 function saveFam(){try{localStorage.setItem("hwk-fam",JSON.stringify(FAM))}catch(e){}if(window.plusSettingsChanged)window.plusSettingsChanged("family")}
 function personPrice(m,age){ if(age>=18) return m.a||0; const cf=m.cf??0, ct=m.ct??17; if(age<cf) return m.c0||0; if(age<=ct) return m.c||0; return m.y??(m.a||0); }
-function famCost(p){ const ad=FAM.ad, kids=FAM.kids;
+/* Für wen? fam = Familie (Standard), erw = nur Erwachsene, "" = alles. Ziele: aud f (Familie), e (Erwachsene), b (beides) */
+let AUD=(()=>{try{const v=localStorage.getItem("hwk-aud");return v===null?"fam":v}catch(e){return "fam"}})();
+const audOk=p=>AUD==="erw"?(p.aud==="e"||p.aud==="b"):AUD==="fam"?p.aud!=="e":true;
+window.audOk=audOk;window.getAud=()=>AUD;window.setAud=v=>{AUD=v||"";try{localStorage.setItem("hwk-aud",AUD)}catch(e){}document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD)));
+  if(window.__refresh)window.__refresh();else if(typeof refresh==="function")refresh();if(typeof update==="function")try{update()}catch(_){}if(typeof renderEvents==="function")try{renderEvents()}catch(_){}if(window.renderHeute)try{window.renderHeute()}catch(_){}};
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".audsel [data-aud]");if(b)setAud(b.dataset.aud)});
+setTimeout(()=>document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD))),0);
+function famCost(p){ const ad=FAM.ad, kids=AUD==="erw"?[]:FAM.kids;
   if(p.pk==="free") return 0; if(p.pk==="unknown") return null;
   if(p.pk==="cons"){ const [a,c]=p.cons; return ad*a + kids.filter(k=>k>=2).length*c; }
   const m=p.pm; if(m.flat!=null) return m.flat; if(m.flatk!=null) return kids.length? m.flatk : ad*(m.a||0);
@@ -1872,7 +1880,7 @@ function famCost(p){ const ad=FAM.ad, kids=FAM.kids;
   return Math.round(sum*100)/100; }
 function tierOf(v){return v==null?"unbek":v===0?"frei":v<=10?"b10":v<=20?"b20":v<=40?"b40":"g40"}
 function fmtEur(v,est){ if(v==null) return ""; if(v===0) return "0 €"; const s=Number.isInteger(v)?String(v):v.toFixed(2).replace(".",","); return (est?"ca. ":"")+s+" €"; }
-function ageFits(p){ return FAM.kids.every(k=>k>=p.amin&&k<=p.amax); }
+function ageFits(p){ if(AUD==="erw")return true; return FAM.kids.every(k=>k>=p.amin&&k<=p.amax); }
 function famText(){ const k=FAM.kids; const ad=FAM.ad===1?"1 Erwachsenen":FAM.ad+" Erwachsene"; return k.length? `${ad} und ${k.length===1?"1 Kind":k.length+" Kinder"} (${k.map(x=>x+" J.").join(", ")})` : ad; }
 const TRAV = {all:"Egal",bike:"Mit dem Rad (bis ca. 40 Min.)",oepnv:"Mit U-/S-Bahn"};
 const DUR = {d2:"bis 2 h",d4:"2–4 h",d6:"4–6 h",d8:"Tagesausflug"};
@@ -1945,6 +1953,7 @@ function syncControls(){
 }
 
 function match(p){
+  if(!audOk(p)) return false;
   if(window.plusMatch&&!window.plusMatch(p)) return false;
   if(S.q){const words=qWords(),hay=p._nh||(p._nh=NORM(p.hay)); if(!words.every(w=>qWordOk(w,hay))) return false;}
   if(S.open!=="all"){ if(!p.h) return false;
@@ -2055,7 +2064,7 @@ function getXPL(){if(XPL)return XPL;const m=new Map();let id=9001;
     p.hay=(p.hay+" "+x.ti+" "+x.v+" "+x.a).toLowerCase()});
   XPL=[...m.values()];XPL.forEach(p=>p.up.sort((a,b)=>(a.dt+a.t).localeCompare(b.dt+b.t)));window.XPL=XPL;return XPL}
 function carMin(p){return p.car||Math.round((p.km||0)*1.95)}
-function xplFor(){return getXPL().filter(p=>(EVDIST>=90||carMin(p)<=EVDIST))}
+function xplFor(){if(AUD==="erw")return [];return getXPL().filter(p=>(EVDIST>=90||carMin(p)<=EVDIST))}
 /* Suche: auf Ebene der einzelnen Termine, Umlaute egal, verwandte Begriffe */
 const NORM=s=>(s||"").toLowerCase().replace(/ä/g,"a").replace(/ö/g,"o").replace(/ü/g,"u").replace(/ß/g,"ss");
 const QSYN=[[/^weihnachtsmark|^adventsmark|^christkindlmark/,/weihnachtsmark|adventsmark|weihnachtsbummel|wintervergn|weihnachtsdorf|advent im dorf|adventsdorf|christkindl|weihnachtszauber|nordische weihnachten|winterzauber|lichtermark|wintermark/],
@@ -2354,7 +2363,7 @@ function evIO(x){if(x.e._io)return x.e._io;const s=x.e.ti+" "+(x.e.no||"")+" "+(
 function evIoOk(x){if(EVIO==="all")return true;const r=evIO(x);return r==="beides"||r===EVIO}
 function evFree(x){const n=(x.e.no||"")+" "+x.e.ti;return /kostenlos|eintritt frei|\bfrei\b|gratis|ohne eintritt/i.test(n)||(x.p.pk==="free"&&!/€/.test(n))}
 function evCostOk(x){return EVCOST==="all"||evFree(x)}
-function evBase(){return PLACES.filter(p=>(!p.cl||T0<p.cl.fr)&&(EVDIST>=90||carMin(p)<=EVDIST))}
+function evBase(){return PLACES.filter(p=>audOk(p)&&(!p.cl||T0<p.cl.fr)&&(EVDIST>=90||carMin(p)<=EVDIST))}
 function evMode(){return EVDATE==="soon"||EVDATE==="all"||EVDATE==="we"?EVDATE:/^[mw]:/.test(EVDATE)?"rng":"day"}
 let EVMON=null;
 function monRange(ym){const [y,m]=ym.split("-").map(Number);return[ym+"-01",ym+"-"+String(new Date(y,m,0).getDate()).padStart(2,"0")]}
@@ -3225,7 +3234,7 @@ let KS={cats:[],cost:[],stars:false,open:false,inside:false,near:false,wx:true};
 try{const k=JSON.parse(localStorage.getItem("hwk-kids")||"null");if(k){KS=Object.assign(KS,k);if(!Array.isArray(KS.cats))KS.cats=[];if(k.cat&&k.cat!=="all"&&!KS.cats.length)KS.cats=[k.cat];delete KS.cat}}catch(e){}
 let KSTAR=new Set();try{KSTAR=new Set(JSON.parse(localStorage.getItem("hwk-stars")||"[]"))}catch(e){}
 function saveStars(){try{localStorage.setItem("hwk-stars",JSON.stringify([...KSTAR]))}catch(e){}}
-function kidsOk(p){if((p.c==="laden"||p.c==="sonst")&&!KSC[p.n])return false;if(offSeason(p))return false;return true}
+function kidsOk(p){if(p.aud==="e")return false;if((p.c==="laden"||p.c==="sonst")&&!KSC[p.n])return false;if(offSeason(p))return false;return true}
 function kMoney(p){const fc=famCost(p);if(fc===0)return 0;if(fc!=null)return fc<=20?1:fc<=50?2:3;return {bis5:1,bis15:1,ueber15:2}[p.pt]??null}
 function kAge(p){return p.amin===0?"bis "+p.amax+" Jahre":p.amin+" bis "+p.amax+" Jahre"}
 function kDesc(p){let d=(p.d||"").split(/;|\(/)[0].trim();if(d.length>90)d=d.slice(0,88).replace(/\s+\S*$/,"")+" …";return d}
@@ -3356,6 +3365,7 @@ function syncStarsToKids(){if(typeof KSTAR==="undefined")return;KSTAR.clear();fo
 window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star:on})};
 /* bestehende lokale Sterne übernehmen */
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
+window.__refresh=()=>refresh();
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
   syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
@@ -3811,14 +3821,16 @@ const HWXT={rain:"Vorgeschlagen werden nur Ziele, die bei jedem Wetter gehen –
 function wxInfo(dt,wc,hh){const src=($("wxSrc")&&$("wxSrc").textContent)||"";
   return `${wc?`<b>${esc(WX[wc])}</b> – ${esc(HWXT[wc]||"")}`:"Für diesen Tag gibt es noch keine Vorhersage."}${hh?`<br>Vorm. = 8–12 Uhr, Nachm. = 12–18 Uhr. Bei Veranstaltungen zählt das Wetter zur jeweiligen Uhrzeit.`:""}${src?`<br><small>${esc(src)}</small>`:""}`}
 function wxBtn(inner,dt,wc,hh){return `<span class="hwxwrap"><button type="button" class="hwxbtn" data-hwx aria-expanded="${HWXOPEN}" title="Was bedeutet das Wetter für die Vorschläge?">${inner}<span class="hwxi" aria-hidden="true">ⓘ</span></button>${HWXOPEN?`<span class="hwxinfo" role="note">${wxInfo(dt,wc,hh)}</span>`:""}</span>`}
-const HQK=["dur","mood","drive","cost"],HQI={dur:"⏱️",mood:"💭",drive:"🚗",cost:"💶"};
-let HSTEP=(()=>{try{return sessionStorage.getItem("hwk-hqdone")?4:0}catch(e){return 0}})();
-const hqDone=()=>{HSTEP=4;try{sessionStorage.setItem("hwk-hqdone","1")}catch(e){}};
+const HQK=["aud","dur","mood","drive","cost"],HQI={aud:"👥",dur:"⏱️",mood:"💭",drive:"🚗",cost:"💶"};
+let HSTEP=(()=>{try{return sessionStorage.getItem("hwk-hqdone")?5:0}catch(e){return 0}})();
+const hqDone=()=>{HSTEP=5;try{sessionStorage.setItem("hwk-hqdone","1")}catch(e){}};
 const HQ=Object.assign({dur:null,mood:null,cost:null,drive:null},LS.get("hwkp-hq",{}));
-const HQO={dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
+const HQO0={aud:["Für wen?",[["fam","👨‍👩‍👧 Familie mit Kindern"],["erw","🍷 Nur wir Erwachsenen"]]],dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
   mood:["Worauf habt ihr Lust?",[["toben","🤸 Austoben"],["cozy","☕ Gemütlich"],["learn","🔬 Was lernen"],["animals","🐐 Tiere"]]],
   drive:["Wie lange fahren?",[["15","🚲 bis 15 Min."],["30","🚗 bis 30 Min."],["60","🚗 bis 1 Stunde"]]],
   cost:["Budget?",[["free","🆓 Kostenlos"],["low","💶 Günstig"],["more","💎 Gerne auch mehr"]]]};
+const HQO=new Proxy(HQO0,{get(o,k){if(k==="mood"&&window.getAud&&getAud()==="erw")return ["Worauf habt ihr Lust?",[["toben","🚴 Aktiv sein"],["cozy","🍷 Genuss & Entspannen"],["learn","🎭 Kultur"],["animals","🌳 Natur"]]];return o[k]}});
+const MOODPE={toben:p=>["aktiv","baden","ausflug"].includes(p.c),cozy:p=>["cafe","baden"].includes(p.c),learn:p=>["museum","kreativ"].includes(p.c),animals:p=>p.c==="natur"||/natur|moor|wander|wald|park/i.test(p.n+" "+(p.d||""))};
 const MOODP={toben:p=>["aktiv","spiel","baden"].includes(p.c)||/spielplatz|toben|trampolin|kletter|bewegung|rutsch/i.test(p.d||""),
   cozy:p=>["cafe","natur","hof"].includes(p.c)||/spazier|gemütlich|café|kuchen/i.test(p.d||""),
   learn:p=>["museum","kreativ"].includes(p.c)||/museum|ausstellung|planetarium|forsch|experiment|bücherei|technik/i.test(p.n+" "+(p.d||"")),
@@ -3827,15 +3839,16 @@ const MOODE={toben:/spiel|turn|sport|toben|kletter|lauf|rallye|bewegung|schwimm|
   cozy:/lesung|vorles|theater|kino|puppen|märchen|musical|konzert|bastel|laterne|weihnachtsmarkt|adventsmarkt|café/i,
   learn:/workshop|museum|planetarium|führung|ausstellung|forsch|experiment|programmier|robot|3d|wissen|natur|entdeck/i,
   animals:/tier|zoo|hof|bauernhof|schaf|pony|vogel|wildpark|alpaka|fütter|esel|pferd/i};
-function hqPlace(p){if(HQ.drive&&p.car>+HQ.drive)return false;
+function hqPlace(p){if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+HQ.drive)return false;
   if(HQ.dur==="2h"&&p.dur>3)return false;if(HQ.dur==="half"&&p.dur>5.5)return false;if(HQ.dur==="day"&&p.dur<4)return false;
-  if(HQ.mood&&!MOODP[HQ.mood](p))return false;
+  if(HQ.mood&&!((window.getAud&&getAud()==="erw")?MOODPE:MOODP)[HQ.mood](p))return false;
   if(HQ.cost){const fc=famCost(p);if(HQ.cost==="free"&&!(p.pk==="free"||fc===0))return false;if(HQ.cost==="low"&&!(p.pk==="free"||(fc!=null&&fc<=30)||p.pt==="frei"||p.pt==="bis5"||p.pt==="bis15"))return false}
   return true}
-function hqEvent(x){const {p,e}=x;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
+function hqEvent(x){const {p,e}=x;if(window.audOk&&!audOk(p))return false;if(HQ.drive&&p.car>+HQ.drive)return false;if(HQ.dur==="2h"&&p.car>30)return false;
   if(HQ.mood&&!MOODE[HQ.mood].test(e.ti+" "+(e.no||"")+" "+p.n))return false;
   if(HQ.cost){const pr=evPrice(x);if(HQ.cost==="free"&&pr!==0)return false;if(HQ.cost==="low"&&pr>12)return false}
   return true}
+window.renderHeute=()=>renderHeute();
 function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const now=new Date(),nm=now.getHours()*60+now.getMinutes();const late=nm>=18*60;let mode=HD,auto=false;if(late){mode="morgen";auto=false}
   const dt=mode==="jetzt"?T0:plus(1),start=mode==="jetzt"?nm:9*60,w=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===dt):null,di=DIDX(pdate(dt)),wc=w?wxClass(w):null;
@@ -3870,12 +3883,12 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const any=Object.values(HQ).some(Boolean);
   const qs=Object.entries(HQO).map(([key,[lab,opts]])=>`<div class="hqrow"><span class="hql">${lab}</span><div class="hqo">${opts.map(([val,t])=>`<button type="button" data-hq="${key}" data-v="${val}" aria-pressed="${HQ[key]===val}">${t}</button>`).join("")}</div></div>`).join("");
   /* Lockerungs-Tipps, wenn nichts passt */
-  let relax="";if(!items.length&&any){const save=Object.assign({},HQ);relax=Object.keys(HQ).filter(k=>save[k]).map(k=>{HQ[k]=null;const n=topForAll(dt).filter(o=>hqPlace(o.p)).length;HQ[k]=save[k];return n?`<button type="button" class="evtip" data-hqclr="${k}">„${esc(HQO[k][0].replace("?",""))}“ offen lassen</button>`:""}).join("")}
+  let relax="";if(!items.length&&any){const save=Object.assign({},HQ);relax=Object.keys(HQ).filter(k=>k!=="aud"&&save[k]).map(k=>{HQ[k]=null;const n=topForAll(dt).filter(o=>hqPlace(o.p)).length;HQ[k]=save[k];return n?`<button type="button" class="evtip" data-hqclr="${k}">„${esc(HQO[k][0].replace("?",""))}“ offen lassen</button>`:""}).join("")}
   const headHtml=`<div class="hhead"><h2 class="mtitle">${mode==="jetzt"?"☀️ Heute":"🌅 Morgen"}</h2>
     ${late?"":`<div class="hseg" role="group" aria-label="Tag"><button type="button" data-hd="jetzt" aria-pressed="${mode==="jetzt"}">Heute ab jetzt</button><button type="button" data-hd="morgen" aria-pressed="${mode==="morgen"}">Morgen</button></div>`}
     ${(halfHtml||wl)?wxBtn(halfHtml||`<span class="hwxd">${wl}</span>`,dt,wc,hh):""}<p class="hsub">${mode==="jetzt"?`Jetzt ${fmM(nm)} Uhr – nur, was ihr heute noch schafft`:`${WDL[pdate(dt).getDay()]}, ${pdate(dt).getDate()}. ${MONL[pdate(dt).getMonth()]} – Start ab 9 Uhr`}</p>
     </div>`;
-  if(HSTEP<4){const key=HQK[HSTEP],[lab,opts]=HQO[key],big=t=>{const m=t.match(/^(\S+)\s(.*)$/);return m?`<span class="e">${m[1]}</span><span>${m[2]}</span>`:t};
+  if(HSTEP<HQK.length){const key=HQK[HSTEP],[lab,opts]=HQO[key],big=t=>{const m=t.match(/^(\S+)\s(.*)$/);return m?`<span class="e">${m[1]}</span><span>${m[2]}</span>`:t};
     const wsh=w?`${wxIcon(w.rain,w.code,w.hi)} ${Math.round(w.hi)}° · 💧${Math.round(w.rain)} %`:"";document.body.classList.add("wizon");
     v.innerHTML=`<div class="hwhead">${late?`<span class="hwday">🌅 Ideen für morgen</span>`:`<div class="hseg" role="group" aria-label="Tag"><button type="button" data-hd="jetzt" aria-pressed="${mode==="jetzt"}">Heute</button><button type="button" data-hd="morgen" aria-pressed="${mode==="morgen"}">Morgen</button></div>`}${(halfHtml||wsh)?wxBtn(halfHtml||`<span class="hwx">${wsh}</span>`,dt,wc,hh):""}</div><div class="hwiz"><div class="hwtop"><span>Frage ${HSTEP+1} von ${HQK.length}</span><button type="button" class="hwskip" data-hqskip>Fragen überspringen ›</button></div>
       <div class="hwbar" aria-hidden="true"><i style="width:${(HSTEP+1)/HQK.length*100}%"></i></div>
@@ -3883,9 +3896,9 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
       <div class="hwopts">${opts.map(([val,t])=>`<button type="button" data-hqa="${key}" data-v="${val}" aria-pressed="${HQ[key]===val}">${big(t)}</button>`).join("")}<button type="button" data-hqa="${key}" data-v="" aria-pressed="${!HQ[key]}"><span class="e">🤷</span><span>Egal</span></button></div>
       ${HSTEP>0?`<button type="button" class="hwback" data-hqback>‹ Zurück</button>`:""}</div>`;return}
   document.body.classList.remove("wizon");
-  const chosen=HQK.filter(k=>HQ[k]).map(k=>HQO[k][1].find(o=>o[0]===HQ[k])[1]);
+  const chosen=HQK.filter(k=>k!=="aud"&&HQ[k]).map(k=>HQO[k][1].find(o=>o[0]===HQ[k])[1]);
   v.innerHTML=headHtml+`
-<div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
+<div class="haud" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="${getAud()==="fam"}">👨‍👩‍👧 Familie</button><button type="button" data-aud="erw" aria-pressed="${getAud()==="erw"}">🍷 Erwachsene</button><button type="button" data-aud="" aria-pressed="${getAud()===""}">Alle</button></div><div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
     ${lateDay?`<p class="hnote">Für einen ganzen Tag ist es heute schon spät – vielleicht morgen?</p>`:""}
     ${items.length?card(items[0],true)+(items.length>1?`<div class="hsec"><h3>Weitere Ideen</h3><div class="hgrid">${items.slice(1,7).map(it=>card(it)).join("")}</div></div>`:"")
       :`<div class="hnote">Dazu passt ${mode==="jetzt"?"heute":"morgen"} leider nichts.${relax?`<div class="evtips" style="margin-top:6px">${relax}</div>`:""}</div>`}
@@ -3893,7 +3906,8 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
 $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]");if(h){HD=h.dataset.hd;renderHeute();return}
   if(e.target.closest("[data-hwx]")){HWXOPEN=!HWXOPEN;renderHeute();return}
   if(HWXOPEN&&!e.target.closest(".hwxinfo")){HWXOPEN=false;const ib=e.target.closest("button,a");renderHeute();if(!ib)return}
-  const qa=e.target.closest("[data-hqa]");if(qa){HQ[qa.dataset.hqa]=qa.dataset.v||null;LS.set("hwkp-hq",HQ);HSTEP++;if(HSTEP>=HQK.length)hqDone();renderHeute();$("heuteView").scrollIntoView({block:"start"});return}
+  const au=e.target.closest("[data-aud]");if(au&&window.setAud){HQ.aud=au.dataset.aud||null;LS.set("hwkp-hq",HQ);setAud(au.dataset.aud);return}
+  const qa=e.target.closest("[data-hqa]");if(qa){HQ[qa.dataset.hqa]=qa.dataset.v||null;if(qa.dataset.hqa==="aud"&&window.setAud)setAud(qa.dataset.v||"");LS.set("hwkp-hq",HQ);HSTEP++;if(HSTEP>=HQK.length)hqDone();renderHeute();$("heuteView").scrollIntoView({block:"start"});return}
   if(e.target.closest("[data-hqskip]")){hqDone();renderHeute();return}
   if(e.target.closest("[data-hqback]")){HSTEP=Math.max(0,HSTEP-1);renderHeute();return}
   if(e.target.closest("[data-hqredo]")){HSTEP=0;renderHeute();return}
