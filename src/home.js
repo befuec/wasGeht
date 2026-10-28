@@ -241,9 +241,19 @@ function hFairHtml(compact){const F=hFair(),A=F.st;if(!A.length)return "";
   return `<section class="hfair" aria-labelledby="hfH"><div class="hfhead"><h3 id="hfH">⚖️ Fairness – wer trägt gerade mehr?</h3><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${HFW==="w"}">Diese Woche</button><button type="button" data-hfw="m" aria-pressed="${HFW==="m"}">4 Wochen</button></span></div>
     ${ends}${row(Td,"min")}${hint}${row(Tm,"ml")}<span class="hfnote">(Termine, Geschenke, Organisation, Kümmern – die unsichtbare Arbeit)</span>${row(Tp,"plan")}</section>`}
 /* Familienziele & Challenges */
-const hGcfg=()=>{const g=SETS.hgoals||{},o=v=>v&&typeof v==="object"&&!Array.isArray(v)?v:{},a=v=>Array.isArray(v)?v:[];return {on:Array.isArray(g.on)?g.on:HGOAL_DEF,ch:Array.isArray(g.ch)?g.ch:HCH_DEF,custom:a(g.custom),gdel:a(g.gdel),gov:o(g.gov),cdel:a(g.cdel),cov:o(g.cov)}};
+const hGcfg=()=>{const g=SETS.hgoals||{},o=v=>v&&typeof v==="object"&&!Array.isArray(v)?v:{},a=v=>Array.isArray(v)?v:[];return {on:Array.isArray(g.on)?g.on:HGOAL_DEF,ch:Array.isArray(g.ch)?g.ch:HCH_DEF,custom:a(g.custom),gdel:a(g.gdel),gov:o(g.gov),cdel:a(g.cdel),cov:o(g.cov),cch:a(g.cch),cman:o(g.cman)}};
 const hGoalList=()=>{const c=hGcfg();return HGOALS.filter(g=>!c.gdel.includes(g[0])).map(g=>{const v=c.gov[g[0]]||{};return [g[0],v.ic||g[1],v.ti||g[2],+v.pts||g[3]]}).concat(c.custom.map(x=>[x.id,x.ic||"🎯",x.ti,+x.pts||300]))};
-const hChList=()=>{const c=hGcfg();return HCH.filter(x=>!c.cdel.includes(x[0])).map(x=>{const v=c.cov[x[0]]||{};return [x[0],v.ic||x[1],v.ti||x[2],+v.bon||x[3]]})};
+const hChList=()=>{const c=hGcfg();return HCH.filter(x=>!c.cdel.includes(x[0])).map(x=>{const v=c.cov[x[0]]||{};return [x[0],v.ic||x[1],v.ti||x[2],+v.bon||x[3]]}).concat(c.cch.map(x=>[x.id,x.ic||"🏅",x.ti,+x.bon||30,x]))};
+/* Eigene Wochen-Challenges: ty = cnt (Anzahl Aufgaben) · task (bestimmte Aufgabe n-mal) · pts (Punkte) · days (Tage mit Erledigtem) · min (Minuten) · man (per Hand abhaken) */
+const HCTY=[["cnt","Anzahl erledigter Aufgaben"],["task","Bestimmte Aufgabe n-mal erledigen"],["pts","Punkte sammeln"],["days","An n Tagen etwas erledigen"],["min","Minuten Aufgaben-Zeit"],["man","Abhaken per Hand (z. B. „Handyfreier Abend“)"]];
+function hChCustom(x,w){const a=w,b=addD(w,6),K=new Set(hKids().map(p=>p.id)),A=new Set(hAdults().map(p=>p.id)),n=Math.max(1,+x.n||1);
+  if(x.ty==="man"){const m=(hGcfg().cman[x.id]||[]);return [m.includes(w)?1:0,1]}
+  let D=hDoneAll().filter(y=>!y.sum&&y.d>=a&&y.d<=b);
+  if(x.who==="kids")D=D.filter(y=>K.has(y.by));else if(x.who==="adults")D=D.filter(y=>A.has(y.by));else if(x.who&&x.who!=="all")D=D.filter(y=>y.by===x.who);
+  if(x.cat)D=D.filter(y=>y.cat===x.cat);
+  if(x.ty==="task")D=D.filter(y=>y.cid===x.task);
+  const v=x.ty==="pts"?D.reduce((s,y)=>s+(+y.pts||0),0):x.ty==="min"?D.reduce((s,y)=>s+hMinOf(y),0):x.ty==="days"?new Set(D.map(y=>y.d)).size:D.length;
+  return [Math.min(n,v),n]}
 function hChEval(id,w){const a=w,b=addD(w,6),I=hItems(a,b),D=hDoneAll().filter(x=>x.d>=a&&x.d<=b),A=hAdults(),K=new Set(hKids().map(p=>p.id));
   switch(id){case "ch_all":{const L=I.filter(i=>!hDaily(i.c));return [L.filter(i=>i.dn).length,L.length]}
     case "ch_noover":{const L=I.filter(i=>hMiss(i.c)==="over");return [L.filter(i=>i.dn).length,L.length]}
@@ -252,7 +262,8 @@ function hChEval(id,w){const a=w,b=addD(w,6),I=hItems(a,b),D=hDoneAll().filter(x
     case "ch_fair":{if(A.length<2)return [0,1];const m=A.map(p=>D.filter(x=>x.by===p.id).reduce((s,x)=>s+hMinOf(x),0)),t=m.reduce((s,x)=>s+x,0);return [t>=120&&m.every(x=>x/t>=.4&&x/t<=.6)?1:0,1]}
     case "ch_proj":return [Math.min(1,D.filter(x=>x.proj).length),1];
     case "ch_mental":return [A.filter(p=>D.some(x=>x.by===p.id&&MENTAL.has(x.cat))).length,A.length];
-    case "ch_points":return [Math.min(150,D.reduce((s,x)=>s+(+x.pts||0),0)),150]}return [0,1]}
+    case "ch_points":return [Math.min(150,D.reduce((s,x)=>s+(+x.pts||0),0)),150]}
+  const cu=hGcfg().cch.find(x=>x.id===id);return cu?hChCustom(cu,w):[0,1]}
 let HCACHE=null;
 function hFam(){if(HCACHE&&HCACHE.t>Date.now()-1500)return HCACHE.v;const cfg=hGcfg(),all=hDoneAll().filter(hPtOk),rw=hRst()?wkStart(isoD(new Date(hRst()))):"";let earned=all.reduce((s,x)=>s+(+x.pts||0),0),bonus=0;const first=all.map(x=>x.d).sort()[0];
   if(first){let w=wkStart(first>addD(T0,-182)?first:addD(T0,-182));if(rw&&w<rw)w=rw;while(w<=T0){const CHL=hChList();cfg.ch.forEach(id=>{const ch=CHL.find(c=>c[0]===id);if(!ch)return;const [n,t]=hChEval(id,w);if(t>0&&n>=t&&(addD(w,6)<T0||w===wkStart(T0)))bonus+=ch[3]});w=addD(w,7)}}
@@ -375,13 +386,14 @@ function hPtsHtml(){const me=hMe(),P=hPeople(),meP=hPer(me),sel=hPer(HPSEL)?HPSE
   const goal=`<div class="hpot"><b>${fam.bal}</b><span>Familienpunkte${gn?` · nächstes Ziel: ${gn[1]} ${esc(gn[2])} (noch ${gn[3]-fam.bal})`:GL.length?" · alle Ziele erreicht! 🎉":""}${gn?`<span class="hprog"><i style="width:${Math.min(100,fam.bal/gn[3]*100)}%"></i></span>`:""}</span></div>
     ${reached.map(g=>`<div class="hgl ok"><span class="hgi">${g[1]}</span><b>${esc(g[2])} erreicht!</b><button type="button" class="pmini" data-hgred="${esc(g[0])}">🎉 Einlösen</button></div>`).join("")}`;
   const w0=wkStart(T0),CL=hChList().filter(c=>cfg.ch.includes(c[0]));
-  const chal=CL.length?`<div class="hchs">${CL.map(c=>{const [n,t]=hChEval(c[0],w0),ok=t>0&&n>=t;return `<div class="hch${ok?" ok":""}" title="${esc(c[2])}"><span>${ok?"✅":c[1]}</span><div style="min-width:0"><b>${esc(c[2])}</b><div class="hprog"><i style="width:${t?Math.min(100,n/t*100):0}%"></i></div></div><small>+${c[3]}</small></div>`}).join("")}</div>`:"";
+  const chal=CL.length?`<div class="hchs">${CL.map(c=>{const [n,t]=hChEval(c[0],w0),ok=t>0&&n>=t;return `<div class="hch${ok?" ok":""}" title="${esc(c[2])}"><span>${ok?"✅":c[1]}</span><div style="min-width:0"><b>${esc(c[2])}</b><div class="hprog"><i style="width:${t?Math.min(100,n/t*100):0}%"></i></div>${c[4]&&c[4].ty!=="man"&&t>1?`<small class="hchn">${n} / ${t}</small>`:""}</div>${c[4]&&c[4].ty==="man"?`<button type="button" class="pmini" data-hchman="${esc(c[0])}" aria-pressed="${ok}">${ok?"↺":"✓ Geschafft"}</button>`:""}<small>+${c[3]}</small></div>`}).join("")}</div>`:"";
   const mrow=(kind,id,label,on,data)=>`<div class="hmr"><label><input type="checkbox" ${data}="${esc(id)}"${on?" checked":""}> ${label}</label><button type="button" class="hed" data-hmini="${kind}" data-id="${esc(id)}" aria-label="Bearbeiten" title="Bearbeiten">✏️</button><button type="button" class="hed" data-hmdel="${kind}" data-id="${esc(id)}" aria-label="Löschen" title="Löschen">🗑️</button></div>`;
   const gmgr=`<details class="hown"${HMGR.g?" open":""} data-hmgr="g"><summary>⚙️ Ziele & Challenges</summary><div class="hmgr"><h5>Familienziele</h5>${hGoalList().map(g=>mrow("goal",g[0],`${g[1]} ${esc(g[2])} · ${g[3]} P.`,cfg.on.includes(g[0]),"data-hgon")).join("")}
       ${cfg.gdel.length?`<p class="hrest">${cfg.gdel.length} gelöscht · <button type="button" data-hrestore="goal">wiederherstellen</button></p>`:""}
       <button type="button" class="pmini" data-hmini="goal" data-id="">➕ Eigenes Ziel</button>
       <h5>Wochen-Challenges</h5>${hChList().map(c=>mrow("ch",c[0],`${c[1]} ${esc(c[2])} · +${c[3]}`,cfg.ch.includes(c[0]),"data-hchon")).join("")}
-      ${cfg.cdel.length?`<p class="hrest">${cfg.cdel.length} gelöscht · <button type="button" data-hrestore="ch">wiederherstellen</button></p>`:""}</div></details>`;
+      ${cfg.cdel.length?`<p class="hrest">${cfg.cdel.length} gelöscht · <button type="button" data-hrestore="ch">wiederherstellen</button></p>`:""}
+      <button type="button" class="pmini" data-hmini="ch" data-id="">➕ Eigene Challenge</button></div></details>`;
   return `${avs}${det}${next}${redOpen}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}`}
 /* Katalog als eigenes Blatt */
 function hCatHtml(){const ch=hChores(),TP=hTpls(),tids=new Set(TP.map(x=>x.id)),cc0=hCcfg(),inst=id=>ch.filter(c=>c.tpl===id),extra=ch.filter(c=>!c.tpl||!tids.has(c.tpl));
@@ -434,23 +446,34 @@ function hRsave(c){hset("hrwcfg",{off:c.off,del:c.del,ov:c.ov,custom:c.custom});
 function hMini(kind,id){const isNew=!id;let v={ti:"",ic:"",n:kind==="rew"?60:kind==="goal"?500:30,t:"a"};
   if(kind==="rew"&&id){const r=hRewAll().find(x=>x[0]===id);if(r)v={ti:r[2],ic:r[1],n:r[3],t:r[5]}}
   if(kind==="goal"&&id){const g=hGoalList().find(x=>x[0]===id);if(g)v={ti:g[2],ic:g[1],n:g[3]}}
-  if(kind==="ch"&&id){const c=hChList().find(x=>x[0]===id);if(c)v={ti:c[2],ic:c[1],n:c[3]}}
+  let cx=null;if(kind==="ch"&&id){const c=hChList().find(x=>x[0]===id);if(c){v={ti:c[2],ic:c[1],n:c[3]};cx=c[4]||null}}
+  const chCustom=kind==="ch"&&(!id||cx);cx=cx||{ty:"cnt",n:5,who:"all",cat:"",task:""};
   const lab={rew:["Belohnung","Punkte"],goal:["Familienziel","Familienpunkte"],ch:["Challenge","Bonus-Punkte"]}[kind];
   const d=$("hdlg");HED={mini:kind,id};d.innerHTML=`<form method="dialog" class="hform"><div class="dlghead"><h3>${lab[0]} ${isNew?"anlegen":"bearbeiten"}</h3><button type="button" class="mbx" data-hclose aria-label="Schließen">✕</button></div>
     <div class="hf2"><label>Titel<input type="text" id="hmT" maxlength="60" value="${esc(v.ti)}"></label><label>Icon<input type="text" id="hmI" maxlength="4" value="${esc(v.ic)}"></label></div>
     <label>${lab[1]}<input type="number" id="hmN" min="5" max="9999" step="5" value="${v.n}"></label>
     ${kind==="rew"?`<label>Für wen?<select id="hmF"><option value="a"${v.t==="a"?" selected":""}>Erwachsene</option><option value="k"${v.t==="k"?" selected":""}>Kinder</option><option value="b"${v.t==="b"?" selected":""}>Alle</option></select></label>`:""}
-    ${kind==="ch"?`<p class="hsub">Wann eine Challenge als geschafft gilt, ist fest eingebaut – Titel, Icon und Bonus könnt ihr anpassen.</p>`:""}
+    ${kind==="ch"&&!chCustom?`<p class="hsub">Wann eine Challenge als geschafft gilt, ist fest eingebaut – Titel, Icon und Bonus könnt ihr anpassen.</p>`:""}
+    ${chCustom?`<div class="hchf" data-ty="${esc(cx.ty)}"><label>Geschafft, wenn …<select id="hmTy">${HCTY.map(o=>`<option value="${o[0]}"${cx.ty===o[0]?" selected":""}>${o[1]}</option>`).join("")}</select></label>
+      <label class="hcf-n">Ziel pro Woche<input type="number" id="hmC" min="1" max="9999" value="${+cx.n||5}"></label>
+      <label class="hcf-task">Aufgabe<select id="hmA">${hChores().sort((a,b)=>a.ti.localeCompare(b.ti,"de")).map(c=>`<option value="${esc(c.cid)}"${cx.task===c.cid?" selected":""}>${c.ic||""} ${esc(c.ti)}</option>`).join("")||`<option value="">– erst Aufgaben im Katalog wählen –</option>`}</select></label>
+      <label class="hcf-who">Wer zählt?<select id="hmW"><option value="all">Alle zusammen</option><option value="adults"${cx.who==="adults"?" selected":""}>Erwachsene</option><option value="kids"${cx.who==="kids"?" selected":""}>Kinder</option>${hPeople().map(p=>`<option value="${esc(p.id)}"${cx.who===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></label>
+      <label class="hcf-cat">Nur Bereich<select id="hmK"><option value="">alle Bereiche</option>${HCATS.map(c=>`<option value="${c[0]}"${cx.cat===c[0]?" selected":""}>${c[1]} ${esc(c[2])}</option>`).join("")}</select></label>
+      <p class="hsub">Gilt jede Woche (Mo–So). Geschafft → Bonus-Punkte für die Familie.</p></div>`:""}
     <div class="hfbtn">${isNew?"":`<button type="button" class="pmini hdel" data-hmdel="${kind}" data-id="${esc(id)}">🗑️ Löschen</button>`}<button type="button" class="pbtn" data-hclose>Abbrechen</button><button type="button" class="pbtn hsave" data-hminisave>💾 Speichern</button></div></form>`;
   d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("hmT").focus(),30)}
 function hMiniSave(){const {mini:kind,id}=HED,ti=$("hmT").value.trim(),ic=$("hmI").value.trim(),n=Math.max(5,+$("hmN").value||0);if(!ti){$("hmT").focus();return}
   if(kind==="rew"){const c=hRcfg(),t=$("hmF").value;if(!id)c.custom=c.custom.concat({id:"u"+Date.now().toString(36),ti,ic:ic||"🎁",cost:n,t});else if(c.custom.some(x=>x.id===id))c.custom=c.custom.map(x=>x.id===id?Object.assign({},x,{ti,ic,cost:n,t}):x);else c.ov=Object.assign({},c.ov,{[id]:{ti,ic,cost:n,t}});hRsave(c)}
   if(kind==="goal"){const c=hGcfg();if(!id){const nid="u"+Date.now().toString(36);c.custom=c.custom.concat({id:nid,ti,ic:ic||"🎯",pts:n});c.on=c.on.concat(nid)}else if(c.custom.some(x=>x.id===id))c.custom=c.custom.map(x=>x.id===id?Object.assign({},x,{ti,ic,pts:n}):x);else c.gov=Object.assign({},c.gov,{[id]:{ti,ic,pts:n}});hset("hgoals",c)}
-  if(kind==="ch"){const c=hGcfg();c.cov=Object.assign({},c.cov,{[id]:{ti,ic,bon:n}});hset("hgoals",c)}
+  if(kind==="ch"){const c=hGcfg(),isC=!id||c.cch.some(x=>x.id===id);
+    if(isC){const ty=$("hmTy").value,x={ti,ic:ic||"🏅",bon:n,ty,n:Math.max(1,Math.round(+$("hmC").value||1)),who:ty==="man"?"all":$("hmW").value,cat:["cnt","pts","days","min"].includes(ty)?$("hmK").value:"",task:ty==="task"?$("hmA").value:""};
+      if(ty==="task"&&!x.task){toast("Bitte erst eine Aufgabe auswählen");return}
+      if(!id){x.id="uc"+Date.now().toString(36);c.cch=c.cch.concat(x);c.ch=c.ch.concat(x.id)}else c.cch=c.cch.map(y=>y.id===id?Object.assign({},y,x,{id}):y)}
+    else c.cov=Object.assign({},c.cov,{[id]:{ti,ic,bon:n}});hset("hgoals",c)}
   $("hdlg").close();HED=null;toast("💾 Gespeichert");renderHomeAll()}
 function hMiniDel(kind,id){if(kind==="rew"){const c=hRcfg();if(c.custom.some(x=>x.id===id))c.custom=c.custom.filter(x=>x.id!==id);else c.del=c.del.concat(id);hRsave(c)}
   if(kind==="goal"){const c=hGcfg();if(c.custom.some(x=>x.id===id))c.custom=c.custom.filter(x=>x.id!==id);else c.gdel=c.gdel.concat(id);c.on=c.on.filter(x=>x!==id);hset("hgoals",c)}
-  if(kind==="ch"){const c=hGcfg();c.cdel=c.cdel.concat(id);c.ch=c.ch.filter(x=>x!==id);hset("hgoals",c)}
+  if(kind==="ch"){const c=hGcfg();if(c.cch.some(x=>x.id===id))c.cch=c.cch.filter(x=>x.id!==id);else c.cdel=c.cdel.concat(id);c.ch=c.ch.filter(x=>x!==id);hset("hgoals",c)}
   const d=$("hdlg");if(d.open&&HED&&HED.mini)d.close();HED=null;toast("🗑️ Gelöscht");renderHomeAll()}
 /* Irgendwann & Projekte */
 function hProjHtml(){const L=hProjects(),openP=L.filter(p=>!hProjDone(p)),doneP=L.filter(hProjDone),P=hPeople(),durs=[15,30,45,60,90,120,180,240,360,480];
@@ -649,6 +672,9 @@ function hSkip(cid,d){const k="ho:"+cid+":"+d,old=SETS[k]||null,c=hChores().find
   const nx=c?hOcc(c,addD(d,1),addD(d,400)).find(x=>!(SETS["ho:"+cid+":"+x]||{}).skip):null;
   undoToast(`🚫 ${c?c.ti:"Aufgabe"} entfällt am ${fmtDate(d)}${nx?" · nächster Termin "+fmtDate(nx):""}`,()=>{hset(k,old);renderHomeAll()})}
 document.addEventListener("click",e=>{const s=e.target.closest&&e.target.closest("[data-hskip]");if(!s)return;e.stopPropagation();hSkip(s.dataset.hskip,s.dataset.d)});
+document.addEventListener("change",e=>{if(e.target.id!=="hmTy")return;const f=e.target.closest(".hchf");if(f)f.dataset.ty=e.target.value});
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-hchman]");if(!b)return;const c=hGcfg(),id=b.dataset.hchman,w=wkStart(T0),m=(c.cman[id]||[]).slice(-60);
+  c.cman=Object.assign({},c.cman,{[id]:m.includes(w)?m.filter(x=>x!==w):m.concat(w)});hset("hgoals",c);HCACHE=null;if(!m.includes(w))hBurst(+((hChList().find(x=>x[0]===id)||[])[3])||0,true);renderHomeAll()});
 function hMoveTomorrow(cid,d){if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),p=SETS["hj:"+pid],s=p&&(p.steps||[]).find(x=>x.id===sid);const to=addD(s&&s.date&&s.date>=T0?s.date:T0,1);hProjEdit(pid,P=>{const z=(P.steps||[]).find(x=>x.id===sid);if(z)z.date=to});toast("↷ Auf "+fmtDate(to)+" verschoben");return}
   const k="ho:"+cid+":"+d,old=SETS[k]||null,ov=Object.assign({},old||{}),disp=ov.to||d,to=addD(disp>=T0?disp:T0,1);ov.to=to;hset(k,ov);HEXP.delete(cid+"|"+d);renderHomeAll();undoToast("↷ Auf "+fmtDate(to)+" verschoben",()=>{hset(k,old);renderHomeAll()})}
 let SW=null;
