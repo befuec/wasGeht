@@ -1404,7 +1404,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .hpjh{font:inherit;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:10px 12px;cursor:pointer;color:var(--ink)}
 .hpji{font-size:26px}.hpjt b{display:block;font-size:14.5px}.hpjt small{display:block;color:var(--muted);font-size:12.5px}.hpjt .hprog{display:block}
 .hpjb{padding:4px 12px 12px;display:grid;gap:6px;background:var(--surface);border-top:1px solid var(--line)}
-.hstep{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.hstep{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:4px 8px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);background:var(--surface)}.hstep>.hstt,.hstep>.hstm{grid-column:3}.hdrag{grid-row:span 2;width:26px;height:44px;border:0;background:none;color:var(--muted);font-size:20px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:8px;padding:0}.hdrag:active{cursor:grabbing}.hdrag:focus-visible{outline:2px solid var(--accent)}.hstep.hdragging{position:relative;z-index:2;box-shadow:0 8px 24px rgba(0,0,0,.18);border-radius:12px;opacity:.95;outline:2px solid var(--accent)}
 .hstep .hck{width:30px;height:30px;border-radius:9px;border:2px solid var(--accent);background:var(--surface);color:#fff;font-weight:900;cursor:pointer;grid-row:span 2}.hstep .hck[aria-pressed="true"]{background:#1F7A3A;border-color:#1F7A3A}
 .hstt{font:inherit;font-weight:700;font-size:14px;border:1px solid transparent;border-radius:8px;padding:4px 6px;background:none;color:var(--ink);min-width:0}.hstt:focus{border-color:var(--line);background:var(--surface)}
 .hstep.dn .hstt{text-decoration:line-through;color:var(--muted)}
@@ -4456,7 +4456,7 @@ function hProjHtml(){const L=hProjects(),openP=L.filter(p=>!hProjDone(p)),doneP=
   const card=p=>{const S=p.steps||[],n=S.filter(s=>s.dn).length,op=HJOPEN.has(p.pid),nx=S.find(s=>!s.dn),min=S.filter(s=>!s.dn).reduce((a,s)=>a+(+s.dur||60),0),pr=S.length?n/S.length:(p.dn?1:0);
     return `<div class="hproj${hProjDone(p)?" dn":""}"><button type="button" class="hpjh" data-hjopen="${esc(p.pid)}" aria-expanded="${op}"><span class="hpjr">${hRing(pr*100,100)}<span>${p.ic||"🛠️"}</span></span><span class="hpjt"><b>${esc(p.ti)}</b><small>${S.length?`${n}/${S.length} Schritte${min?` · noch ca. ${fmH(min)}`:""}`:"Irgendwann – noch ohne Schritte"}</small></span><span aria-hidden="true" class="hflc"></span></button>
       ${!op&&nx?`<div class="hpjnx"><button type="button" class="hck" data-hck="j:${esc(p.pid)}:${esc(nx.id)}" data-d="${nx.date||T0}" aria-label="Nächsten Schritt abhaken"></button><span>Nächster Schritt: <b>${esc(nx.t)}</b>${nx.date?` · ${esc(fmtDate(nx.date))}`:""}</span>${hAv(nx.who)}</div>`:""}
-      ${op?`<div class="hpjb">${S.map(s=>`<div class="hstep${s.dn?" dn":""}"><button type="button" class="hck" data-hck="j:${esc(p.pid)}:${esc(s.id)}" data-d="${s.date||T0}" aria-pressed="${!!s.dn}" aria-label="Schritt abhaken">${s.dn?"✓":""}</button>
+      ${op?`<div class="hpjb" data-hjlist="${esc(p.pid)}">${S.map(s=>`<div class="hstep${s.dn?" dn":""}" data-sid="${esc(s.id)}"><button type="button" class="hdrag" data-hjdrag="${esc(p.pid)}" aria-label="Schritt verschieben (ziehen oder Pfeiltasten)" title="Ziehen zum Verschieben">⠿</button><button type="button" class="hck" data-hck="j:${esc(p.pid)}:${esc(s.id)}" data-d="${s.date||T0}" aria-pressed="${!!s.dn}" aria-label="Schritt abhaken">${s.dn?"✓":""}</button>
           <input type="text" class="hstt" data-hjt="${esc(p.pid)}" data-s="${esc(s.id)}" value="${esc(s.t)}" maxlength="60" aria-label="Schritt">
           <div class="hstm"><select data-hjw="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Wer"><option value="">🙋 offen</option>${P.map(x=>`<option value="${x.id}"${s.who===x.id?" selected":""}>${x.e} ${esc(x.n)}</option>`).join("")}</select>
           <select data-hjm="${esc(p.pid)}" data-s="${esc(s.id)}" aria-label="Dauer">${durs.concat(durs.includes(+s.dur||60)?[]:[+s.dur]).map(m=>`<option value="${m}"${m===(+s.dur||60)?" selected":""}>${fmH(m)}</option>`).join("")}</select>
@@ -4471,6 +4471,19 @@ function hProjNew(){const d=$("hdlg");HED={proj:1};d.innerHTML=`<form method="di
   <div class="hpjnew"><input type="text" id="hjT" maxlength="50" placeholder="Name, z. B. Gartenhaus streichen"><button type="button" class="pmini" id="hjAdd">➕ Anlegen</button></div>
   <span class="hlab">… oder mit Vorlage starten (Schritte schon drin):</span><div class="hpjtpl">${HPROJ.map((x,i)=>`<button type="button" class="pmini" data-hjtpl="${i}">${x[0]} ${esc(x[1])}</button>`).join("")}</div></form>`;d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("hjT").focus(),30)}
 const hProjDone=p=>(p.steps||[]).length?(p.steps||[]).every(s=>s.dn):!!p.dn;
+/* Projektschritte per Ziehen (Maus, Finger) oder Pfeiltasten umsortieren */
+function hStepOrder(pid,ids){hProjEdit(pid,P=>{const S=P.steps||[],pos=Object.fromEntries(ids.map((id,i)=>[id,i]));P.steps=S.slice().sort((a,b)=>(pos[a.id]??999)-(pos[b.id]??999))})}
+let HDRAG=null;
+document.addEventListener("pointerdown",e=>{const h=e.target.closest&&e.target.closest("[data-hjdrag]");if(!h||(e.button&&e.button!==0))return;const el=h.closest(".hstep"),list=el&&el.parentElement;if(!list)return;
+  e.preventDefault();HDRAG={pid:h.dataset.hjdrag,el,list,h,start:[...list.querySelectorAll(".hstep")].map(x=>x.dataset.sid).join(),id:e.pointerId};el.classList.add("hdragging");try{h.setPointerCapture(e.pointerId)}catch(_){}});
+document.addEventListener("pointermove",e=>{if(!HDRAG||e.pointerId!==HDRAG.id)return;e.preventDefault();const {el,list}=HDRAG,y=e.clientY,sib=[...list.querySelectorAll(".hstep")].filter(x=>x!==el);
+  const nx=sib.find(x=>{const r=x.getBoundingClientRect();return y<r.top+r.height/2});if(nx){if(el.nextElementSibling!==nx)list.insertBefore(el,nx)}else if(sib.length){const last=sib[sib.length-1];if(last.nextElementSibling!==el)last.after(el)}
+  if(y<70)window.scrollBy(0,-12);else if(y>innerHeight-110)window.scrollBy(0,12)},{passive:false});
+function hDragEnd(e){if(!HDRAG||(e&&e.pointerId!==HDRAG.id))return;const {pid,el,list,start}=HDRAG;HDRAG=null;el.classList.remove("hdragging");const ids=[...list.querySelectorAll(".hstep")].map(x=>x.dataset.sid);if(ids.join()!==start){hStepOrder(pid,ids);toast("↕️ Reihenfolge gespeichert")}}
+document.addEventListener("pointerup",hDragEnd);document.addEventListener("pointercancel",hDragEnd);
+document.addEventListener("keydown",e=>{const h=e.target.closest&&e.target.closest("[data-hjdrag]");if(!h||(e.key!=="ArrowUp"&&e.key!=="ArrowDown"))return;e.preventDefault();
+  const el=h.closest(".hstep"),list=el.parentElement,ids=[...list.querySelectorAll(".hstep")].map(x=>x.dataset.sid),i=ids.indexOf(el.dataset.sid),j=i+(e.key==="ArrowUp"?-1:1);if(j<0||j>=ids.length)return;
+  [ids[i],ids[j]]=[ids[j],ids[i]];const sid=el.dataset.sid,pid=h.dataset.hjdrag;hStepOrder(pid,ids);setTimeout(()=>{const n=document.querySelector(`.hstep[data-sid="${CSS.escape(sid)}"] [data-hjdrag]`);if(n)n.focus()},30)});
 function hProjEdit(pid,fn){const k="hj:"+pid,p=SETS[k];if(!p)return;const P=JSON.parse(JSON.stringify(p));fn(P);hset(k,P);renderHomeAll()}
 const hsid=()=>"s"+Date.now().toString(36)+Math.floor(Math.random()*99);
 /* Editor */
