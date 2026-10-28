@@ -229,7 +229,7 @@ function hTend(A,k,what){const tot=A.reduce((s,x)=>s+x[k],0);if(!tot)return {pos
   const srt=A.slice().sort((a,b)=>b[k]-a[k]),top=srt[0],low=srt[srt.length-1],sh=top[k]/tot,eq=1/A.length,d=sh-eq;
   const lvl=d<.08?0:d<.2?1:2;const pos=A.length===2?Math.round(A[1][k]/tot*100):50;
   return {pos,lvl,top:top.p,low:low.p,txt:lvl===0?`${what}: ⚖️ ausgeglichen`:`${what}: <b>${esc(top.p.n)}</b> trägt ${lvl===1?"etwas":"deutlich"} mehr`}}
-function hScale(A,T){if(A.length===2)return `<div class="hfscale" style="--c1:${A[0].p.c};--c2:${A[1].p.c}" role="img" aria-label="${esc(T.txt.replace(/<[^>]+>/g,""))}"><i style="left:${T.pos}%"></i></div>`;
+function hScale(A,T){if(A.length===2)return `<div class="hfscale" style="--c1:${A[0].p.c};--c2:${A[1].p.c}" role="img" aria-label="${esc(T.txt.replace(/<[^>]+>/g,""))}"><i style="left:${Math.max(4,Math.min(96,T.pos))}%"></i></div>`;
   return `<div class="hfb" role="img">${A.map(x=>`<span style="flex:${x.min||x.plan||.0001};background:${x.p.c}"></span>`).join("")}</div>`}
 function hFairHtml(compact){const F=hFair(),A=F.st;if(!A.length)return "";
   const Td=hTend(A,"min","Erledigt"),Tm=hTend(A,"ml","Kopf-Arbeit"),Tp=hTend(A,"plan","Geplant");
@@ -328,10 +328,12 @@ function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c),cat=HC
     <button type="button" class="hrbt" data-hexp="${esc(key)}" aria-expanded="${ex}"><b>${c.ic||cat[1]} ${esc(c.ti)}</b>${meta?`<small>${meta}</small>`:""}</button>
     <span class="hrr">${hAv(dn?dn.by:who)}<span class="hpts${tk?" tk":""}">${tk?Math.round(pts*1.5):dn?dn.pts:pts}</span></span>${det}${hDaily(c)&&HDPICK===key?hPickHtml(i):""}</div>`}
 /* Fairness als eine Zeile */
-function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";const Td=hTend(A,"min","Erledigt");
-  const txt=A.length<2?"Zweite erwachsene Person unter ⚙️ eintragen":Td.lvl<0?(HFW==="w"?"Diese Woche":"In 4 Wochen")+" noch nichts erledigt":Td.lvl===0?"Zeit ist gerade ausgeglichen":`<b>${esc(Td.top.n)}</b> trägt ${HFW==="w"?"diese Woche":"gerade"} ${Td.lvl===1?"etwas":"deutlich"} mehr`;
-  const op=!!HSEC.fair;
-  return `<details class="hfline" data-hsec="fair"${op?" open":""}><summary><span class="hflt">⚖️ ${txt}</span>${A.length===2&&Td.lvl>=0?hScale(A,Td):""}<span class="hflc" aria-hidden="true"></span></summary>${hFairHtml(false).replace(/<h3 id="hfH">[^<]*<\/h3>/,"")}</details>`}
+function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";
+  if(A.length<2)return `<div class="hfline hf3"><div class="hf3h">⚖️ Zweite erwachsene Person unter ⚙️ eintragen</div></div>`;
+  const W=HFW==="w",rows=[["min","✅ Erledigt"],["ml","🧠 Kopf-Arbeit"],["plan","📅 Geplant"]].map(([k,l])=>{const T=hTend(A,k,l);
+    return `<div class="hf3r" title="${esc(T.txt.replace(/<[^>]+>/g,""))}"><span class="hf3l">${l}</span>${T.lvl<0?`<div class="hfb hfe"></div>`:hScale(A.map(x=>Object.assign({},x,{min:x[k]})),T)}</div>`}).join("");
+  const ends=A.length===2?`<div class="hf3e"><span>${A[0].p.e} ${esc(A[0].p.n)}</span><span>${esc(A[1].p.n)} ${A[1].p.e}</span></div>`:`<div class="hf3e">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} ${esc(x.p.n)}</span>`).join("")}</div>`;
+  return `<div class="hfline hf3"><div class="hf3h"><b>⚖️ Aufgabenverteilung</b><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${W}">Woche</button><button type="button" data-hfw="m" aria-pressed="${!W}">4 Wochen</button></span></div>${ends}${rows}</div>`}
 /* Tagesring */
 function hRing(done,tot){const r=16,cir=2*Math.PI*r,p=tot?done/tot:0;return `<svg class="hring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" class="hrbg"/><circle cx="20" cy="20" r="${r}" class="hrfg" stroke-dasharray="${cir}" stroke-dashoffset="${cir*(1-p)}"/></svg>`}
 /* Wochen-Rückblick (Sa ab 17 Uhr, So, Mo) */
