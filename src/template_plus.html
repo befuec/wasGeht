@@ -1868,7 +1868,7 @@ function personPrice(m,age){ if(age>=18) return m.a||0; const cf=m.cf??0, ct=m.c
 let AUD=(()=>{try{const v=localStorage.getItem("hwk-aud");return v===null?"fam":v}catch(e){return "fam"}})();
 const audOk=p=>AUD==="erw"?(p.aud==="e"||p.aud==="b"):AUD==="fam"?p.aud!=="e":true;
 window.audOk=audOk;window.getAud=()=>AUD;window.setAud=v=>{AUD=v||"";try{localStorage.setItem("hwk-aud",AUD)}catch(e){}document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD)));
-  if(window.__refresh)window.__refresh();else if(typeof refresh==="function")refresh();if(typeof update==="function")try{update()}catch(_){}if(typeof renderEvents==="function")try{renderEvents()}catch(_){}if(window.renderHeute)try{window.renderHeute()}catch(_){}};
+  if(window.audFilters)try{audFilters()}catch(_){}if(typeof render==="function")try{render()}catch(_){}if(window.__refresh)window.__refresh();else if(typeof refresh==="function")refresh();if(typeof update==="function")try{update()}catch(_){}if(typeof renderEvents==="function")try{renderEvents()}catch(_){}if(window.renderHeute)try{window.renderHeute()}catch(_){}};
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".audsel [data-aud]");if(b)setAud(b.dataset.aud)});
 setTimeout(()=>document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD))),0);
 function famCost(p){ const ad=FAM.ad, kids=AUD==="erw"?[]:FAM.kids;
@@ -1932,6 +1932,17 @@ function chipGroup(el,name,opts,multi,counts){
 }
 const catCounts={};PLACES.forEach(p=>catCounts[p.c]=(catCounts[p.c]||0)+1);
 chipGroup($("cats"),"cats",CATS,true,catCounts);
+/* Filter passend zu „Für wen?“: Kategorien mit Zählern nur für die gewählte Gruppe, kinderbezogene Filter bei Erwachsenen ausblenden */
+const CATS_ERW={aktiv:"Sport & Bewegung",kreativ:"Theater, Kino & Bühne",cafe:"Restaurants, Bars & Cafés",baden:"Baden, Therme & Sauna",natur:"Natur & Wandern",ausflug:"Ausflug & Stadt",museum:"Museum & Ausstellung"};
+function audFilters(){const erw=AUD==="erw",cnt={};PLACES.filter(audOk).forEach(p=>cnt[p.c]=(cnt[p.c]||0)+1);let ch=false;
+  document.querySelectorAll("#cats label.chip").forEach(l=>{const i=l.querySelector("input"),k=i.value,n=cnt[k]||0,sp=l.querySelector("span");
+    sp.innerHTML=`${esc(erw&&CATS_ERW[k]?CATS_ERW[k]:CATS[k])}<small>${n}</small>`;l.hidden=!n;if(!n&&S.cats.includes(k)){S.cats=S.cats.filter(x=>x!==k);i.checked=false;ch=true}});
+  const ag=document.querySelector('.fsec[data-k="agefit"]');if(ag)ag.hidden=erw;if(erw&&S.agefit){S.agefit=false;$("agefit").checked=false;ch=true}
+  const kf=$("kidsfree");if(kf){kf.closest("label").hidden=erw;if(erw&&S.kidsfree){S.kidsfree=false;kf.checked=false;ch=true}}
+  document.querySelectorAll(".fsec .ft,.fgroup legend").forEach(e=>{if(/Kosten für eu/.test(e.textContent))e.textContent=erw?"Kosten für euch":"Kosten für eure Familie"});
+  const np=document.querySelector('[data-preset="near"]');if(np)np.innerHTML=`<b>Kostenlos</b>${erw?"für euch":"für eure Familie"}`;
+  return ch}
+window.audFilters=audFilters;setTimeout(audFilters,0);
 chipGroup($("io"),"io",IO);
 chipGroup($("wx"),"wx",WX);
 chipGroup($("open"),"open",OPEN);
@@ -2664,7 +2675,7 @@ function render(){
   else if(S.sort==="price") list.sort((a,b)=>{const x=famCost(a),y=famCost(b);return (x==null?1e9:x)-(y==null?1e9:y)||a.km-b.km});
   else list.sort((a,b)=>nextEv(a).localeCompare(nextEv(b))||a.km-b.km);
   if(S.wx==="mixed") list.sort((a,b)=>rainy(a)-rainy(b));  /* reine Draußen-Ziele ans Ende, Reihenfolge sonst unverändert */
-  $("count").innerHTML=`${list.length} Ziele <span>von ${PLACES.length}${S.season!=="all"?` · Jahreszeit: ${SEASF[S.season]}`:""}</span>`; $("seasNote").textContent=`Voreingestellt ist die heutige Jahreszeit (${SEASF[SEASON]}). „Alle“ zeigt auch Ziele außerhalb der Saison.`;
+  $("count").innerHTML=`${list.length} Ziele <span>von ${PLACES.filter(audOk).length}${S.season!=="all"?` · Jahreszeit: ${SEASF[S.season]}`:""}</span>`; $("seasNote").textContent=`Voreingestellt ist die heutige Jahreszeit (${SEASF[SEASON]}). „Alle“ zeigt auch Ziele außerhalb der Saison.`;
   $("famsum").textContent="Preise für "+famText();
   $("grid").classList.toggle("listview",window.VIEW==="list");
   {const sig=JSON.stringify([S,FAM,window.VIEW,window.plusCount?window.plusCount():0]);if(ZSIG!==null&&sig!==ZSIG)ZLIM=30;ZSIG=sig}
