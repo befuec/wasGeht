@@ -34,6 +34,12 @@ async function encData(c,id,data){const iv=crypto.getRandomValues(new Uint8Array
 async function decRow(c,r){const x=r.data;if(!x||x.v!==2||!x.ct)return {plain:true,kind:r.kind,id:r.id,data:x};
   try{const o=JSON.parse(TD.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(x.iv)},c.k,unb64(x.ct))));return {kind:r.kind,id:o.i,data:o.d,xid:r.id,at:r.updated_at||r.deleted_at}}catch(_){return {bad:true,kind:r.kind,xid:r.id}}}
 let CK=null,CKP=null,CCMSG=null;
+/* Speicher für den Service Worker (Erinnerungen): Schlüssel als nicht exportierbare CryptoKeys + Aufgabenliste */
+const swKV={db(){return new Promise((ok,no)=>{const q=indexedDB.open("wasgeht-sw",1);q.onupgradeneeded=()=>q.result.createObjectStore("kv");q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)})},
+  async set(k,v){try{const db=await this.db();await new Promise((ok,no)=>{const t=db.transaction("kv","readwrite");v==null?t.objectStore("kv").delete(k):t.objectStore("kv").put(v,k);t.oncomplete=ok;t.onerror=()=>no(t.error)})}catch(_){}},
+  async get(k){try{const db=await this.db();return await new Promise(ok=>{const g=db.transaction("kv").objectStore("kv").get(k);g.onsuccess=()=>ok(g.result);g.onerror=()=>ok(null)})}catch(_){return null}}};
+window.swKV=swKV;
+const VAPID_PUB="BAfqreeAYsn_SFwg-JJlffcbgSGiPs6qfVe4qXhXWfV0AQPxpzWKHoUhukBDRGDz6yqntap8MENVR0k4JjqYCTs";
 /* Familien-Code zum Anzeigen: verschlüsselt mit einem Geräteschlüssel, der das Gerät nicht verlassen kann (IndexedDB, nicht exportierbar) */
 let CODEMEM=null,CODESHOW=0;
 function devKey(){return new Promise((ok,no)=>{const q=indexedDB.open("wasgeht-sec",1);q.onupgradeneeded=()=>q.result.createObjectStore("k");q.onerror=()=>no(q.error);
@@ -123,7 +129,7 @@ document.addEventListener("change",e=>{if(e.target.id!=="bkFile")return;const f=
   catch(_){BKPEND=null;$("bkInfo").textContent="Das ist keine Sicherungsdatei von „Was geht?“."}};r.readAsText(f);e.target.value=""});
 function sbErr(m){SBERR=m;const s=$("sbStat");if(s)renderSbStat()}
 let MIGR=false;
-async function sbLoad(first){if(!SB)return;try{const c=await famReady();const raw=await sbRpc("fam_list",{p_code:c.a});if(raw.some(r=>r.kind==="_auth")){sbLogout(true);return}
+async function sbLoad(first){if(!SB)return;try{const c=await famReady();if(!sbLoad._sw){sbLoad._sw=1;swKV.set("auth",{a:c.a,k:c.k,m:c.m})}const raw=await sbRpc("fam_list",{p_code:c.a});if(raw.some(r=>r.kind==="_auth")){sbLogout(true);return}
     const dec=await Promise.all(raw.map(r=>decRow(c,r))),rows=dec.filter(r=>!r.bad);
     if(!MIGR&&dec.some(r=>r.plain)){MIGR=true;try{const all=await Promise.all(rows.map(async r=>r.plain?{kind:r.kind,id:await encId(c,r.kind,r.id),data:await encData(c,r.id,r.data)}:{kind:r.kind,id:r.xid,data:raw.find(x=>x.id===r.xid).data}));
         const n=await sbRpc("fam_replace_all",{p_code:c.a,p_rows:all});if(n>=0)toast("🔒 Eure Daten sind jetzt Ende-zu-Ende verschlüsselt")}catch(e){MIGR=false}}
@@ -135,6 +141,41 @@ async function sbLoad(first){if(!SB)return;try{const c=await famReady();const ra
     const sig=JSON.stringify(o);SHARED=true;sbErr(null);if(sig===SBSIG)return;SBSIG=sig;
     ST.places=o.places;ST.plans=o.plans;ST.evw=o.evwish;ST.maybe=o.maybe;ST.busy=o.busy;applySettings(o.settings,true);persistLocal();syncNote();refresh();renderPlan()}
   catch(e){if(e.code==="28000")sbLogout(true);else if(e.code==="PT429")sbErr("Zu viele falsche Versuche – bitte in einer Stunde nochmal.");else sbErr("Keine Verbindung zur gemeinsamen Datenbank – es wird lokal weitergearbeitet.")}}
+/* Erinnerungen per Push */
+const pushOk=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+const isStandaloneP=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOSP=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function u8key(s){const p="=".repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+let PUSHMSG="";
+function renderPushSet(){const el=$("pushSet");if(!el)return;const P=LS.get("hwk-push",null),sl=(P&&P.slots)||[9,21];
+  let body;
+  if(!SB)body=`<p class="famnote">Erinnerungen gibt es mit gemeinsamem Plan (Familien-Code).</p>`;
+  else if(!pushOk())body=`<p class="famnote">${isIOSP()&&!isStandaloneP()?"Am iPhone funktionieren Erinnerungen nur in der installierten App: erst oben „📲 Als App installieren“, dann die App über das Symbol öffnen und hier einschalten.":"Dieser Browser unterstützt keine Erinnerungen."}</p>`;
+  else if(isIOSP()&&!isStandaloneP())body=`<p class="famnote">Am iPhone bitte zuerst als App installieren (siehe oben) und die App über das Symbol öffnen – dann hier einschalten.</p>`;
+  else body=`<p class="famnote">Zu den gewählten Uhrzeiten eine Mitteilung mit deinen offenen Aufgaben und denen, die noch niemand übernommen hat. ${isIOSP()?"Antippen öffnet die Abhak-Liste.":"Mit „✓ Erledigt“ direkt in der Mitteilung abhaken."}</p>
+    <div class="dquick" id="pushSlots">${[7,9,12,18,21].map(h=>`<button type="button" data-pslot="${h}" aria-pressed="${sl.includes(h)}">${h} Uhr</button>`).join("")}</div>
+    <div class="bkrow">${P?`<button type="button" class="pmini" id="pushTest">🔔 Jetzt testen</button><button type="button" class="pmini" id="pushOffBtn">Ausschalten</button>`:`<button type="button" class="pkok" id="pushOnBtn">🔔 Erinnerungen einschalten</button>`}</div>
+    <p class="famnote">${P?"✅ Eingeschaltet für dieses Gerät"+(Notification.permission!=="granted"?" – aber Mitteilungen sind in den Geräte-Einstellungen blockiert.":"."):"Gilt nur für dieses Gerät; jede Person schaltet es auf ihrem Handy selbst ein."}</p>`;
+  el.innerHTML=body+(PUSHMSG?`<p class="famnote" aria-live="polite">${esc(PUSHMSG)}</p>`:"")}
+window.renderPushSet=renderPushSet;
+async function pushOn(slots){PUSHMSG="";if(!SB)return;
+  try{const perm=await Notification.requestPermission();if(perm!=="granted"){PUSHMSG="Mitteilungen wurden nicht erlaubt. Du kannst sie in den Einstellungen des Handys für „Was geht?“ erlauben.";renderPushSet();return}
+    const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8key(VAPID_PUB)});
+    const j=sub.toJSON(),c=await famReady();await swKV.set("auth",{a:c.a,k:c.k,m:c.m});if(window.homeAgendaSave)await window.homeAgendaSave(true);
+    const ok=await sbRpc("fam_push_sub",{p_code:c.a,p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_slots:slots});
+    if(!ok)throw new Error("Code");LS.set("hwk-push",{slots});PUSHMSG="🔔 Erinnerungen sind an.";toast("🔔 Erinnerungen eingeschaltet")}
+  catch(e){PUSHMSG=/PGRST202|42883/.test((e.code||"")+(e.message||""))?"In Supabase fehlt noch die Einrichtung (supabase/push.sql).":"Hat nicht geklappt: "+(e.message||e)}
+  renderPushSet()}
+async function pushOff(silent,ck0){const P=LS.get("hwk-push",null);LS.set("hwk-push",null);
+  try{const reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();if(sub){if(ck0||CK||SB){try{const c=ck0||CK||await famReady();await sbRpc("fam_push_unsub",{p_code:c.a,p_endpoint:sub.endpoint})}catch(_){}}await sub.unsubscribe()}}catch(_){}
+  if(!silent&&P){PUSHMSG="Erinnerungen sind aus.";renderPushSet()}}
+document.addEventListener("click",async e=>{const t=e.target;if(!t.closest)return;
+  const s=t.closest("[data-pslot]");if(s){const P=LS.get("hwk-push",null),cur=(P&&P.slots)||[9,21],h=+s.dataset.pslot,nx=cur.includes(h)?cur.filter(x=>x!==h):cur.concat(h).sort((a,b)=>a-b);
+    if(!nx.length){toast("Mindestens eine Uhrzeit wählen");return}if(P)await pushOn(nx);else{LS.set("hwk-push-pre",nx);s.setAttribute("aria-pressed",String(!cur.includes(h)))}renderPushSet();return}
+  if(t.closest("#pushOnBtn")){const pre=LS.get("hwk-push-pre",null);await pushOn(pre&&pre.length?pre:[...document.querySelectorAll("#pushSlots [aria-pressed=true]")].map(b=>+b.dataset.pslot));return}
+  if(t.closest("#pushOffBtn")){await pushOff(false);return}
+  if(t.closest("#pushTest")){if(window.homeAgendaSave)await window.homeAgendaSave(true);const reg=await navigator.serviceWorker.ready;(reg.active||navigator.serviceWorker.controller).postMessage({t:"test-reminder"});toast("🔔 Test-Mitteilung kommt gleich");return}});
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="reload-data"){SBSIG="";sbLoad()}if(d.t==="abhaken"&&window.homeAbhaken)window.homeAbhaken()});
 function famCodeRow(){const show=CODESHOW>Date.now();
   if(!codeKnown())return `<details class="hown" id="fcAdd"><summary>🔑 Familien-Code hier anzeigen können</summary><div class="hmgr"><p class="famnote">Der Code ist auf diesem Gerät nicht gespeichert (nur der daraus berechnete Schlüssel). Gib ihn einmal ein, dann kannst du ihn hier jederzeit nachsehen.</p><input type="password" class="faminp" id="fcIn" autocomplete="current-password" placeholder="Familien-Code"><button type="button" class="pmini" id="fcSave">Prüfen & hinterlegen</button><p class="famnote" id="fcMsg" aria-live="polite"></p></div></details>`;
   return `<div class="fcrow"><span>🔑 Familien-Code:</span> <code id="fcVal">${show?esc(CODEMEM||"…"):"••••••••••"}</code> <button type="button" class="pmini" id="fcShow">${show?"🙈 Verbergen":"👁 Anzeigen"}</button>${show?`<button type="button" class="pmini" id="fcCopy">📋 Kopieren</button>`:""}</div>`}
@@ -144,7 +185,7 @@ document.addEventListener("click",async e=>{const t=e.target;if(!t.closest)retur
   if(t.closest("#fcCopy")){const c=await codeLoad();try{await navigator.clipboard.writeText(c);toast("📋 Code kopiert")}catch(_){toast("Kopieren nicht möglich")}return}
   if(t.closest("#fcSave")){const m=$("fcMsg"),c=($("fcIn").value||"").trim();if(!c){m.textContent="Bitte den Code eingeben.";return}m.textContent="Prüfe …";
     try{const K=await famDerive(c);if(!SB||!SB.k||K.a!==SB.k.a){m.textContent="Dieser Code passt nicht zu eurer Familie.";return}await codeSave(c,SBS.remembered());toast("🔑 Code hinterlegt");renderSbStat()}catch(_){m.textContent="Hat nicht geklappt."}}});
-function sbLogout(wrong){SB=null;CK=null;CKP=null;SBS.set(null);codeSave(null);CODESHOW=0;SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
+function sbLogout(wrong){pushOff(true,CK);swKV.set("auth",null);swKV.set("agenda",null);sbLoad._sw=0;SB=null;CK=null;CKP=null;SBS.set(null);codeSave(null);CODESHOW=0;SHARED=false;MYID=null;syncNote();renderSbStat();if(wrong)famAsk("Der Familien-Code stimmt nicht mehr. Bitte neu eingeben.")}
 function famAsk(msg){const d=$("famdlg");if(!d)return;$("famErr").textContent=msg||"";$("famName").value=(SB&&SB.name)||LS.get("hwk-fam-name","")||"";d.showModal?d.showModal():d.setAttribute("open","");setTimeout(()=>$("famCode").focus(),50)}
 function renderSbStat(){const s=$("sbStat");if(!s)return;
   s.innerHTML=SB?`<p class="famnote">✅ Verbunden als <b>${esc(SB.name||"–")}</b> · 🔒 Ende-zu-Ende verschlüsselt${SBS.remembered()?"":" · nur bis zum Schließen angemeldet"}. Alles ist auf allen Geräten mit diesem Code gleich.${SBERR?`<br>⚠️ ${esc(SBERR)}`:""}</p><button type="button" class="pmini" id="sbOut">Auf diesem Gerät abmelden</button>${famCodeRow()}
@@ -159,7 +200,7 @@ document.addEventListener("click",async e=>{if(e.target.id!=="ccGo")return;const
     const rows=await Promise.all(dec.map(async r=>({kind:r.kind,id:await encId(cn,r.kind,r.id),data:await encData(cn,r.id,r.data)})));
     if(await sbRpc("fam_replace_all",{p_code:c.a,p_rows:rows})<0)throw new Error("Speichern fehlgeschlagen");
     const ok=await sbRpc("fam_setcode",{p_old:c.a,p_new:Kn.a});if(!ok)throw new Error("Code-Wechsel fehlgeschlagen");back=null;
-    codeSave(n,SBS.remembered());SB={k:Kn,name:SB.name};SBS.set(SB,SBS.remembered()||true);CK=cn;CKP=null;["ccOld","ccNew","ccNew2"].forEach(id=>$(id).value="");say("✅ Neuer Code aktiv. Alle anderen Geräte müssen sich mit dem neuen Code neu anmelden.");toast("🔑 Familien-Code geändert");SBSIG="";sbLoad()}
+    codeSave(n,SBS.remembered());SB={k:Kn,name:SB.name};SBS.set(SB,SBS.remembered()||true);CK=cn;CKP=null;swKV.set("auth",{a:cn.a,k:cn.k,m:cn.m});["ccOld","ccNew","ccNew2"].forEach(id=>$(id).value="");say("✅ Neuer Code aktiv. Alle anderen Geräte müssen sich mit dem neuen Code neu anmelden.");toast("🔑 Familien-Code geändert");SBSIG="";sbLoad()}
   catch(err){if(back&&c){try{await sbRpc("fam_replace_all",{p_code:c.a,p_rows:back})}catch(_){}}
     say(err.code==="22023"?"Der neue Code ist zu kurz.":err.code==="23505"?"Diesen Code gibt es schon – bitte einen anderen wählen.":err.code==="PT429"?"Zu viele Versuche – bitte in einer Stunde nochmal.":/PGRST202|42883/.test((err.code||"")+(err.message||""))?"In Supabase fehlt noch das Sicherheitspaket (supabase/sicherheit.sql ausführen).":"Hat nicht geklappt: "+(err.message||"keine Verbindung"))}});
 /* Papierkorb (30 Tage) und wöchentliche Sicherungen in der Datenbank */

@@ -92,3 +92,9 @@ Einrichtung: nach `mehrere-familien.sql` einmal `supabase/sicherheit.sql` im SQL
 - `manifest.json` (Name, Farben, Symbole), `icons/` (App-Symbole, `qr.svg` = QR-Code zur App-Adresse; neu erzeugen mit `python3 tools/make_icons.py <pfad-zu-python-qrcode>`).
 - `sw.js` wird beim Bauen aus `src/sw_template.js` erzeugt (Versionskennung je Build): Seite immer zuerst aus dem Netz (max. 4 s), sonst gespeicherte Fassung; Schriften/Symbole aus dem Speicher. Supabase und Wetter laufen nie über den Speicher.
 - In den Einstellungen „📲 Als App installieren“ (Android/PC: Installationsknopf, iPhone: Anleitung, Link teilen, QR-Code); ab dem 2. Besuch im Handy-Browser ein Hinweis (höchstens alle 30 Tage).
+
+## Erinnerungen (Push um 9 und 21 Uhr)
+
+- Server: `supabase/push.sql` (Tabelle `push_subs`, `fam_push_sub`/`fam_push_unsub`, stündlicher pg_cron-Job) und Edge Function `supabase/functions/push-tick/index.ts` (Secrets `VAPID_PUBLIC`, `VAPID_PRIVATE`, `CRON_SECRET`; „Verify JWT“ aus). Der Server schickt nur einen leeren Weckruf.
+- Gerät: Der Service Worker (`src/sw_template.js`) liest Schlüssel und Aufgabenliste aus IndexedDB `wasgeht-sw` (von der App bei jedem Öffnen geschrieben: offene Aufgaben der nächsten 7 Tage + Überfälliges), gleicht mit Supabase ab (erledigt/verschoben/entfallen) und zeigt bis zu 4 Mitteilungen für „mich“ und nicht zugeordnete Aufgaben. Android: Knopf „✓ Erledigt“ schreibt den Haken verschlüsselt direkt; iPhone: Antippen öffnet `?abhaken=1#zuhause` (Abhak-Liste).
+- Der VAPID-Privatschlüssel liegt NUR als Secret in Supabase, nie im Repository. Der öffentliche Schlüssel steht in `src/plus.js` (`VAPID_PUB`).

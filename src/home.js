@@ -140,7 +140,7 @@ let HFIRST=true;
 window.homeApply=(s,full)=>{if(full){const srv=Object.keys(s).some(k=>HPRE.test(k)||k==="people");
     if(HFIRST&&!srv){for(const k of Object.keys(SETS))if(isHomeKey(k))write(HK(k),SETS[k])}
     else for(const k of Object.keys(SETS))if(HPRE.test(k)&&!(k in s))delete SETS[k];HFIRST=false;setTimeout(()=>{try{hCompact()}catch(_){}} ,3000)}
-  hMirror();HCACHE=null;if(SETS.people&&Array.isArray(SETS.people.list))hSyncFam(SETS.people.list);if(typeof renderHomeSet==="function")renderHomeSet();if(M2==="zuhause"&&typeof renderHome==="function")renderHome();if(document.body.classList.contains("kidsmode"))renderKidTasks()};
+  hMirror();HCACHE=null;setTimeout(()=>{try{hAgendaSave()}catch(_){}},0);if(SETS.people&&Array.isArray(SETS.people.list))hSyncFam(SETS.people.list);if(typeof renderHomeSet==="function")renderHomeSet();if(M2==="zuhause"&&typeof renderHome==="function")renderHome();if(document.body.classList.contains("kidsmode"))renderKidTasks()};
 window.homeIsKey=isHomeKey;
 /* Aufbewahrung: Erledigt-Haken älter als ~13 Monate werden zu Monatssummen (hsum:JJJJ-MM) zusammengefasst */
 let HCOMPACTED=false;
@@ -402,7 +402,8 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag <small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small></h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
     ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`}`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
-  v.innerHTML=`${head}${hReview()}${hFairLine()}
+  hAgendaSave();
+  v.innerHTML=`${head}${hAbkHtml()}${hReview()}${hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>
     <section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>
     <section class="pvsec">${sec("pts","🏆 Punkte & Belohnungen"+(openR?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR}</span>`:""),hPtsHtml(),true)}</section>
@@ -719,6 +720,23 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
 const HVU={d:1,w:7,m:30};
 const hLeadDays=c=>{const v=c&&c.vor;if(!v||!(+v.n>0))return 6;return Math.min(400,Math.round(+v.n*(HVU[v.u]||1)))};
 const hLeadMax=()=>Math.max(6,...hChores().map(hLeadDays));
+/* Aufgabenliste für die Erinnerungen (Service Worker): offene Aufgaben der nächsten 7 Tage + Überfälliges */
+let HAGT=0,HAGSIG="";
+async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
+  const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
+    .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0}));
+  const o={me,meName:p?p.n:"",gen:Date.now(),items:L},sig=JSON.stringify([me,L]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
+  clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}
+window.homeAgendaSave=hAgendaSave;
+/* Abhak-Liste (aus der Erinnerung geöffnet) */
+let HABK=/[?&]abhaken=1/.test(location.search);
+window.homeAbhaken=()=>{HABK=true;const b=document.querySelector('[data-m2="zuhause"]');if(b&&window.M2!=="zuhause")b.click();else renderHome();scrollTo(0,0)};
+function hAbkHtml(){if(!HABK)return "";const me=hMe(),seen=new Set();
+  const L=hOverdue().concat(hItems(T0,T0)).filter(i=>(!i.who||i.who===me)).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true});
+  const open=L.filter(i=>!i.dn);
+  return `<section class="pvsec habk"><div class="habkh"><h3>🔔 Offen für dich</h3><button type="button" class="mbx" data-habkx aria-label="Liste schließen">✕</button></div>
+    ${open.length?`<p class="hsub">Deine Aufgaben und die, die noch niemand übernommen hat – Kästchen antippen zum Abhaken.</p>`+L.map(i=>hRow(i,i.od?"od":"today")).join(""):`<p class="pvsub">Alles erledigt 🎉</p>`}</section>`}
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("[data-habkx]")){HABK=false;try{history.replaceState(null,"",location.pathname+location.hash)}catch(_){}renderHome()}});
 function hMoveTomorrow(cid,d){if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),p=SETS["hj:"+pid],s=p&&(p.steps||[]).find(x=>x.id===sid);const to=addD(s&&s.date&&s.date>=T0?s.date:T0,1);hProjEdit(pid,P=>{const z=(P.steps||[]).find(x=>x.id===sid);if(z)z.date=to});toast("↷ Auf "+fmtDate(to)+" verschoben");return}
   const k="ho:"+cid+":"+d,old=SETS[k]||null,ov=Object.assign({},old||{}),disp=ov.to||d,to=addD(disp>=T0?disp:T0,1);ov.to=to;hset(k,ov);HEXP.delete(cid+"|"+d);renderHomeAll();undoToast("↷ Auf "+fmtDate(to)+" verschoben",()=>{hset(k,old);renderHomeAll()})}
 let SW=null;
