@@ -2388,7 +2388,7 @@ function evAgeRange(e){const s=(e.ti+" "+(e.no||"")).replace(/–/g,"-");let m;
 function evAgeOk(e){if(!EVAGE||!FAM.kids.length)return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])}
 let EVACC=new Set();try{const o=JSON.parse(localStorage.getItem("hwk-evf")||"{}");(o.acc||[]).forEach(k=>EVACC.add(k));if(o.cost==="tix"){EVACC.add("tix");EVACC.add("anm")}}catch(e){}
 function evKind(e){if(!e.an)return"offen";return /ticket|karten|€|ausverkauft|vorverkauf|eintritt/i.test((e.no||"")+" "+e.ti)?"tix":"anm"}
-const ACCL={offen:"🚪 Offen",anm:"✍️ Anmeldung",tix:"🎟️ Ticket"};
+const ACCL={offen:"Offen",anm:"Anmeldung",tix:"Ticket"};
 function evAccOk(x){return !EVACC.size||EVACC.has(evKind(x.e))}
 let EVIO="all";try{EVIO=(JSON.parse(localStorage.getItem("hwk-evf")||"{}").io)||"all"}catch(e){}
 const IO_OUT=/laterne|weihnachtsmarkt|adventsmarkt|wintervergn|weihnachtsbummel|markt|wanderung|spaziergang|umzug|illumination|herbstfest|hoffest|hofführung|obsthof|feld|wald|natur|vogel|garten|lauf\b|rallye|picknick|draußen|outdoor|open[- ]air|schlittschuh|eisbahn|kürbis|apfel|schafe|tierfütter/i;
