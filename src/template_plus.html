@@ -1738,7 +1738,7 @@ body:not([data-m2="zuhause"]) .hfab,body.kidsmode .hfab{display:none}
         <div class="newbar" id="newBar" hidden></div>
         <details class="awbox" id="awBox" hidden><summary><span>✍️ Diese Woche anmelden</span> <span class="n" id="awN"></span></summary><p class="awsub">Passend zum Alter eurer Kinder, in den nächsten 14 Tagen – Kurse und Workshops sind oft schnell ausgebucht. Eingeplante und gewünschte Termine stehen oben.</p><div class="awlist" id="awList"></div></details>
         <div class="evbar">
-          <div class="dquick" id="perQ" role="group" aria-label="Zeitraum"><button type="button" data-q="0">Heute</button><button type="button" data-q="1">Morgen</button><button type="button" data-q="we">Wochenende</button><button type="button" data-q="soon">14 Tage</button><button type="button" data-q="all">Alle</button></div>
+          <div class="dquick" id="perQ" role="group" aria-label="Zeitraum"><button type="button" data-q="0">Heute</button><button type="button" data-q="1">Morgen</button><button type="button" data-q="we">Wochenende</button></div>
           <button type="button" class="dbtn" id="evDateBtn" aria-label="Datum wählen">📅 Datum</button><span class="dpick" id="dPick"><button type="button" class="dnav" id="dPrev" aria-label="Vorheriger Tag mit Terminen">‹</button><input type="date" id="evDate" aria-label="Datum wählen"><button type="button" class="dnav" id="dNext" aria-label="Nächster Tag mit Terminen">›</button></span>
           <button type="button" class="evfbtn" data-evfopen><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Filter <span class="evfn"></span></button>
         </div>
@@ -2372,7 +2372,7 @@ function evAgeRange(e){const s=(e.ti+" "+(e.no||"")).replace(/–/g,"-");let m;
 function evAgeOk(e){if(!EVAGE||!FAM.kids.length)return true;const r=evAgeRange(e);return !r||FAM.kids.some(k=>k>=r[0]&&k<=r[1])}
 let EVACC=new Set();try{const o=JSON.parse(localStorage.getItem("hwk-evf")||"{}");(o.acc||[]).forEach(k=>EVACC.add(k));if(o.cost==="tix"){EVACC.add("tix");EVACC.add("anm")}}catch(e){}
 function evKind(e){if(!e.an)return"offen";return /ticket|karten|€|ausverkauft|vorverkauf|eintritt/i.test((e.no||"")+" "+e.ti)?"tix":"anm"}
-const ACCL={offen:"🚪 Offen – einfach hingehen",anm:"✍️ Mit Anmeldung",tix:"🎟️ Tickets kaufen"};
+const ACCL={offen:"🚪 Offen",anm:"✍️ Anmeldung",tix:"🎟️ Ticket"};
 function evAccOk(x){return !EVACC.size||EVACC.has(evKind(x.e))}
 let EVIO="all";try{EVIO=(JSON.parse(localStorage.getItem("hwk-evf")||"{}").io)||"all"}catch(e){}
 const IO_OUT=/laterne|weihnachtsmarkt|adventsmarkt|wintervergn|weihnachtsbummel|markt|wanderung|spaziergang|umzug|illumination|herbstfest|hoffest|hofführung|obsthof|feld|wald|natur|vogel|garten|lauf\b|rallye|picknick|draußen|outdoor|open[- ]air|schlittschuh|eisbahn|kürbis|apfel|schafe|tierfütter/i;
@@ -2459,7 +2459,7 @@ function renderEvents(){
   {const pool=evIoPool.filter(evAccOk).filter(monOk).filter(x=>mode==="day"||wdOk(x.e)).filter(evkOk).filter(x=>SHOWREG||!x.e.rg),c={drinnen:0,draussen:0};pool.forEach(x=>{const r=evIO(x);if(r==="drinnen"||r==="beides")c.drinnen++;if(r==="draussen"||r==="beides")c.draussen++});
    $("evIo").innerHTML=[["all","Alle"],["drinnen","🏠 Drinnen"],["draussen","🌳 Draußen"]].map(([k,v])=>`<button type="button" data-eio="${k}" aria-pressed="${EVIO===k}">${v}${k!=="all"?` <small>${c[k]}</small>`:""}</button>`).join("")}
   {const c={offen:0,anm:0,tix:0};accPool.forEach(x=>c[evKind(x.e)]++);
-   $("accQ").innerHTML=`<button type="button" data-acc="all" aria-pressed="${!EVACC.size}">Alle</button>`+["offen","anm","tix"].map(k=>`<button type="button" data-acc="${k}" aria-pressed="${EVACC.has(k)}">${ACCL[k]} <small>${c[k]}</small></button>`).join("")}
+   $("accQ").innerHTML=["offen","anm","tix"].map(k=>`<button type="button" data-acc="${k}" aria-pressed="${EVACC.has(k)}">${ACCL[k]} <small>${c[k]}</small></button>`).join("")}
   $("regTog").checked=SHOWREG;
   document.querySelectorAll("#perQ button").forEach(b=>{const q=b.dataset.q;b.setAttribute("aria-pressed",String(q===EVDATE||(q==="0"&&EVDATE===T0)||(q==="1"&&EVDATE===plus(1))))});
   $("evDate").min=T0; if(days.length) $("evDate").max=days[days.length-1];
@@ -2535,7 +2535,7 @@ document.addEventListener("click",e=>{const o=e.target.closest("[data-evfopen]")
   const r=e.target.closest("[data-evrm]");if(r){const k=r.dataset.evrm;if(k==="*")evResetAll();else{const f=evActive().find(f=>f[0]+"|"+f[1]===k);if(f)f[2]()}afterEvF();return}
   const c=e.target.closest("[data-evi]");if(c){const f=evActive()[+c.dataset.evi];if(f){f[2]();afterEvF()}}});
 function afterEvF(){if(S.q===""&&$("q").value){$("q").value=""}render();renderEvMap()}
-$("perQ").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(!b)return;const q=b.dataset.q;EVDATE=q==="0"?T0:q==="1"?plus(1):q;if(q!=="all")EVMON=null;renderEvMap();if(MT!=="ziele"){renderActive();window.renderAfMini&&window.renderAfMini()}});
+$("perQ").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(!b)return;const q=b.dataset.q;const nv=q==="0"?T0:q==="1"?plus(1):q;EVDATE=(b.getAttribute("aria-pressed")==="true")?"all":nv;if(q!=="all")EVMON=null;renderEvMap();if(MT!=="ziele"){renderActive();window.renderAfMini&&window.renderAfMini()}});
 $("evSort").addEventListener("change",e=>{EVSORT=e.target.value;try{localStorage.setItem("hwk-evsort",EVSORT)}catch(_){}EVX.clear();renderEvMap()});
 document.querySelector(".evvt").addEventListener("click",e=>{const b=e.target.closest("[data-evv]");if(!b)return;EVVIEW=b.dataset.evv;try{localStorage.setItem("hwk-evview",EVVIEW)}catch(_){}EVX.clear();renderEvents()});
 $("dateList").addEventListener("click",e=>{const l=e.target.closest(".evline");if(!l||e.target.closest("a,button,details"))return;const k=l.dataset.evx;EVX.has(k)?EVX.delete(k):EVX.add(k);renderEvents();setTimeout(()=>{const n=document.querySelector(`.evline[data-evx="${CSS.escape(k)}"]`);n&&n.focus({preventScroll:true})},0)});
