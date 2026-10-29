@@ -545,7 +545,7 @@ const HQK=["aud","dur","mood","drive","cost"],HQI={aud:"👥",dur:"⏱️",mood:
 let HSTEP=(()=>{try{return sessionStorage.getItem("hwk-hqdone")?5:0}catch(e){return 0}})();
 const hqDone=()=>{HSTEP=5;try{sessionStorage.setItem("hwk-hqdone","1")}catch(e){}};
 const HQ=Object.assign({dur:null,mood:null,cost:null,drive:null},LS.get("hwkp-hq",{}));
-const HQO0={aud:["Für wen?",[["fam","👨‍👩‍👧 Familie mit Kindern"],["erw","🍷 Nur wir Erwachsenen"]]],dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
+const HQO0={aud:["Für wen?",[["fam","👧 Mit Kindern"],["erw","🍷 Nur Erwachsene"]]],dur:["Wie lange?",[["2h","⏱️ 2–3 Stunden"],["half","🌗 Halber Tag"],["day","🌞 Ganzer Tag"]]],
   mood:["Worauf habt ihr Lust?",[["toben","🤸 Austoben"],["cozy","☕ Gemütlich"],["learn","🔬 Was lernen"],["animals","🐐 Tiere"]]],
   drive:["Wie lange fahren?",[["15","🚲 bis 15 Min."],["30","🚗 bis 30 Min."],["60","🚗 bis 1 Stunde"]]],
   cost:["Budget?",[["free","🆓 Kostenlos"],["low","💶 Günstig"],["more","💎 Gerne auch mehr"]]]};
@@ -618,7 +618,7 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   document.body.classList.remove("wizon");
   const chosen=HQK.filter(k=>k!=="aud"&&HQ[k]).map(k=>HQO[k][1].find(o=>o[0]===HQ[k])[1]);
   v.innerHTML=headHtml+`
-<div class="haud" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="${getAud()==="fam"}">👨‍👩‍👧 Familie</button><button type="button" data-aud="erw" aria-pressed="${getAud()==="erw"}">🍷 Erwachsene</button><button type="button" data-aud="" aria-pressed="${getAud()===""}">Alle</button></div><div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
+<div class="haud" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="${getAud()==="fam"}">Kinder</button><button type="button" data-aud="erw" aria-pressed="${getAud()==="erw"}">Erwachsene</button></div><div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
     ${lateDay?`<p class="hnote">Für einen ganzen Tag ist es heute schon spät – vielleicht morgen?</p>`:""}
     ${items.length?card(items[0],true)+(items.length>1?`<div class="hsec"><h3>Weitere Ideen</h3><div class="hgrid">${items.slice(1,7).map(it=>card(it)).join("")}</div></div>`:"")
       :`<div class="hnote">Dazu passt ${mode==="jetzt"?"heute":"morgen"} leider nichts.${relax?`<div class="evtips" style="margin-top:6px">${relax}</div>`:""}</div>`}
@@ -626,7 +626,7 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
 $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]");if(h){HD=h.dataset.hd;renderHeute();return}
   if(e.target.closest("[data-hwx]")){HWXOPEN=!HWXOPEN;renderHeute();return}
   if(HWXOPEN&&!e.target.closest(".hwxinfo")){HWXOPEN=false;const ib=e.target.closest("button,a");renderHeute();if(!ib)return}
-  const au=e.target.closest("[data-aud]");if(au&&window.setAud){HQ.aud=au.dataset.aud||null;LS.set("hwkp-hq",HQ);setAud(au.dataset.aud);return}
+  const au=e.target.closest("[data-aud]");if(au&&window.setAud){const v=au.getAttribute("aria-pressed")==="true"?"":au.dataset.aud;HQ.aud=v||null;LS.set("hwkp-hq",HQ);setAud(v);return}
   const qa=e.target.closest("[data-hqa]");if(qa){HQ[qa.dataset.hqa]=qa.dataset.v||null;if(qa.dataset.hqa==="aud"&&window.setAud)setAud(qa.dataset.v||"");LS.set("hwkp-hq",HQ);HSTEP++;if(HSTEP>=HQK.length)hqDone();renderHeute();$("heuteView").scrollIntoView({block:"start"});return}
   if(e.target.closest("[data-hqskip]")){hqDone();renderHeute();return}
   if(e.target.closest("[data-hqback]")){HSTEP=Math.max(0,HSTEP-1);renderHeute();return}
