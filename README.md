@@ -86,3 +86,9 @@ Einrichtung: nach `mehrere-familien.sql` einmal `supabase/sicherheit.sql` im SQL
 
 - `src/erwachsene.py`: Orte aus der Google-Maps-Liste „Erwachsenenveranstaltungen“ (`aud:"e"`); `AUDB` = Orte aus den Familienlisten, die auch für Erwachsene passen (`aud:"b"`). In der App „Für wen? Familie / Erwachsene / Alle“ (Heute und Entdecken).
 - Termine dazu in `src/extra_events.py` (Abschnitt „Ziele für Erwachsene“): Quellen sind die Veranstaltungsort-Seiten auf hamburg-tourism.de (Kampnagel K6, Centralkomitee, Pulverfass, Mojo Jazz Café, Laeiszhalle Studio E, Elbphilharmonie), die Spielpläne von HSV, HSV-Frauen, Handball Club Hamburg, FC St. Pauli und Hamburg Towers, Schmetterball (jeden Mittwoch) sowie die Festivals SPEKTRUM, Amplifire und Habitat.
+
+## Installierbare Web-App (PWA)
+
+- `manifest.json` (Name, Farben, Symbole), `icons/` (App-Symbole, `qr.svg` = QR-Code zur App-Adresse; neu erzeugen mit `python3 tools/make_icons.py <pfad-zu-python-qrcode>`).
+- `sw.js` wird beim Bauen aus `src/sw_template.js` erzeugt (Versionskennung je Build): Seite immer zuerst aus dem Netz (max. 4 s), sonst gespeicherte Fassung; Schriften/Symbole aus dem Speicher. Supabase und Wetter laufen nie über den Speicher.
+- In den Einstellungen „📲 Als App installieren“ (Android/PC: Installationsknopf, iPhone: Anleitung, Link teilen, QR-Code); ab dem 2. Besuch im Handy-Browser ein Hinweis (höchstens alle 30 Tage).

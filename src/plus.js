@@ -215,6 +215,7 @@ $("grid").addEventListener("keydown",e=>{const r=e.target.closest(".lrow");if(r&
 function placeText(p){return `${p.n}\n${p.a}\n${p.d}\nAnfahrt: Auto ca. ${p.car} Min.${p.bike?", Rad ca. "+p.bike+" Min.":""}\nKarte: https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.n+", "+p.a)}${p.ws?"":"\nWebsite: "+p.web}`}
 function evText(p,e){const d=pdate(e.dt);return `${WDL[d.getDay()]}, ${d.getDate()}. ${MONL[d.getMonth()]}${e.t?", "+e.t+" Uhr":""}: ${e.ti}\n${p.n}, ${p.a}${e.no?"\n"+e.no:""}${e.u?"\nInfos: "+e.u:""}`}
 function toast(m){let t=$("ptoast");t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2600)}
+window.toast=toast;
 function share(text){const done=()=>toast("Kopiert – jetzt z. B. in WhatsApp einfügen");
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,()=>fallbackCopy(text))}else fallbackCopy(text)}
 function fallbackCopy(text){const d=$("pcopy");$("pcopyT").value=text;d.showModal?d.showModal():d.setAttribute("open","");$("pcopyT").select()}
