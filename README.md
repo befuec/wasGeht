@@ -41,7 +41,7 @@ Braucht nur Python 3. Ergebnis: `index.html`. Danach committen und pushen; GitHu
 Hinweis-Text: Wörter wie „Anmeldung“, „Ticket“, „Warteliste“, „ausgebucht“ im Hinweis markieren Termine als „mit Anmeldung / Tickets“.
 
 ## Wichtige Programmseiten
-- LIFE HAMBURG Campus: https://www.life.hamburg/programm?1315acc3_page=N (N = 1 … 12, je Seite ca. 3–7 Tage; nur Kinder/Familie)
+- LIFE HAMBURG Campus: https://www.life.hamburg/programm?1315acc3_page=N (N = 1 … 12, je Seite ca. 3–7 Tage; Kinder/Familie in ADD, Angebote für Erwachsene über `adult("LIFE HAMBURG Campus", [...])` – erscheinen nur unter „Erwachsene“)
 - Planetarium: Detailseiten https://www.planetarium-hamburg.de/de/veranstaltungen-tickets/details/<show> (je 7 Termine), Spielplan https://www.planetarium-hamburg.de/de/spielplan
 - Kinderbuchhaus: https://kinderbuchhaus.de/veranstaltungen/ohne-anmeldung/
 - Kindertheater (über kindaling.de-Detailseiten): Allee Theater, Wackelzahn/Hoftheater Ottensen, Schmidts Tivoli, Galli, Hamburger Puppentheater
