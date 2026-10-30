@@ -1,5 +1,5 @@
 /* Service Worker für „Was geht?“: App-Dateien offline verfügbar, Seite immer zuerst frisch aus dem Netz */
-const CACHE = "wasgeht-98ecaeab72";
+const CACHE = "wasgeht-c25bdede82";
 const CORE = ["./", "./index.html", "./manifest.json", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/qr.svg",
   "./fonts/bricolage.woff", "./fonts/baloo2.woff", "./fonts/atkinson-Regular.woff", "./fonts/atkinson-Bold.woff", "./fonts/atkinson-Italic.woff"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
@@ -59,7 +59,7 @@ async function openTasks() {
     }
     L = out;
   } catch (_) { L = L.filter(i => !i.dn); }
-  return { me, meName: ag.meName, items: L.filter(i => !i.who || i.who === me) };
+  return { me, meName: ag.meName, items: L.filter(i => { if (i.who && ag.groups && ag.groups[i.who]) i.team = ag.groups[i.who]; else if (i.who && !String(i.who).startsWith("@")) i.team = undefined; return !i.who || i.who === me || (Array.isArray(i.team) && i.team.includes(me)); }) };
 }
 async function showReminders(test) {
   const r = await openTasks(), opt = { icon: "icons/icon-192.png", badge: "icons/icon-192.png", lang: "de" };
@@ -67,12 +67,12 @@ async function showReminders(test) {
   if (!r) return self.registration.showNotification("Was geht?", Object.assign({ body: "Bitte die App einmal öffnen, damit die Erinnerungen deine Aufgaben kennen.", tag: "wg-sum", data: { url: "./#zuhause" } }, opt));
   const L = r.items;
   if (!L.length) return self.registration.showNotification("✅ Alles erledigt", Object.assign({ body: test ? "Test: Gerade ist nichts offen für dich." : "Für dich ist gerade nichts offen. 🎉", tag: "wg-sum", data: { url: "./#zuhause" } }, opt));
-  const mine = L.filter(i => i.who === r.me).length, open = L.length - mine;
+  const mine = L.filter(i => i.who === r.me || (Array.isArray(i.team) && i.team.includes(r.me))).length, open = L.length - mine;
   const head = `📋 ${L.length} offen` + (mine && open ? ` · ${mine} für dich, ${open} ohne Person` : mine ? " für dich" : " · noch niemand zugeordnet");
   const show = L.slice(0, 4);
   for (const i of show) {
     await self.registration.showNotification(`${i.ic || "🏠"} ${i.ti}`, Object.assign({
-      body: (i.who ? "Für dich" : "🙋 Noch niemand – übernimmst du?") + (i.disp < today() ? " · ⚠️ überfällig" : "") + ` · +${i.pts} Punkte`,
+      body: (Array.isArray(i.team) ? "Gemeinsam – Punkte werden geteilt" : i.who ? "Für dich" : "🙋 Noch niemand – übernimmst du?") + (i.disp < today() ? " · ⚠️ überfällig" : "") + ` · +${i.pts} Punkte`,
       tag: "wg-t-" + i.cid + "-" + i.d, renotify: false, data: { url: "./?abhaken=1#zuhause", item: i },
       actions: i.cid.startsWith("j:") ? [] : [{ action: "done", title: "✓ Erledigt" }, { action: "open", title: "Liste" }] }, opt));
   }
@@ -80,7 +80,7 @@ async function showReminders(test) {
 }
 async function markDone(i) {
   const auth = await kvGet("auth"), ag = await kvGet("agenda"); if (!auth || !ag) return false;
-  const t0 = today(), late = i.disp < t0 ? 1 : 0, data = { by: ag.me, pts: i.pts, min: i.min || 0, cat: i.cat, at: Date.now(), late, tk: 0, vol: i.who ? 0 : 1 };
+  const t0 = today(), late = i.disp < t0 ? 1 : 0, data = { by: ag.me, pts: i.pts, min: i.min || 0, cat: i.cat, at: Date.now(), late, tk: 0, vol: i.who ? 0 : 1 }; if (Array.isArray(i.team) && i.team.length) { data.team = i.team; data.grp = i.who; }
   const iv = crypto.getRandomValues(new Uint8Array(12)), id = "hd:" + i.cid + ":" + i.d;
   const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, auth.k, TE.encode(JSON.stringify({ i: id, d: data }))));
   const r = await rpc("fam_put", { p_code: auth.a, p_kind: "settings", p_id: await encId(auth.m, "settings", id), p_data: { v: 2, iv: b64(iv), ct: b64(ct) } });
