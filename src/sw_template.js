@@ -59,7 +59,7 @@ async function openTasks() {
     }
     L = out;
   } catch (_) { L = L.filter(i => !i.dn); }
-  return { me, meName: ag.meName, items: L.filter(i => { if (i.who && ag.groups && ag.groups[i.who]) i.team = ag.groups[i.who]; else if (i.who && !String(i.who).startsWith("@")) i.team = undefined; return !i.who || i.who === me || (Array.isArray(i.team) && i.team.includes(me)); }) };
+  return { me, meName: ag.meName, items: L.filter(i => { if (i.who && ag.groups && ag.groups[i.who]) i.team = ag.groups[i.who]; return !i.who || i.who === me || (Array.isArray(i.team) && i.team.includes(me)); }) };
 }
 async function showReminders(test) {
   const r = await openTasks(), opt = { icon: "icons/icon-192.png", badge: "icons/icon-192.png", lang: "de" };
@@ -80,7 +80,7 @@ async function showReminders(test) {
 }
 async function markDone(i) {
   const auth = await kvGet("auth"), ag = await kvGet("agenda"); if (!auth || !ag) return false;
-  const t0 = today(), late = i.disp < t0 ? 1 : 0, data = { by: ag.me, pts: i.pts, min: i.min || 0, cat: i.cat, at: Date.now(), late, tk: 0, vol: i.who ? 0 : 1 }; if (Array.isArray(i.team) && i.team.length) { data.team = i.team; data.grp = i.who; }
+  const t0 = today(), late = i.disp < t0 ? 1 : 0, data = { by: ag.me, pts: i.pts, min: i.min || 0, cat: i.cat, at: Date.now(), late, tk: 0, vol: i.who ? 0 : 1 }; if (i.ckw) { const w = {}; for (const k in i.ckw) { const m = k === "_me" ? ag.me : k; w[m] = (w[m] || 0) + i.ckw[k]; } const ks = Object.keys(w); if (ks.length > 1 || ks[0] !== ag.me) { data.team = ks; data.w = w; if (ks.length > 1) data.grp = "@c"; } } else if (Array.isArray(i.team) && i.team.length) { data.team = i.team; data.grp = i.who; }
   const iv = crypto.getRandomValues(new Uint8Array(12)), id = "hd:" + i.cid + ":" + i.d;
   const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, auth.k, TE.encode(JSON.stringify({ i: id, d: data }))));
   const r = await rpc("fam_put", { p_code: auth.a, p_kind: "settings", p_id: await encId(auth.m, "settings", id), p_data: { v: 2, iv: b64(iv), ct: b64(ct) } });

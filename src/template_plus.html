@@ -1316,6 +1316,7 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .fcrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}.fcrow code{font-size:15px;font-weight:800;letter-spacing:.04em;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px;user-select:all}.rhead,.evvrow{flex-wrap:nowrap!important;gap:8px!important}.rhead .viewtog,.evvrow .evvt{flex:0 0 auto}.rhead .sortbox,.evvrow .sortbox{flex:0 1 auto;min-width:0}.rhead .sortbox select,.evvrow .sortbox select{max-width:150px;min-width:0;font-size:13.5px;padding-right:22px;text-overflow:ellipsis}.viewtog button,.evvt button{padding:4px 9px}.audq{display:flex;gap:6px;margin:0 0 8px}.audq button{font:inherit;font-size:13.5px;font-weight:700;padding:5px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-height:34px}.audq button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}.habk{border:2px solid var(--accent)!important}.habkh{display:flex;justify-content:space-between;align-items:center}.habkh h3{margin:0}#pushSlots{margin:6px 0}.hptsin{display:inline-flex;align-items:center;gap:2px;font-weight:900;color:#A16207;font-size:13px}.hptsin input{width:52px;padding:6px 4px;text-align:center;font:inherit;font-weight:900;color:#A16207;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.hrr{display:grid;justify-items:end;gap:4px}.hpts{font-weight:900;font-size:13px;color:#A16207;white-space:nowrap}.hpts s{color:var(--muted);font-weight:600}
 .htk{border-color:#DC2626!important;color:#B91C1C!important}
 .hcl{display:grid;gap:4px;margin-top:6px;font-size:13px}.hcl label{display:flex;gap:8px;align-items:center}
+.hclr{display:flex;align-items:center;gap:8px;justify-content:space-between}.hclr label{flex:1;min-width:0}.hform .hclw,.hclw{width:auto;max-width:46%;font:inherit;font-size:13px;padding:3px 6px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 .hpcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
 .hpcard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--bg)}
 .hpcard.me{border-color:var(--pc);box-shadow:0 0 0 2px color-mix(in srgb,var(--pc) 25%,transparent)}
@@ -4617,14 +4618,21 @@ function hEnsureMe(){if(!MYID)return;const L=(SETS.people&&SETS.people.list)||nu
 function hSyncFam(L){const A=L.filter(p=>!p.kid),K=L.filter(p=>p.kid);const nf={ad:Math.max(1,A.length),kids:K.map(k=>k.age!==""&&k.age!=null&&Number.isFinite(+k.age)?Math.max(0,Math.min(17,Math.round(+k.age))):6)};
   if(nf.ad===FAM.ad&&JSON.stringify(nf.kids)===JSON.stringify(FAM.kids))return;FAM.ad=nf.ad;FAM.kids=nf.kids;saveFam();try{renderKids();render()}catch(_){}
   const sf=$("setFam");if(sf)sf.textContent=FAM.ad+" Erw. · "+(FAM.kids.length?FAM.kids.length+(FAM.kids.length===1?" Kind":" Kinder"):"keine Kinder")}
-const HGRP={"@a":["👫","Beide Erwachsene"],"@f":["👨‍👩‍👧","Alle zusammen"]};
+const HGRP={"@a":["👫","Beide Erwachsene"],"@f":["👨‍👩‍👧","Alle zusammen"],"@c":["🤝","Gemeinsam (Unterpunkte)"]};
 const hIsGrp=id=>!!(id&&HGRP[id]);
 const hTeam=id=>id==="@a"?hPeople().filter(p=>!p.kid).map(p=>p.id):id==="@f"?hPeople().map(p=>p.id):null;
 const hPer=id=>hIsGrp(id)?{id,n:HGRP[id][1],e:HGRP[id][0],c:"#7C5CBF",grp:1}:hPeople().find(p=>p.id===id);
-const hMine=(who,me)=>who===me||(hIsGrp(who)&&hTeam(who).includes(me));
+const hMine=(who,me)=>who===me||(hIsGrp(who)&&(hTeam(who)||[]).includes(me));
 /* Gemeinsam erledigt: Punkte werden auf alle Beteiligten aufgeteilt */
 const hShare=(pts,n)=>Math.max(1,Math.round((+pts||0)/Math.max(1,n)));
-const hExpand=x=>Array.isArray(x.team)&&x.team.length?x.team.map(m=>Object.assign({},x,{by:m,pts:hShare(x.pts,x.team.length),tm:x.team.length})):[x];
+const hExpand=x=>{if(!Array.isArray(x.team)||!x.team.length)return [x];const w=x.w&&typeof x.w==="object"?x.w:null,tot=w?x.team.reduce((s,m)=>s+(+w[m]||0),0):0;
+  return x.team.map(m=>Object.assign({},x,{by:m,pts:w&&tot?Math.max(1,Math.round((+x.pts||0)*(+w[m]||0)/tot)):hShare(x.pts,x.team.length),tm:x.team.length}))};
+/* Unterpunkte (Checkliste) einzelnen Personen zuordnen: c.ckw = {Text: Personen-ID} */
+const hCkw=c=>{const W=c&&c.ckw&&typeof c.ckw==="object"?c.ckw:{},o={};(Array.isArray(c&&c.ck)?c.ck:[]).forEach(t=>{if(W[t]&&hPer(W[t])&&!hIsGrp(W[t]))o[t]=W[t]});return o};
+const hCkPeople=c=>[...new Set(Object.values(hCkw(c)))];
+/* Gewichte für die Punkteteilung: zugeordnete Unterpunkte je Person, nicht zugeordnete gehen an fallback */
+const hCkWeights=(c,fb)=>{const W=hCkw(c),w={};(c.ck||[]).forEach(t=>{const m=W[t]||fb;if(m)w[m]=(w[m]||0)+1});return w};
+const hMineC=(i,me)=>hMine(i.who,me)||hCkPeople(i.c).includes(me);
 const hAdults=()=>hPeople().filter(p=>!p.kid);
 const hKids=()=>hPeople().filter(p=>p.kid);
 function hMe(){const L=hPeople(),s=LS.get("hwk-hme",null);if(s&&L.some(p=>p.id===s))return s;const m=MYID&&L.find(p=>p.n.toLowerCase()===MYID.toLowerCase());return m?m.id:(L[0]||{}).id}
@@ -4781,10 +4789,10 @@ function hCheck(cid,d,opt){opt=opt||{};const me=opt.by||hMe();
     const left=(P.steps||[]).filter(x=>!x.dn).length;undoToast(`✓ ${sid?s.t:P.ti} – +${pts} Punkte${sid&&!left&&(P.steps||[]).length?" · 🎉 Projekt geschafft!":""}`,()=>{hset(k,p);renderHomeAll()});return}
   const c=SETS["hc:"+cid];if(!c)return;const k="hd:"+cid+":"+d;
   if(SETS[k]){const old=SETS[k];hset(k,null);renderHomeAll();undoToast("Haken entfernt",()=>{hset(k,old);renderHomeAll()});return}
-  const ov=SETS["ho:"+cid+":"+d]||{},disp=ov.to||d,who=ov.who||hWho(c,d),late=disp<T0,team=hIsGrp(who)&&!opt.by?hTeam(who):null,tk=!!(who&&!team&&!hMine(who,me)&&late),vol=!who;const base=hPts(c);const pts=Math.round(base*(tk?1.5:1));
-  const lvBefore=hLev(hEarned(me)).L;const rec={by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0,vol:vol?1:0};if(team&&team.length){rec.team=team;rec.grp=who}hset(k,rec);
-  const sh=team&&team.length?hShare(pts,team.length):pts;hBurst(sh,tk);const lv=hLev(hEarned(me)).L;
-  renderHomeAll();undoToast(`✓ ${c.ti} – ${team&&team.length?`je +${sh} Punkte für ${team.map(id=>(hPer(id)||{}).n||"").filter(Boolean).join(", ")}`:`+${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}`}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}`,()=>{hset(k,null);renderHomeAll()})}
+  const ov=SETS["ho:"+cid+":"+d]||{},disp=ov.to||d,who=ov.who||hWho(c,d),late=disp<T0,ckW=!opt.by&&hCkPeople(c).length?hCkWeights(c,who&&!hIsGrp(who)?who:me):null,ckK=ckW?Object.keys(ckW):[],useCk=ckK.length>1||(ckK.length===1&&ckK[0]!==me),team=useCk?ckK:hIsGrp(who)&&!opt.by?hTeam(who):null,tk=!!(who&&!team&&!hMine(who,me)&&late),vol=!who;const base=hPts(c);const pts=Math.round(base*(tk?1.5:1));
+  const lvBefore=hLev(hEarned(me)).L;const rec={by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0,vol:vol?1:0};if(team&&team.length){rec.team=team;if(useCk){rec.w=ckW;if(team.length>1)rec.grp="@c"}else rec.grp=who}hset(k,rec);
+  const ex=team&&team.length?hExpand(Object.assign({},rec)):null,sh=ex?(ex.find(y=>y.by===me)||ex[0]).pts:pts;hBurst(sh,tk);const lv=hLev(hEarned(me)).L;
+  renderHomeAll();undoToast(`✓ ${c.ti} – ${ex?`Punkte: ${ex.map(y=>`${(hPer(y.by)||{}).n||""} +${y.pts}`).join(", ")}`:`+${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}`}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}`,()=>{hset(k,null);renderHomeAll()})}
 function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","✨","🎊","💪","🏅"];
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
@@ -4818,17 +4826,17 @@ const hAv=(id,sz)=>{const p=hPer(id);return `<span class="hav${sz?" "+sz:""}" st
 /* Kompakte Zeile: Tippen klappt Details & Aktionen auf, Wischen: rechts erledigt, links morgen */
 function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c),cat=HCAT[c.cat]||["","📌",""],key=c.cid+"|"+d,ex=HEXP.has(key);
   const ck=Array.isArray(c.ck)&&c.ck.length?(()=>{const dd=c.ckd===d?c.ckx||[]:[];return {n:dd.length,t:c.ck.length,dd}})():null;
-  const tk=od&&who&&!hMine(who,me)&&!hIsGrp(who)&&!dn,open=!who&&!dn,opnC=!c.who&&!c.proj&&!hDaily(c),by=dn&&!dn.grp&&dn.by!==who&&hPer(dn.by);
-  const meta=[od?`<span class="hod">⚠️ seit ${esc(fmtDate(disp))}</span>`:ctx==="week"?esc(fmtDate(disp)):"",i.more&&i.more.length?`auch ${i.more.map(x=>esc(fmtDate(x))).join(", ")}`:"",mv?"↷ verschoben":"",ck?`☑️ ${ck.n}/${ck.t}`:"",by?`✓ ${by.e} ${esc(by.n)}`:"",open&&!ex?`<span class="hbhint">wer übernimmt?</span>`:"",tk?`<span class="hod">🛟 übernehmen +50 %</span>`:""].filter(Boolean).join(" · ");
+  const tk=od&&who&&!hMine(who,me)&&!hIsGrp(who)&&!dn,open=!who&&!dn&&hCkPeople(c).length<2,opnC=!c.who&&!c.proj&&!hDaily(c),by=dn&&!dn.grp&&dn.by!==who&&hPer(dn.by);
+  const meta=[od?`<span class="hod">⚠️ seit ${esc(fmtDate(disp))}</span>`:ctx==="week"?esc(fmtDate(disp)):"",i.more&&i.more.length?`auch ${i.more.map(x=>esc(fmtDate(x))).join(", ")}`:"",mv?"↷ verschoben":"",ck?`☑️ ${ck.n}/${ck.t}${hCkPeople(c).length?" "+Object.entries(hCkWeights(c,"")).filter(([m])=>m).map(([m,n])=>`${(hPer(m)||{}).e||""}${n}`).join(" "):""}`:"",by?`✓ ${by.e} ${esc(by.n)}`:"",open&&!ex?`<span class="hbhint">wer übernimmt?</span>`:"",tk?`<span class="hod">🛟 übernehmen +50 %</span>`:""].filter(Boolean).join(" · ");
   const det=ex?`<div class="hexp"><div class="hexl">${fmH(+c.dur||0)} · ${esc(c.proj?"Projekt-Schritt":hTurn(c))}${c.proj?"":" · "+(hMiss(c)==="lapse"?"💨 verfällt":"⏰ wird überfällig")}</div>
-      ${ck?`<div class="hcl">${c.ck.map((t,j)=>`<label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label>`).join("")}</div>`:""}
+      ${ck?(()=>{const W=hCkw(c),P=c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople();return `<div class="hcl">${c.ck.map((t,j)=>`<div class="hclr"><label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label><select class="hclw" data-hclw="${esc(c.cid)}" data-j="${j}" aria-label="Wer macht „${esc(t)}“?"><option value="">${W[t]?"–":"👤 wer?"}</option>${P.map(p=>`<option value="${p.id}"${W[t]===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></div>`).join("")}${hCkPeople(c).length?`<small class="hhint">Beim Abhaken der ganzen Aufgabe werden die Punkte nach Unterpunkten verteilt${Object.keys(W).length<c.ck.length?" – nicht zugeordnete zählen für die zuständige Person":""}.</small>`:""}</div>`})():""}
       ${!dn&&opnC?hBockPanel(c,i):""}${!dn&&open&&c.proj?hAssign(c,d,"Wer macht's?"):""}
       ${tk?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Ich übernehme (+50 % Punkte)</button>`:""}
       ${!dn&&!opnC&&!(open&&c.proj)?hAssign(c,d,"Diesmal macht's:",who):""}
       <div class="hacts">${dn?"":`<button type="button" class="pmini" data-hmv1="${esc(c.cid)}" data-d="${d}">↷ Morgen</button><label class="hmv">📅 <input type="date" data-hmv="${esc(c.cid)}" data-d="${d}" value="${disp}" min="${T0}" aria-label="Verschieben auf"></label>${hSkippable(c)?`<button type="button" class="pmini" data-hskip="${esc(c.cid)}" data-d="${d}" title="Nur dieser Termin entfällt – der nächste bleibt wie geplant">🚫 Entfällt diesmal</button>`:""}`}${c.proj?`<button type="button" class="pmini" data-hjopen="${esc(c.proj.pid)}">🛠️ Projekt öffnen</button>`:`<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern</button>`}${mv?`<button type="button" class="pmini" data-hmvx="${esc(c.cid)}" data-d="${d}">↺ Zurück auf ${esc(fmtDate(d))}</button>`:""}</div></div>`:"";
   return `<div class="htrow${dn?" dn":""}${od?" od":""}${ex?" ex":""}" data-sw="${esc(c.cid)}" data-d="${d}"><button type="button" class="hck" data-hck="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-label="${dn?"Erledigt – antippen zum Zurücknehmen":"Als erledigt abhaken"}">${dn?"✓":""}</button>
     <button type="button" class="hrbt" data-hexp="${esc(key)}" aria-expanded="${ex}"><b>${c.ic||cat[1]} ${esc(c.ti)}</b>${meta?`<small>${meta}</small>`:""}</button>
-    <span class="hrr">${hAv(dn?(dn.grp||dn.by):who)}<span class="hpts${tk?" tk":""}"${hIsGrp(dn?dn.grp:who)?' title="wird geteilt"':""}>${tk?Math.round(pts*1.5):dn?dn.pts:pts}${hIsGrp(dn?dn.grp:who)?"÷":""}</span></span>${det}${hDaily(c)&&HDPICK===key?hPickHtml(i):""}</div>`}
+    ${(()=>{const av=dn?(dn.grp||dn.by):hCkPeople(c).length>1?"@c":who,g=hIsGrp(av);return `<span class="hrr">${hAv(av)}<span class="hpts${tk?" tk":""}"${g?' title="wird geteilt"':""}>${tk?Math.round(pts*1.5):dn?dn.pts:pts}${g?"÷":""}</span></span>`})()}${det}${hDaily(c)&&HDPICK===key?hPickHtml(i):""}</div>`}
 /* Fairness als eine Zeile */
 function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";
   if(A.length<2)return `<div class="hfline hf3"><div class="hf3h">⚖️ Zweite erwachsene Person unter ⚙️ eintragen</div></div>`;
@@ -4848,7 +4856,7 @@ function hReview(){const n=new Date(),dw=n.getDay();let w=null;if(dw===0||(dw===
     <div class="hrvl"><span>✅ ${D.length} ${D.length===1?"Aufgabe":"Aufgaben"} erledigt</span>${CL.length?`<span>🏁 ${won.length} von ${CL.length} Challenges${bon?` · +${bon} Familienpunkte`:""}</span>`:""}${T?`<span>${T.lvl<=0?"⚖️ Zeit gut verteilt":`⚖️ ${esc(T.top.n)} hat ${T.lvl===1?"etwas":"deutlich"} mehr getragen`}</span>`:""}${kn?`<span>🧒 Kinder haben ${kn}× geholfen</span>`:""}</div></div>`}
 /* Hauptansicht */
 function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null;const me=hMe(),P=hPeople(),meP=hPer(me);
-  const fOk=i=>HF.who==="me"?hMine(i.who,me):HF.who==="open"?!i.who:true,vis=i=>HF.done||!i.dn;
+  const fOk=i=>HF.who==="me"?hMineC(i,me):HF.who==="open"?!i.who:true,vis=i=>HF.done||!i.dn;
   const od=hOverdue().filter(fOk),today=hItems(T0,T0).filter(fOk),wkAll=hItems(addD(T0,1),addD(T0,hLeadMax())).filter(i=>!hDaily(i.c)&&i.disp<=addD(T0,hLeadDays(i.c))).filter(fOk).sort((a,b)=>a.disp.localeCompare(b.disp));
   const td=today.filter(i=>!hDaily(i.c)),dly=today.filter(i=>hDaily(i.c)),nTot=today.length,nDn=today.filter(i=>i.dn).length;
   const pend=new Set(od.concat(td).filter(i=>!i.dn).map(i=>i.c.cid));
@@ -5066,7 +5074,7 @@ window.homeFairMini=()=>hFairHtml(true);
 /* Kinderansicht: eigene Aufgaben, Punkte, Vorlesen */
 function hSay(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="de-DE";u.rate=.92;const v=speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 function hKidId(){const K=hKids(),s=LS.get("hwk-kidme",null);return K.some(k=>k.id===s)?s:(K[0]||{}).id}
-function hKidItems(kid){const mine=i=>hMine(i.who,kid)||(!i.who&&(i.c.kid||i.c.cat==="kids"));return hOverdue().filter(mine).concat(hItems(T0,T0).filter(mine))}
+function hKidItems(kid){const mine=i=>hMineC(i,kid)||(!i.who&&(i.c.kid||i.c.cat==="kids"));return hOverdue().filter(mine).concat(hItems(T0,T0).filter(mine))}
 function renderKidTasks(){const el=$("kTasks");if(!el)return;const K=hKids();if(!K.length){el.innerHTML="";el.hidden=true;return}el.hidden=false;
   const kid=hKidId(),kp=hPer(kid),L=hKidItems(kid),open=L.filter(i=>!i.dn),bal=hBal(kid),RW=hRewards("k").sort((a,b)=>a[3]-b[3]),nx=RW.find(r=>r[3]>bal);
   el.innerHTML=`<div class="kth"><h3>⭐ Meine Aufgaben</h3>${window.speechSynthesis?`<button type="button" class="kspeak2" data-ksayall aria-label="Alles vorlesen">🔊 Vorlesen</button>`:""}</div>
@@ -5099,6 +5107,7 @@ document.addEventListener("click",e=>{const t=e.target;
 document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
   if(ds.hpn!=null||ds.hpe!=null||ds.hpr!=null||ds.hpa!=null){const L=hPeople(),i=+(ds.hpn??ds.hpe??ds.hpr??ds.hpa);if(!L[i])return;if(ds.hpn!=null)L[i].n=t.value.trim()||L[i].n;if(ds.hpe!=null)L[i].e=t.value;if(ds.hpr!=null){L[i].kid=t.value==="k";if(L[i].kid&&L[i].age==null)L[i].age=6}if(ds.hpa!=null){let v=Math.round(+t.value);L[i].age=Number.isFinite(v)?Math.max(0,Math.min(17,v)):6}hSavePeople(L);return}
   if(t.id==="hbFrom"||t.id==="hbTo"){const B=hBlock();B.from=$("hbFrom").value||"09:00";B.to=$("hbTo").value||"12:00";hset("homeblock",B);renderHomeAll();return}
+  if(ds.hclw!=null){const k="hc:"+ds.hclw,c=SETS[k];if(!c||!c.ck)return;const t0=c.ck[+ds.j];if(t0==null)return;const W=Object.assign({},hCkw(c));if(t.value)W[t0]=t.value;else delete W[t0];hset(k,Object.assign({},c,{ckw:W}));const p=hPer(t.value);toast(p?`👤 „${t0}“ → ${p.e} ${p.n}`:`„${t0}“ ohne Person`);renderHomeAll();return}
   if(ds.hcl!=null){const c=SETS["hc:"+ds.hcl];if(!c)return;const d=ds.d,j=+ds.j;const x=Object.assign({},c);let dd=x.ckd===d?(x.ckx||[]).slice():[];dd=t.checked?dd.concat(j):dd.filter(k=>k!==j);x.ckd=d;x.ckx=[...new Set(dd)];hset("hc:"+ds.hcl,x);
     if(x.ckx.length===x.ck.length&&!hDone(ds.hcl,d)){hCheck(ds.hcl,d)}else renderHomeAll();return}
   if(ds.hmv!=null){const cid=ds.hmv,d=ds.d,to=t.value;if(!to)return;const k="ho:"+cid+":"+d,ov=Object.assign({},SETS[k]||{});if(to===d)delete ov.to;else ov.to=to;hset(k,Object.keys(ov).length?ov:null);HEXP.delete(cid+"|"+d);toast("📅 Verschoben auf "+fmtDate(to));renderHomeAll();return}
@@ -5195,7 +5204,7 @@ const hLeadMax=()=>Math.max(6,...hChores().map(hLeadDays));
 let HAGT=0,HAGSIG="";
 async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
   const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
-    .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hIsGrp(i.who)?hTeam(i.who):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0}));
+    .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0}));
   const o={me,meName:p?p.n:"",gen:Date.now(),items:L,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
   clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}
 window.homeAgendaSave=hAgendaSave;
@@ -5203,7 +5212,7 @@ window.homeAgendaSave=hAgendaSave;
 let HABK=/[?&]abhaken=1/.test(location.search);
 window.homeAbhaken=()=>{HABK=true;const b=document.querySelector('[data-m2="zuhause"]');if(b&&window.M2!=="zuhause")b.click();else renderHome();scrollTo(0,0)};
 function hAbkHtml(){if(!HABK)return "";const me=hMe(),seen=new Set();
-  const L=hOverdue().concat(hItems(T0,T0)).filter(i=>(!i.who||hMine(i.who,me))).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true});
+  const L=hOverdue().concat(hItems(T0,T0)).filter(i=>(!i.who||hMineC(i,me))).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true});
   const open=L.filter(i=>!i.dn);
   return `<section class="pvsec habk"><div class="habkh"><h3>🔔 Offen für dich</h3><button type="button" class="mbx" data-habkx aria-label="Liste schließen">✕</button></div>
     ${open.length?`<p class="hsub">Deine Aufgaben und die, die noch niemand übernommen hat – Kästchen antippen zum Abhaken.</p>`+L.map(i=>hRow(i,i.od?"od":"today")).join(""):`<p class="pvsub">Alles erledigt 🎉</p>`}</section>`}
