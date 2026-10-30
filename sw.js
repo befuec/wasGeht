@@ -1,5 +1,5 @@
 /* Service Worker für „Was geht?“: App-Dateien offline verfügbar, Seite immer zuerst frisch aus dem Netz */
-const CACHE = "wasgeht-3c060db15d";
+const CACHE = "wasgeht-a1d8bff224";
 const CORE = ["./", "./index.html", "./manifest.json", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png", "./icons/qr.svg",
   "./fonts/bricolage.woff", "./fonts/baloo2.woff", "./fonts/atkinson-Regular.woff", "./fonts/atkinson-Bold.woff", "./fonts/atkinson-Italic.woff"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
