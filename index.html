@@ -1442,7 +1442,8 @@ body[data-m2="entdecken"]:not(.kidsmode) .mt-ent{display:flex;margin:4px 0 12px}
 .kpt b{font-size:14px;line-height:1.25}.kpt small{color:#6B6B6B}
 .kptadd{font:inherit;font-weight:800;border:0;border-radius:999px;padding:8px 14px;background:#22A06B;color:#fff;cursor:pointer;min-height:40px}
 .hnx{border:1px solid var(--line);border-radius:12px;padding:8px 10px}
-.hform .hnxr{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:8px;align-items:end}.hform .hnxr label{min-width:0}.hform .hnxr input{width:100%;box-sizing:border-box}.hform .hnxr input#heNxIc{text-align:center}
+.hform .hnxr{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:8px;align-items:end}.hform .hnxr label{min-width:0}.hform .hnxr input{width:100%;box-sizing:border-box}.hform .hnxr input.nxIc{text-align:center}
+.hnxb{display:grid;gap:6px;padding-block:8px;border-top:1px dashed var(--line)}.hnxb:first-child{border-top:0;padding-top:0}.hnxb [data-hnxdel]{justify-self:start}
 .hnxs{display:grid;gap:4px;max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px;background:var(--surface)}
 .hnxs button{display:grid;grid-template-columns:28px minmax(0,1fr);gap:0 8px;text-align:left;font:inherit;border:0;background:transparent;color:var(--ink);padding:6px;border-radius:8px;cursor:pointer}
 .hnxs button:hover,.hnxs button:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent)}
@@ -4814,15 +4815,17 @@ document.addEventListener("click",e=>{const t=e.target;if(!t.closest)return;
   if(t.closest("[data-hbdgrest]")){const c=hBcfg();c.del=[];hset("hbdg",c);toast("↩️ Wiederhergestellt");renderHomeAll()}});
 /* Folgeaufgaben (huckepack): beim Abhaken entsteht automatisch die nächste Aufgabe */
 const HVU0={d:1,w:7,m:30};
+const hNxL=v=>(Array.isArray(v)?v:v?[v]:[]).filter(x=>x&&x.ti);
 const hNxTxt=nx=>nx&&nx.ti?`↪️ danach: ${nx.ic||""} ${nx.ti} (nach ${nx.n} ${nx.u==="m"?(+nx.n===1?"Monat":"Monaten"):nx.u==="w"?(+nx.n===1?"Woche":"Wochen"):(+nx.n===1?"Tag":"Tagen")})`:"";
-function hNxSpawn(cid,d){const k="hd:"+cid+":"+d,rec=SETS[k],c=SETS["hc:"+cid];if(!rec||!c||!c.nx||!c.nx.ti||rec.nxc)return null;const nx=c.nx;
-  const base=rec.at?isoD(new Date(rec.at)):T0,date=addD(base,Math.max(1,Math.round((+nx.n||1)*(HVU0[nx.u]||1)))),dur=+nx.dur||+c.dur||30;
-  const who=nx.who==="="?(rec.grp&&rec.grp!=="@c"?rec.grp:c.who&&c.who!=="rot"?c.who:rec.by):(nx.who||"");
-  const ncid="c"+Date.now().toString(36)+"n";hset("hc:"+ncid,{ti:nx.ti,ic:nx.ic||c.ic||"",cat:c.cat,f:"x",date,dur,unpop:0,kid:c.kid||0,pts:hrec(dur,0,c.kid),who,ck:Array.isArray(nx.ck)?nx.ck.slice():[],start:base,from:cid,nx:nx.nx||null,tpl:nx.tpl||undefined});
-  hset(k,Object.assign({},rec,{nxc:ncid}));return {ncid,date}}
-function hNxUndo(rec){if(!rec||!rec.nxc)return null;const k="hc:"+rec.nxc,c=SETS[k];if(!c)return null;if(Object.keys(SETS).some(x=>x.startsWith("hd:"+rec.nxc+":")))return null;hset(k,null);return [k,c]}
+function hNxSpawn(cid,d){const k="hd:"+cid+":"+d,rec=SETS[k],c=SETS["hc:"+cid],NX=hNxL(c&&c.nx);if(!rec||!c||!NX.length||rec.nxc)return null;
+  const base=rec.at?isoD(new Date(rec.at)):T0,ids=[],dates=[];
+  NX.forEach((nx,j)=>{const date=addD(base,Math.max(1,Math.round((+nx.n||1)*(HVU0[nx.u]||1)))),dur=+nx.dur||+c.dur||30;
+    const who=nx.who==="="?(rec.grp&&rec.grp!=="@c"?rec.grp:c.who&&c.who!=="rot"?c.who:rec.by):(nx.who||"");
+    const ncid="c"+Date.now().toString(36)+"n"+j;hset("hc:"+ncid,{ti:nx.ti,ic:nx.ic||c.ic||"",cat:c.cat,f:"x",date,dur,unpop:0,kid:c.kid||0,pts:hrec(dur,0,c.kid),who,ck:Array.isArray(nx.ck)?nx.ck.slice():[],start:base,from:cid,nx:hNxL(nx.nx).length?hNxL(nx.nx):null,tpl:nx.tpl||undefined});ids.push(ncid);dates.push(date)});
+  hset(k,Object.assign({},rec,{nxc:ids}));return {ids,dates}}
+function hNxUndo(rec){if(!rec||!rec.nxc)return null;const out=[];(Array.isArray(rec.nxc)?rec.nxc:[rec.nxc]).forEach(id=>{const k="hc:"+id,c=SETS[k];if(!c||Object.keys(SETS).some(x=>x.startsWith("hd:"+id+":")))return;hset(k,null);out.push([k,c])});return out}
 /* Abhaken per Erinnerung (Service Worker) hat keine Folgeaufgabe angelegt → nachholen */
-function hNxSync(){Object.keys(SETS).filter(k=>k.startsWith("hd:")).forEach(k=>{const [,cid,d]=k.split(":"),r=SETS[k],c=SETS["hc:"+cid];if(r&&!r.nxc&&c&&c.nx&&c.nx.ti&&r.at&&Date.now()-r.at<60*864e5)hNxSpawn(cid,d)})}
+function hNxSync(){Object.keys(SETS).filter(k=>k.startsWith("hd:")).forEach(k=>{const [,cid,d]=k.split(":"),r=SETS[k],c=SETS["hc:"+cid];if(r&&!r.nxc&&c&&hNxL(c.nx).length&&r.at&&Date.now()-r.at<60*864e5)hNxSpawn(cid,d)})}
 /* Abhaken */
 function hCheck(cid,d,opt){opt=opt||{};const me=opt.by||hMe();
   if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":"),k="hj:"+pid,p=SETS[k];if(!p)return;const P=JSON.parse(JSON.stringify(p));const s=sid?(P.steps||[]).find(x=>x.id===sid):P;if(!s)return;
@@ -4834,7 +4837,7 @@ function hCheck(cid,d,opt){opt=opt||{};const me=opt.by||hMe();
   const ov=SETS["ho:"+cid+":"+d]||{},disp=ov.to||d,who=ov.who||hWho(c,d),late=disp<T0,ckW=!opt.by&&hCkPeople(c).length?hCkWeights(c,who&&!hIsGrp(who)?who:me):null,ckK=ckW?Object.keys(ckW):[],useCk=ckK.length>1||(ckK.length===1&&ckK[0]!==me),team=useCk?ckK:hIsGrp(who)&&!opt.by?hTeam(who):null,tk=!!(who&&!team&&!hMine(who,me)&&late),vol=!who;const base=hPts(c);const pts=Math.round(base*(tk?1.5:1));
   const lvBefore=hLev(hEarned(me)).L;const rec={by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0,vol:vol?1:0};if(team&&team.length){rec.team=team;if(useCk){rec.w=ckW;if(team.length>1)rec.grp="@c"}else rec.grp=who}hset(k,rec);const nxs=hNxSpawn(cid,d);
   const ex=team&&team.length?hExpand(Object.assign({},rec)):null,sh=ex?(ex.find(y=>y.by===me)||ex[0]).pts:pts;hBurst(sh,tk);const lv=hLev(hEarned(me)).L;
-  renderHomeAll();undoToast(`✓ ${c.ti} – ${ex?`Punkte: ${ex.map(y=>`${(hPer(y.by)||{}).n||""} +${y.pts}`).join(", ")}`:`+${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}`}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}${nxs?` · ↪️ Folgeaufgabe am ${fmtDate(nxs.date)}`:""}`,()=>{const r=SETS[k];hset(k,null);hNxUndo(r);renderHomeAll()})}
+  renderHomeAll();undoToast(`✓ ${c.ti} – ${ex?`Punkte: ${ex.map(y=>`${(hPer(y.by)||{}).n||""} +${y.pts}`).join(", ")}`:`+${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}`}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}${nxs?` · ↪️ ${nxs.ids.length===1?"Folgeaufgabe am "+fmtDate(nxs.dates[0]):nxs.ids.length+" Folgeaufgaben ab "+fmtDate(nxs.dates.slice().sort()[0])}`:""}`,()=>{const r=SETS[k];hset(k,null);hNxUndo(r);renderHomeAll()})}
 function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","✨","🎊","💪","🏅"];
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
@@ -4870,7 +4873,7 @@ function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c),cat=HC
   const ck=Array.isArray(c.ck)&&c.ck.length?(()=>{const dd=c.ckd===d?c.ckx||[]:[];return {n:dd.length,t:c.ck.length,dd}})():null;
   const tk=od&&who&&!hMine(who,me)&&!hIsGrp(who)&&!dn,open=!who&&!dn&&hCkPeople(c).length<2,opnC=!c.who&&!c.proj&&!hDaily(c),by=dn&&!dn.grp&&dn.by!==who&&hPer(dn.by);
   const meta=[od?`<span class="hod">⚠️ seit ${esc(fmtDate(disp))}</span>`:ctx==="week"?esc(fmtDate(disp)):"",i.more&&i.more.length?`auch ${i.more.map(x=>esc(fmtDate(x))).join(", ")}`:"",mv?"↷ verschoben":"",ck?`☑️ ${ck.n}/${ck.t}${hCkPeople(c).length?" "+Object.entries(hCkWeights(c,"")).filter(([m])=>m).map(([m,n])=>`${(hPer(m)||{}).e||""}${n}`).join(" "):""}`:"",by?`✓ ${by.e} ${esc(by.n)}`:"",open&&!ex?`<span class="hbhint">wer übernimmt?</span>`:"",tk?`<span class="hod">🛟 übernehmen +50 %</span>`:""].filter(Boolean).join(" · ");
-  const det=ex?`<div class="hexp"><div class="hexl">${fmH(+c.dur||0)} · ${esc(c.proj?"Projekt-Schritt":hTurn(c))}${c.proj?"":" · "+(hMiss(c)==="lapse"?"💨 verfällt":"⏰ wird überfällig")}${c.nx&&c.nx.ti?`<br>${esc(hNxTxt(c.nx))}`:""}${c.from&&SETS["hc:"+c.from]?`<br>↩️ Folgeaufgabe von ${esc(SETS["hc:"+c.from].ti)}`:""}</div>
+  const det=ex?`<div class="hexp"><div class="hexl">${fmH(+c.dur||0)} · ${esc(c.proj?"Projekt-Schritt":hTurn(c))}${c.proj?"":" · "+(hMiss(c)==="lapse"?"💨 verfällt":"⏰ wird überfällig")}${hNxL(c.nx).map(n=>`<br>${esc(hNxTxt(n))}`).join("")}${c.from&&SETS["hc:"+c.from]?`<br>↩️ Folgeaufgabe von ${esc(SETS["hc:"+c.from].ti)}`:""}</div>
       ${ck?(()=>{const W=hCkw(c),P=c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople();return `<div class="hcl">${c.ck.map((t,j)=>`<div class="hclr"><label><input type="checkbox" data-hcl="${esc(c.cid)}" data-d="${d}" data-j="${j}"${ck.dd.includes(j)?" checked":""}> ${esc(t)}</label><select class="hclw" data-hclw="${esc(c.cid)}" data-j="${j}" aria-label="Wer macht „${esc(t)}“?"><option value="">${W[t]?"–":"👤 wer?"}</option>${P.map(p=>`<option value="${p.id}"${W[t]===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></div>`).join("")}${hCkPeople(c).length?`<small class="hhint">Beim Abhaken der ganzen Aufgabe werden die Punkte nach Unterpunkten verteilt${Object.keys(W).length<c.ck.length?" – nicht zugeordnete zählen für die zuständige Person":""}.</small>`:""}</div>`})():""}
       ${!dn&&opnC?hBockPanel(c,i):""}${!dn&&open&&c.proj?hAssign(c,d,"Wer macht's?"):""}
       ${tk?`<button type="button" class="pmini htk" data-hck="${esc(c.cid)}" data-d="${d}">🛟 Ich übernehme (+50 % Punkte)</button>`:""}
@@ -5082,13 +5085,10 @@ function hEdit(c,isNew,mode){HED={c:Object.assign({},c),isNew,mode:mode||"task"}
    <div class="hf2"><label>Dauer<select id="heDur">${durs.map(m=>`<option value="${m}"${m===+x.dur?" selected":""}>${fmH(m)}</option>`).join("")}</select></label><label>Punkte <small>(Empfehlung: <span id="heRec">${rec}</span>)</small><input type="number" id="hePts" min="1" max="999" value="${+x.pts||rec}"></label></div>
    <div id="heWhoW"${TPL?" hidden":""}><span class="hlab">Wer ist zuständig?</span><div class="dquick hwho" id="heWho">${P.map(p=>`<button type="button" data-who="${p.id}" aria-pressed="${x.who===p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}${hGrpOpts().map(g=>`<button type="button" data-who="${g.id}" aria-pressed="${x.who===g.id}" style="--pc:${g.c}">${g.e} ${esc(g.n)}</button>`).join("")}<button type="button" data-who="rot" aria-pressed="${x.who==="rot"}">🔄 Abwechselnd</button><button type="button" data-who="" aria-pressed="${!x.who}">🙋 Offen – spontan / nach Bock</button></div></div>
    <label>Checkliste <small>(eine Zeile pro Punkt, optional)</small><textarea id="heCk" rows="4">${esc((x.ck||[]).join("\n"))}</textarea></label>
-   ${(()=>{const nx=x.nx||{},P=hPeople().concat(hGrpOpts());return `<details class="hnx"${nx.ti?" open":""}><summary>↪️ Folgeaufgabe (huckepack) ${nx.ti?`<small>– ${esc(nx.ti)}</small>`:"<small>– optional</small>"}</summary>
-   <p class="hsub">Wird diese Aufgabe abgehakt, legt die App automatisch die Folgeaufgabe an, z. B. Deko aufbauen → nach 6 Wochen Deko abbauen.</p>
-   <div class="hnxr"><label>Folgeaufgabe<input type="search" id="heNxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" id="heNxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
-   <div class="hnxs" id="heNxS" hidden></div>
-   <span class="hlab">Wann?</span><div class="hvorr"><select id="heNxN" aria-label="Abstand">${[...Array(30).keys()].map(i=>i+1).concat((+nx.n>30)?[+nx.n]:[]).map(n=>`<option${n===(+nx.n||2)?" selected":""}>${n}</option>`).join("")}</select><select id="heNxU" aria-label="Einheit">${[["d","Tagen"],["w","Wochen"],["m","Monaten"]].map(([k,l])=>`<option value="${k}"${(nx.u||"w")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">nach dem Abhaken</span></div>
-   <label>Wer macht die Folgeaufgabe?<select id="heNxW"><option value="="${(nx.who??"=")==="="?" selected":""}>Wie diese Aufgabe</option><option value=""${nx.who===""?" selected":""}>🙋 offen</option>${P.map(p=>`<option value="${p.id}"${nx.who===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></label>
-   ${nx.ti?`<button type="button" class="pmini" data-hnxdel>✕ Folgeaufgabe entfernen</button>`:""}</details>`})()}
+   ${(()=>{const NX=hNxL(x.nx);HED.nxT=NX.map(n=>({id:n.tpl||null,ti:n.ti,dur:n.dur,ck:n.ck||[],nx:n.nx||null}));return `<details class="hnx"${NX.length?" open":""}><summary>↪️ Folgeaufgaben (huckepack) <small>– ${NX.length?NX.length===1?esc(NX[0].ti):NX.length+" Stück":"optional"}</small></summary>
+   <p class="hsub">Wird diese Aufgabe abgehakt, legt die App automatisch die Folgeaufgaben an, z. B. Deko aufbauen → nach 6 Wochen Deko abbauen, nach 7 Wochen Deko-Kisten sortieren.</p>
+   <div id="heNxL">${(NX.length?NX:[{}]).map((n,i)=>hNxBlock(n,i)).join("")}</div>
+   <button type="button" class="pmini" data-hnxadd>➕ Weitere Folgeaufgabe</button></details>`})()}
    <div class="hfbtn">${isNew?"":TPL?`<button type="button" class="pmini hdel" data-htpx="${esc(x.id)}">🗑️ Aus Katalog löschen</button>`:`<button type="button" class="pmini hdel" data-hdel>🗑️ Löschen</button>`}<button type="button" class="pbtn" data-hclose>Abbrechen</button><button type="button" class="pbtn hsave" data-hsave>${isNew?"➕ Hinzufügen":"💾 Speichern"}</button></div></form>`;
   HED.lf=x.f;hEdUpd();d.showModal?d.showModal():d.setAttribute("open","")}
 function hEdDays(){return [1,2,3,4,5,6,0].filter(i=>$("heWd").querySelector(`[data-wd="${i}"]`).getAttribute("aria-pressed")==="true")}
@@ -5103,17 +5103,24 @@ function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("h
   const mb=$("heMiss").querySelector('[aria-pressed="true"]');x.miss=mb?mb.dataset.miss:null;
   x.dur=+$("heDur").value;x.pts=+$("hePts").value||hrec(x.dur,x.unpop,x.kid);x.kid=x.cat==="kids"?1:0;const wh=$("heWho").querySelector('[aria-pressed="true"]');x.who=wh?wh.dataset.who:hMe();
   if($("heWwd").checked&&!["x","y1"].includes(x.f)){const W={};$("heWwdL").querySelectorAll("select[data-wwd]").forEach(s=>W[s.dataset.wwd]=s.value);if(Object.keys(W).length){x.whoWd=W;const cnt={};Object.values(W).filter(Boolean).forEach(v=>cnt[v]=(cnt[v]||0)+1);const top=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];x.who=top||""}else delete x.whoWd}else delete x.whoWd;
-  x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;{const nx=hNxRead();if(nx)x.nx=Object.assign({},x.nx||{},nx);else delete x.nx}
+  x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;{const nx=hNxRead();if(nx.length)x.nx=nx;else delete x.nx}
   if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
   const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
-function hNxRead(){const ti=($("heNxTi")||{}).value;if(!ti||!ti.trim())return null;const T=HED&&HED.nxTpl&&hTpls().find(x=>x.id===HED.nxTpl.id&&x.ti===ti.trim())?HED.nxTpl:null;
-  const o={ti:ti.trim().slice(0,60),ic:$("heNxIc").value.trim(),n:+$("heNxN").value||1,u:$("heNxU").value,who:$("heNxW").value,dur:T?T.dur:(HED&&HED.c.nx&&HED.c.nx.ti===ti.trim()&&HED.c.nx.dur)||+$("heDur").value||30};
-  if(T){if(T.ck.length)o.ck=T.ck;if(T.nx)o.nx=T.nx;o.tpl=T.id}else if(HED&&HED.c.nx&&HED.c.nx.ti===o.ti){["ck","nx","tpl"].forEach(k=>{if(HED.c.nx[k])o[k]=HED.c.nx[k]})}return o}
-function hNxSuggest(){const el=$("heNxS"),q=($("heNxTi").value||"").trim().toLowerCase();if(!el)return;if(q.length<2){el.hidden=true;el.innerHTML="";return}
+function hNxBlock(nx,i){const P=hPeople().concat(hGrpOpts());return `<div class="hnxb" data-i="${i}">
+   <div class="hnxr"><label>${i?(i+1)+". ":""}Folgeaufgabe<input type="search" class="nxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" class="nxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
+   <div class="hnxs" hidden></div>
+   <span class="hlab">Wann?</span><div class="hvorr"><select class="nxN" aria-label="Abstand">${[...Array(30).keys()].map(k=>k+1).concat((+nx.n>30)?[+nx.n]:[]).map(n=>`<option${n===(+nx.n||2)?" selected":""}>${n}</option>`).join("")}</select><select class="nxU" aria-label="Einheit">${[["d","Tagen"],["w","Wochen"],["m","Monaten"]].map(([k,l])=>`<option value="${k}"${(nx.u||"w")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">nach dem Abhaken</span></div>
+   <label>Wer macht's?<select class="nxW"><option value="="${(nx.who??"=")==="="?" selected":""}>Wie diese Aufgabe</option><option value=""${nx.who===""?" selected":""}>🙋 offen</option>${P.map(p=>`<option value="${p.id}"${nx.who===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></label>
+   <button type="button" class="pmini" data-hnxdel>✕ Entfernen</button></div>`}
+function hNxRead(){const out=[];document.querySelectorAll("#heNxL .hnxb").forEach(b=>{const q=c=>b.querySelector(c),ti=(q(".nxTi").value||"").trim();if(!ti)return;
+  const T0x=HED&&HED.nxT&&HED.nxT[+b.dataset.i],T=T0x&&T0x.ti===ti?T0x:null;
+  const o={ti:ti.slice(0,60),ic:q(".nxIc").value.trim(),n:+q(".nxN").value||1,u:q(".nxU").value,who:q(".nxW").value,dur:T?+T.dur||30:+$("heDur").value||30};
+  if(T){if(T.ck&&T.ck.length)o.ck=T.ck;if(hNxL(T.nx).length)o.nx=hNxL(T.nx);if(T.id)o.tpl=T.id}out.push(o)});return out}
+function hNxSuggest(inp){const b=inp.closest(".hnxb"),el=b&&b.querySelector(".hnxs"),q=(inp.value||"").trim().toLowerCase();if(!el)return;if(q.length<2){el.hidden=true;el.innerHTML="";return}
   const L=hTpls().filter(x=>(x.ti+" "+(HCAT[x.cat]||["","",""])[2]).toLowerCase().includes(q)).slice(0,8);
   el.innerHTML=L.length?L.map(x=>`<button type="button" data-hnxpick="${esc(x.id)}"><span>${x.ic||"📌"}</span><b>${esc(x.ti)}</b><small>${esc((HCAT[x.cat]||["","",""])[2])} · ${fmH(+x.dur||0)}</small></button>`).join(""):`<small class="hhint">Nichts im Katalog – der Text wird als eigene Folgeaufgabe übernommen.</small>`;el.hidden=false}
 function hTplSave(){const x=HED.c,ti=$("heTi").value.trim();if(!ti){$("heTi").focus();return}const ws=[...$("heWd").querySelectorAll('[aria-pressed="true"]')].map(b=>+b.dataset.wd);
-  const o={ti,cat:$("heCat").value,ic:$("heIc").value.trim(),f:$("heF").value,wd:ws.length?ws[0]:null,wds:ws.length?ws:null,dur:+$("heDur").value,pts:+$("hePts").value||null,kid:$("heCat").value==="kids"?1:0,ck:$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20),nx:hNxRead()};
+  const o={ti,cat:$("heCat").value,ic:$("heIc").value.trim(),f:$("heF").value,wd:ws.length?ws[0]:null,wds:ws.length?ws:null,dur:+$("heDur").value,pts:+$("hePts").value||null,kid:$("heCat").value==="kids"?1:0,ck:$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20),nx:hNxRead().length?hNxRead():null};
   const C=hCcfg();if(x.id&&x.bi){C.ov=Object.assign({},C.ov,{[x.id]:o})}else if(x.id){C.add=C.add.map(a=>a.id===x.id?Object.assign({id:x.id},o):a)}else{C.add=C.add.concat(Object.assign({id:"t"+Date.now().toString(36)},o))}
   hset("hcat",C);$("hdlg").close();HED=null;toast(x.id?"💾 Vorlage gespeichert":"➕ Neue Vorlage im Katalog");renderHomeAll()}
 /* Tagesansicht in „Unser Plan“ */
@@ -5183,7 +5190,7 @@ document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
   if(ds.hjm!=null){hProjEdit(ds.hjm,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.dur=+t.value;delete s.pts}});return}
   if(ds.hjd!=null){hProjEdit(ds.hjd,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.date=t.value||null});if(t.value)toast("📅 Schritt eingeplant am "+fmtDate(t.value));return}
   if(HED&&["heF","heDur","heCat","heWwd"].includes(t.id))hEdUpd()});
-document.addEventListener("input",e=>{if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}if(e.target.id==="heNxTi")hNxSuggest()});
+document.addEventListener("input",e=>{if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}if(e.target.classList&&e.target.classList.contains("nxTi"))hNxSuggest(e.target)});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const t=e.target;if(t.dataset&&t.dataset.hjnew!=null){e.preventDefault();const b=document.querySelector(`[data-hjadd="${t.dataset.hjnew}"]`);b&&b.click()}if(t.id==="hjT"){e.preventDefault();$("hjAdd").click()}});
 /* Klicks im Zuhause-Bereich, in „Unser Plan“ und in der Kinderansicht */
 document.addEventListener("click",e=>{const t=e.target;
@@ -5235,9 +5242,10 @@ document.addEventListener("click",e=>{const t=e.target;
     if(id==="_own"){hEdit({ti:"",cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
     if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
-    hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,ck:(T.ck||[]).slice(),nx:T.nx?Object.assign({},T.nx):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
-  const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick);if(T&&HED){$("heNxTi").value=T.ti;$("heNxIc").value=T.ic||"";HED.nxTpl={id:T.id,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};$("heNxS").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
-  if(t.closest("[data-hnxdel]")){const i=$("heNxTi");if(i)i.value="";const d=t.closest("details");if(d)d.open=false;t.remove();return}
+    hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
+  const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick),b=nxp.closest(".hnxb");if(T&&HED&&b){b.querySelector(".nxTi").value=T.ti;b.querySelector(".nxIc").value=T.ic||"";HED.nxT=HED.nxT||[];HED.nxT[+b.dataset.i]={id:T.id,ti:T.ti,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};b.querySelector(".hnxs").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
+  if(t.closest("[data-hnxadd]")){const l=$("heNxL");if(!l)return;const i=Math.max(-1,...[...l.querySelectorAll(".hnxb")].map(b=>+b.dataset.i))+1;l.insertAdjacentHTML("beforeend",hNxBlock({},i));const n=l.lastElementChild.querySelector(".nxTi");n&&n.focus();return}
+  const nxd=t.closest("[data-hnxdel]");if(nxd){const b=nxd.closest(".hnxb"),l=$("heNxL");if(!b)return;if(l.querySelectorAll(".hnxb").length>1)b.remove();else{b.querySelector(".nxTi").value="";b.querySelector(".nxIc").value="";if(HED&&HED.nxT)HED.nxT[+b.dataset.i]=null}return}
   if(t.closest("[data-hclose]")){$("hdlg").close();HED=null;return}
   if(t.closest("[data-hmini],[data-hmdel]"))return;
   if(t.closest("[data-hsave]")){hEdSave();return}
