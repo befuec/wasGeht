@@ -732,6 +732,14 @@ function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";
     return `<div class="hf3r" title="${esc(T.txt.replace(/<[^>]+>/g,""))}"><span class="hf3l">${l}</span>${T.lvl<0?`<div class="hfb hfe"></div>`:hScale(A.map(x=>Object.assign({},x,{min:x[k]})),T)}</div>`}).join("");
   const ends=A.length===2?`<div class="hf3e"><span>${A[0].p.e} ${esc(A[0].p.n)}</span><span>${esc(A[1].p.n)} ${A[1].p.e}</span></div>`:`<div class="hf3e">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} ${esc(x.p.n)}</span>`).join("")}</div>`;
   return `<div class="hfline hf3"><div class="hf3h"><b>⚖️ Aufgabenverteilung</b><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${W}">Woche</button><button type="button" data-hfw="m" aria-pressed="${!W}">4 Wochen</button></span></div>${ends}${rows}</div>`}
+/* Ruhige Ansicht */
+const hQuiet=()=>LS.get("hwk-quiet",true)!==false;
+/* Erklärtexte nur an den ersten 3 Tagen zeigen */
+function hTipOn(){const t=LS.get("hwk-tips",{d:"",n:0});if(t.d!==T0){t.d=T0;t.n=(+t.n||0)+1;LS.set("hwk-tips",t)}return !hQuiet()||t.n<=3}
+window.homeTipsReset=()=>{LS.set("hwk-tips",{d:"",n:0});renderHomeAll()};
+function hFairMini(){const F=hFair(),A=F.st;if(A.length<2)return hFairLine();const k=F.tot?"sh":F.tpl?"shp":null;
+  const txt=k?A.map(x=>`${x.p.e} ${esc(x.p.n)} ${x[k]} %`).join(" · "):"noch nichts erledigt";
+  return `<details class="hfmini2" data-hsec="fair"${HSEC.fair?" open":""}><summary><span>Verteilung ${HFW==="w"?"diese Woche":"4 Wochen"}${k==="shp"?" · geplant":""}</span><b>${txt}</b></summary>${hFairLine()}</details>`}
 /* Tagesring */
 function hRing(done,tot){const r=16,cir=2*Math.PI*r,p=tot?done/tot:0;return `<svg class="hring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" class="hrbg"/><circle cx="20" cy="20" r="${r}" class="hrfg" stroke-dasharray="${cir}" stroke-dashoffset="${cir*(1-p)}"/></svg>`}
 /* Wochen-Rückblick (Sa ab 17 Uhr, So, Mo) */
@@ -759,14 +767,15 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
     <div class="hringf"><span class="hseg">${[["all","Alle"],["me","Meine"],["open","🙋"]].map(([k,l])=>`<button type="button" data-hfwho="${k}" aria-pressed="${HF.who===k}" title="${k==="open"?"Nur offene":k==="me"?"Nur meine":"Alle"}">${l}</button>`).join("")}</span><button type="button" class="hdone${HF.done?" on":""}" data-hfdone2 aria-pressed="${HF.done}" title="Erledigte ${HF.done?"ausblenden":"zeigen"}">✓${nDoneAll?" "+nDoneAll:""}</button></div></div>`;
   const odv=od;
   const odBar=odv.length?`<details class="hodbar" data-hsec="od"${HSEC.od?" open":""}><summary>⚠️ ${odv.length} überfällig <span class="hflc" aria-hidden="true"></span></summary>${odv.map(i=>hRow(i,"od")).join("")}</details>`:"";
-  const tdv=td.filter(vis),dlv=dly.filter(vis),nxo=HSEC.next!=null?HSEC.next:true;
-  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag <small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small></h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
-    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`}`;
+  const tdv=td.filter(vis),dlv=dly.filter(vis),nxo=HSEC.next!=null?HSEC.next:true,Q=hQuiet(),tip=hTipOn();
+  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag ${tip?`<small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small>`:""}</h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
+    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:tip?`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`:""}`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
   hAgendaSave();
-  v.innerHTML=`${head}${hAbkHtml()}${hReview()}${hFairLine()}
-    <section class="pvsec hnow">${ringRow}${now}</section>
-    <section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>
+  const nProjAll=hProjects().length;
+  v.innerHTML=`${head}${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
+    <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
+    ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
     <section class="pvsec">${sec("pts","🏆 Punkte & Belohnungen"+(openR?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR}</span>`:""),hPtsHtml(),true)}</section>
     <button type="button" class="hfab" data-hcatopen aria-label="Aufgaben & Katalog öffnen" title="Aufgaben & Katalog">➕<small>${ch.length?ch.length:""}</small></button>`;
   const cd=$("hcatdlg");if(cd&&cd.open)renderCatSheet()}
@@ -795,6 +804,7 @@ function hPtsHtml(){const me=hMe(),P=hPeople(),meP=hPer(me),sel=hPer(HPSEL)?HPSE
       <h5>Wochen-Challenges</h5>${hChList().map(c=>mrow("ch",c[0],`${c[1]} ${esc(c[2])} · +${c[3]}`,cfg.ch.includes(c[0]),"data-hchon")).join("")}
       ${cfg.cdel.length?`<p class="hrest">${cfg.cdel.length} gelöscht · <button type="button" data-hrestore="ch">wiederherstellen</button></p>`:""}
       <button type="button" class="pmini" data-hmini="ch" data-id="">➕ Eigene Challenge</button></div></details>`;
+  if(hQuiet())return `${avs}${next}${redOpen}<details class="hown hpmore" data-hmgr="more"${HMGR.more?" open":""}><summary>Mehr: Level, Abzeichen, Belohnungen, Familie & Challenges</summary>${det}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}</details>`;
   return `${avs}${det}${next}${redOpen}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}`}
 /* Katalog als eigenes Blatt */
 function hCatHtml(){const ch=hChores(),TP=hTpls(),tids=new Set(TP.map(x=>x.id)),cc0=hCcfg(),inst=id=>ch.filter(c=>c.tpl===id),extra=ch.filter(c=>!c.tpl||!tids.has(c.tpl));
@@ -816,7 +826,7 @@ function hCatHtml(){const ch=hChores(),TP=hTpls(),tids=new Set(TP.map(x=>x.id)),
       ${TAB==="all"&&cc0.del.length?`<p class="hrest">${cc0.del.length} Vorlagen gelöscht · <button type="button" data-hrestore="tpl">wiederherstellen</button></p>`:""}
       <div class="hownbtns">${TAB==="all"?`<button type="button" class="pbtn" data-htpnew>➕ Neue Vorlage im Katalog</button>`:""}<button type="button" class="pbtn" data-hadd="_own">➕ Zusätzliche Aufgabe</button><button type="button" class="pbtn" data-hadd="_apt">📅 Termin eintragen</button></div>`}
 function renderCatSheet(){const d=$("hcatdlg");if(!d)return;const b=d.querySelector(".hcsb"),y=b?b.scrollTop:0;
-  d.innerHTML=`<div class="hcsh"><h3>📋 Aufgaben & Katalog</h3><button type="button" class="mbx" data-hcatclose aria-label="Schließen">✕</button></div><div class="hcsb">${hCatHtml()}</div>`;
+  d.innerHTML=`<div class="hcsh"><h3>📋 Aufgaben & Katalog</h3><button type="button" class="mbx" data-hcatclose aria-label="Schließen">✕</button></div><div class="hcsb">${hCatHtml()}${hQuiet()&&!hProjects().length?`<div class="hcproj"><p class="hsub">Größeres Vorhaben mit mehreren Schritten?</p><button type="button" class="pbtn" data-hjnew2>🛠️ Neues Projekt</button></div>`:""}</div>`;
   const nb=d.querySelector(".hcsb");if(nb)nb.scrollTop=y;if(HCQ)hCatFilter()}
 function hCatFilter(){const q=HCQ.trim().toLowerCase(),v=$("hcatdlg");if(!v)return;let any=false;v.querySelectorAll(".hcat").forEach(d=>{let n=0;d.querySelectorAll(".htbw").forEach(w=>{const ok=!q||q.split(/\s+/).every(x=>w.dataset.q.includes(x));w.hidden=!ok;if(ok)n++});d.hidden=!!q&&!n;if(q)d.open=n>0;else if(HCTAB!=="all")d.open=true;if(n)any=true});const pk=v.querySelector(".hpacks");if(pk)pk.hidden=!!q;const nn=$("hcNone");if(nn)nn.hidden=!q||any}
 /* Starter-Paket: Vorschlag mit Personen, ausgeglichen nach Zeit */

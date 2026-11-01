@@ -371,6 +371,19 @@ function movePlan(k,from,to){if(from===to)return;const it=((ST.plans[from]||{}).
   const rest=((ST.plans[from]||{}).items||[]).filter(x=>x.k!==k),dest=((ST.plans[to]||{}).items||[]).filter(x=>x.k!==k).concat([it]);
   if(rest.length)ST.plans[from]={items:rest};else delete ST.plans[from];write("plans/"+from,rest.length?{items:rest}:null);setPlan(to,dest);toast("⭐ Bevorzugt: "+fmtDate(to))}
 let INF={},KI=0,KSIG="",KL=[];
+/* Ruhige Ansicht: weniger Farbe, weniger Emojis in Überschriften, leere Bereiche aus */
+function wgQuiet(){try{return localStorage.getItem("hwk-quiet")!=="false"}catch(_){return true}}
+window.wgQuiet=wgQuiet;
+document.body.classList.toggle("quiet",wgQuiet());
+const QEMO=/^\s*((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\uFE0F|\u20E3|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*\uFE0F?)\s*/u;
+const QSEL=".mtitle,.hsec2>summary h3,h4.hday,.hown>summary,.hf3l,.seth,.pvsec>h3,.hcsh h3,.hnxt,.pvsec>h2";
+function quietEmo(){if(!document.body.classList.contains("quiet"))return;document.querySelectorAll(QSEL).forEach(el=>{if(el.dataset.qe)return;el.dataset.qe="1";const tn=[...el.childNodes].find(n=>n.nodeType===1||(n.nodeType===3&&n.textContent.trim()));if(!tn||tn.nodeType!==3)return;const m=tn.textContent.match(QEMO);if(!m)return;const sp=document.createElement("span");sp.className="qemo";sp.textContent=m[0];tn.textContent=tn.textContent.slice(m[0].length);el.insertBefore(sp,tn)})}
+{let qt=0;new MutationObserver(()=>{clearTimeout(qt);qt=setTimeout(quietEmo,20)}).observe(document.body,{childList:true,subtree:true});quietEmo()}
+function renderViewSet(){const el=$("viewSet");if(!el)return;const q=wgQuiet();
+  el.innerHTML=`<label class="famchk"><input type="checkbox" id="quietOn"${q?" checked":""}> Ruhige Ansicht <small class="famnote">– weniger Farben und Symbole, leere Bereiche ausgeblendet, Punkte kompakt</small></label><button type="button" class="pmini" id="tipsReset">💡 Tipps wieder zeigen</button>`}
+renderViewSet();
+document.addEventListener("change",e=>{if(e.target.id==="quietOn"){try{localStorage.setItem("hwk-quiet",e.target.checked?"true":"false")}catch(_){}location.reload()}});
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("#tipsReset")){window.homeTipsReset&&window.homeTipsReset();toast("💡 Tipps werden wieder angezeigt")}});
 function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();renderMaybe();
   INF={};const DP={};[...new Set(E.map(o=>o.d))].forEach(dd=>{DP[dd]=dayPlan(E.filter(o=>o.d===dd));Object.assign(INF,Object.fromEntries(Object.entries(DP[dd].info).map(([k,v])=>[dd+"|"+k,v])))});
   const I=o=>INF[o.d+"|"+o.x.k];resolveProfiles(E.map(o=>o.x.by));
@@ -386,7 +399,7 @@ function renderPlan(){if(M2!=="plan")return;const E=planEntries();renderWE();ren
   }else{const L=PALL?E:E.filter(o=>o.d.startsWith(CALM));
     const MS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];const mons=[...new Set(E.map(o=>o.d.slice(0,7)).concat([CALM]))].sort();
     const tog=`<span class="pmode" role="group" aria-label="Monat oder alle">${mons.map(ym=>{const [yy,mm]=ym.split("-").map(Number);return `<button type="button" data-pmon="${ym}" aria-pressed="${!PALL&&ym===CALM}" title="${MONL[mm-1]} ${yy}">${MS[mm-1]}${yy!==TODAY.getFullYear()?" "+String(yy).slice(2):""}</button>`}).join("")}<button type="button" data-pmode="a" aria-pressed="${PALL}">Alle</button></span>`;
-    head=`<b>${PALL?"Alles Geplante":"Alles im "+MONL[m-1]+" "+y}</b>${tog}<span class="pcnt">${L.length} ${L.length===1?"Eintrag":"Einträge"}</span>`;
+    head=`<b>${PALL?"Alles Geplante":"Alles im "+MONL[m-1]+" "+y}</b>${tog}${wgQuiet()&&!L.length?"":`<span class="pcnt">${L.length} ${L.length===1?"Eintrag":"Einträge"}</span>`}`;
     let last="",lm="";L.forEach(o=>{if(PALL&&o.d.slice(0,7)!==lm){lm=o.d.slice(0,7);const [yy,mm]=lm.split("-").map(Number);h+=`<h3 class="pmh">${MONL[mm-1]} ${yy}</h3>`}if(o.d!==last){const nw=Object.values(DP[o.d]?DP[o.d].info:{}).filter(v=>v.warn).length;h+=`<h4 class="pdh">${o.d===T0?"Heute · ":o.d===plus(1)?"Morgen · ":""}${fmtDate(o.d)}${nw?` <span class="pwarn" style="display:inline">⚠️ ${nw===1?"1 Überschneidung":nw+" Überschneidungen"}</span>`:""}</h4>`;last=o.d}h+=prow(o,false,I(o))});
     if(!L.length)h=PALL?`<div class="evempty">Noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`:`<div class="evempty">Im ${MONL[m-1]} ist noch nichts geplant. Bei Zielen und Terminen „Einplanen“ antippen.</div>`}
   $("pHead").innerHTML=head;$("pList").innerHTML=h;{const pf=$("pFair");if(pf){pf.innerHTML="";pf.hidden=true}}
@@ -405,12 +418,12 @@ function renderPCal(E){const EVN=evAllNear(),MBD={};maybeEntries().forEach(x=>{i
   for(let d=1;d<=n;d++){const s=iso(d),c=E.filter(o=>o.d===s).length,rg=E.filter(o=>{const r=rangeOf(o);return o.d!==s&&r&&r[0]<=s&&s<=r[1]}).length,
     dw=pdate(s).getDay(),bz=!!ST.busy[s],wef=!bz&&s>=T0&&(window.FREEDAYS?FREEDAYS.has(dw):(dw===0||dw===6))&&!c,wx=(typeof WXD!=="undefined"&&WXD)?WXD.find(x=>x.dt===s):null,
     cl=[s>=T0&&window.homeBlockDay&&homeBlockDay(s)?"hblk":"",s<T0?"past":"",s===T0?"today":"",c?"has":"",!c&&rg?"rng":"",wef?"wefree":"",bz?"obusy":"",dw===6?"sa":"",dw===6||dw===0?"wkend":""].filter(Boolean).join(" "),
-    mb=(MBD[s]||[]).length,hn=s>=T0&&window.homeDots?homeDots(s):0,hb=window.homeBlockDay&&homeBlockDay(s),dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).concat(hn?[`<b class="cd h"></b>`]:[]).slice(0,3).join("");
+    mb=(MBD[s]||[]).length,hn=s>=T0&&window.homeDots&&!wgQuiet()?homeDots(s):0,hb=window.homeBlockDay&&homeBlockDay(s),dots=E.filter(o=>o.d===s).map(o=>`<b class="cd ${o.ev?"e":"z"}"></b>`).concat((MBD[s]||[]).map(()=>`<b class="cd m"></b>`)).concat(hn?[`<b class="cd h"></b>`]:[]).slice(0,3).join("");
     h+=`<button type="button" data-cal="${s}" class="${cl}" aria-pressed="${s===PDAY}" title="${bz?esc("Anderweitig verplant"+(ST.busy[s].note?": "+ST.busy[s].note:"")):mb?esc("♡ Vielleicht: "+MBD[s].map(x=>x.ev.ti).join(", ")):wef?esc(dayTip(s,EVN)||"frei"):""}" aria-label="${fmtDate(s)}${bz?", anderweitig verplant":""}${wef?", freier Ausflugstag":""}${c?", "+c+" geplant":""}${rg?", "+rg+" mehrtägig":""}${mb?", "+mb+" vielleicht":""}"${s<T0?" disabled":""}>${d}${wx&&s>=T0?`<em>${wxIcon(wx.rain,wx.code,wx.hi)}</em>`:""}${c||mb||hn?`<i class="cds">${dots}</i>`:bz?`<i class="cbz">⛔</i>`:rg?`<i class="r">┄</i>`:""}</button>`}
   const can=CALM>T0.slice(0,7);
-  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div><div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span><span><b class="cd h"></b>Zuhause</span><span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;
+  $("pCal").innerHTML=`<div class="pcalh"><button type="button" data-calm="-1" aria-label="Vorheriger Monat"${can?"":" disabled"}>‹</button><span>${MONL[m-1]} ${y}</span><button type="button" data-calm="1" aria-label="Nächster Monat">›</button></div><div class="pcalq"><button type="button" data-jump="today">Heute</button><button type="button" data-jump="free">Nächstes freies Wochenende</button></div><div class="pcalg">${h}</div>${(()=>{const lg=`<div class="pleg2"><span><b class="cd z"></b>Ziel</span><span><b class="cd e"></b>Veranstaltung</span><span><b class="cd m"></b>Vielleicht</span>${wgQuiet()?"":`<span><b class="cd h"></b>Zuhause</span>`}<span><i class="lgf"></i>frei</span><span><i class="lg5"></i>anderweitig verplant</span><span><i class="lgr">┄</i>mehrtägig</span></div>`;return wgQuiet()?`<details class="pleg2d"><summary>Legende</summary>${lg}</details>`:lg})()}`;
   renderNext(E)}
-function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);
+function renderNext(E){const el=$("pNext");if(!el)return;const N=E.filter(o=>o.d>=T0).slice(0,5);el.hidden=wgQuiet()&&!N.length;if(el.hidden){el.innerHTML="";return}
   el.innerHTML=`<h4>Nächste Ausflüge</h4>`+(N.length?N.map(o=>`<button type="button" class="nxrow" data-cal="${o.d}"><span class="nxd">${o.d===T0?"Heute":o.d===plus(1)?"Morgen":fmtDate(o.d)}${o.t?`<small>${esc(o.t)}</small>`:""}</span><span class="nxt"><b class="cd ${o.ev?"e":"z"}"></b>${esc(o.ti.replace(/^Ausflug: /,""))}</span></button>`).join(""):`<p class="pvsub">Noch nichts eingeplant.</p>`)}
 function openPlan(){setM2("plan")}
 window.renderPlanNow=()=>renderPlan();
@@ -709,7 +722,7 @@ function mbRow({id,p,ev,planned,o},ctx){const op=MBOPEN.has(ctx+id);
   return `<div class="mbrow${ev?" mbe":""}"><div style="min-width:0"><b>${esc(ev?ev.ti:p.n)}</b><small>${ev?(ev.to?`läuft ${fmtDate(ev.dt<T0?T0:ev.dt)} – ${fmtDate(ev.to)}`:`${fmtDate(ev.dt)}${ev.t?", "+ev.t+" Uhr":""}`)+" · "+esc(p.n):esc(CATS[p.c]||"Ziel")+" · "+Math.round(p.km)+" km"}${byTag(o)} · <button type="button" class="mbdet" data-mbdet="${ctx+id}" aria-expanded="${op}">Details ${op?"▴":"▾"}</button></small>${op?pdet({p,ev,d:ev?ev.dt<T0?T0:ev.dt:(PDAY||T0)}):""}</div>
     <span class="mba">${planned?`<span class="pplan on">${IC.pin}eingeplant</span>`:`<button type="button" class="pmini" data-mbplan="${id}">${IC.pin}${ev&&!ev.to?"Einplanen":"Tag wählen"}</button>`}<button type="button" class="mbx" data-mbx="${id}" aria-label="Aus Vielleicht entfernen">✕</button></span></div>`}
 function maybeOn(s){return maybeEntries().filter(x=>x.ev&&!x.ev.to&&!x.planned&&x.ev.dt===s)}
-function renderMaybe(){const L=maybeEntries(),el=$("maybeList");if(!el)return;$("mbN").textContent=L.filter(x=>!x.planned).length||"";
+function renderMaybe(){const L=maybeEntries(),el=$("maybeList");if(!el)return;{const sc=el.closest(".pvsec");if(sc)sc.hidden=wgQuiet()&&!L.length}$("mbN").textContent=L.filter(x=>!x.planned).length||"";
   el.innerHTML=L.length?L.map(x=>mbRow(x,"l")).join("")
     :`<p class="pvsub">Noch nichts gemerkt. Bei Zielen und Terminen „♡ Vielleicht“ antippen – ganz ohne Datum.</p>`}
 /* --- B2: Wochenend-Planer --- */
