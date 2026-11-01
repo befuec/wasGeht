@@ -662,7 +662,7 @@ const hNxTxt=nx=>nx&&nx.ti?`↪️ danach: ${nx.ic||""} ${nx.ti} (nach ${nx.n} $
 function hNxSpawn(cid,d){const k="hd:"+cid+":"+d,rec=SETS[k],c=SETS["hc:"+cid];if(!rec||!c||!c.nx||!c.nx.ti||rec.nxc)return null;const nx=c.nx;
   const base=rec.at?isoD(new Date(rec.at)):T0,date=addD(base,Math.max(1,Math.round((+nx.n||1)*(HVU0[nx.u]||1)))),dur=+nx.dur||+c.dur||30;
   const who=nx.who==="="?(rec.grp&&rec.grp!=="@c"?rec.grp:c.who&&c.who!=="rot"?c.who:rec.by):(nx.who||"");
-  const ncid="c"+Date.now().toString(36)+"n";hset("hc:"+ncid,{ti:nx.ti,ic:nx.ic||c.ic||"",cat:c.cat,f:"x",date,dur,unpop:0,kid:c.kid||0,pts:hrec(dur,0,c.kid),who,ck:Array.isArray(nx.ck)?nx.ck.slice():[],start:base,from:cid,nx:nx.nx||null});
+  const ncid="c"+Date.now().toString(36)+"n";hset("hc:"+ncid,{ti:nx.ti,ic:nx.ic||c.ic||"",cat:c.cat,f:"x",date,dur,unpop:0,kid:c.kid||0,pts:hrec(dur,0,c.kid),who,ck:Array.isArray(nx.ck)?nx.ck.slice():[],start:base,from:cid,nx:nx.nx||null,tpl:nx.tpl||undefined});
   hset(k,Object.assign({},rec,{nxc:ncid}));return {ncid,date}}
 function hNxUndo(rec){if(!rec||!rec.nxc)return null;const k="hc:"+rec.nxc,c=SETS[k];if(!c)return null;if(Object.keys(SETS).some(x=>x.startsWith("hd:"+rec.nxc+":")))return null;hset(k,null);return [k,c]}
 /* Abhaken per Erinnerung (Service Worker) hat keine Folgeaufgabe angelegt → nachholen */
@@ -928,8 +928,9 @@ function hEdit(c,isNew,mode){HED={c:Object.assign({},c),isNew,mode:mode||"task"}
    <label>Checkliste <small>(eine Zeile pro Punkt, optional)</small><textarea id="heCk" rows="4">${esc((x.ck||[]).join("\n"))}</textarea></label>
    ${(()=>{const nx=x.nx||{},P=hPeople().concat(hGrpOpts());return `<details class="hnx"${nx.ti?" open":""}><summary>↪️ Folgeaufgabe (huckepack) ${nx.ti?`<small>– ${esc(nx.ti)}</small>`:"<small>– optional</small>"}</summary>
    <p class="hsub">Wird diese Aufgabe abgehakt, legt die App automatisch die Folgeaufgabe an, z. B. Deko aufbauen → nach 6 Wochen Deko abbauen.</p>
-   <div class="hf2"><label>Folgeaufgabe<input type="text" id="heNxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="z. B. Deko abbauen"></label><label>Icon<input type="text" id="heNxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
-   <div class="hvorr"><span class="hhint">nach</span><select id="heNxN" aria-label="Abstand">${[...Array(30).keys()].map(i=>i+1).concat((+nx.n>30)?[+nx.n]:[]).map(n=>`<option${n===(+nx.n||2)?" selected":""}>${n}</option>`).join("")}</select><select id="heNxU" aria-label="Einheit">${[["d","Tagen"],["w","Wochen"],["m","Monaten"]].map(([k,l])=>`<option value="${k}"${(nx.u||"w")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">nach dem Abhaken</span></div>
+   <div class="hnxr"><label>Folgeaufgabe<input type="search" id="heNxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" id="heNxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
+   <div class="hnxs" id="heNxS" hidden></div>
+   <span class="hlab">Wann?</span><div class="hvorr"><select id="heNxN" aria-label="Abstand">${[...Array(30).keys()].map(i=>i+1).concat((+nx.n>30)?[+nx.n]:[]).map(n=>`<option${n===(+nx.n||2)?" selected":""}>${n}</option>`).join("")}</select><select id="heNxU" aria-label="Einheit">${[["d","Tagen"],["w","Wochen"],["m","Monaten"]].map(([k,l])=>`<option value="${k}"${(nx.u||"w")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">nach dem Abhaken</span></div>
    <label>Wer macht die Folgeaufgabe?<select id="heNxW"><option value="="${(nx.who??"=")==="="?" selected":""}>Wie diese Aufgabe</option><option value=""${nx.who===""?" selected":""}>🙋 offen</option>${P.map(p=>`<option value="${p.id}"${nx.who===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></label>
    ${nx.ti?`<button type="button" class="pmini" data-hnxdel>✕ Folgeaufgabe entfernen</button>`:""}</details>`})()}
    <div class="hfbtn">${isNew?"":TPL?`<button type="button" class="pmini hdel" data-htpx="${esc(x.id)}">🗑️ Aus Katalog löschen</button>`:`<button type="button" class="pmini hdel" data-hdel>🗑️ Löschen</button>`}<button type="button" class="pbtn" data-hclose>Abbrechen</button><button type="button" class="pbtn hsave" data-hsave>${isNew?"➕ Hinzufügen":"💾 Speichern"}</button></div></form>`;
@@ -949,7 +950,12 @@ function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("h
   x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;{const nx=hNxRead();if(nx)x.nx=Object.assign({},x.nx||{},nx);else delete x.nx}
   if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
   const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
-function hNxRead(){const ti=($("heNxTi")||{}).value;if(!ti||!ti.trim())return null;return {ti:ti.trim().slice(0,60),ic:$("heNxIc").value.trim(),n:+$("heNxN").value||1,u:$("heNxU").value,who:$("heNxW").value,dur:(HED&&HED.c.nx&&HED.c.nx.dur)||+$("heDur").value||30}}
+function hNxRead(){const ti=($("heNxTi")||{}).value;if(!ti||!ti.trim())return null;const T=HED&&HED.nxTpl&&hTpls().find(x=>x.id===HED.nxTpl.id&&x.ti===ti.trim())?HED.nxTpl:null;
+  const o={ti:ti.trim().slice(0,60),ic:$("heNxIc").value.trim(),n:+$("heNxN").value||1,u:$("heNxU").value,who:$("heNxW").value,dur:T?T.dur:(HED&&HED.c.nx&&HED.c.nx.ti===ti.trim()&&HED.c.nx.dur)||+$("heDur").value||30};
+  if(T){if(T.ck.length)o.ck=T.ck;if(T.nx)o.nx=T.nx;o.tpl=T.id}else if(HED&&HED.c.nx&&HED.c.nx.ti===o.ti){["ck","nx","tpl"].forEach(k=>{if(HED.c.nx[k])o[k]=HED.c.nx[k]})}return o}
+function hNxSuggest(){const el=$("heNxS"),q=($("heNxTi").value||"").trim().toLowerCase();if(!el)return;if(q.length<2){el.hidden=true;el.innerHTML="";return}
+  const L=hTpls().filter(x=>(x.ti+" "+(HCAT[x.cat]||["","",""])[2]).toLowerCase().includes(q)).slice(0,8);
+  el.innerHTML=L.length?L.map(x=>`<button type="button" data-hnxpick="${esc(x.id)}"><span>${x.ic||"📌"}</span><b>${esc(x.ti)}</b><small>${esc((HCAT[x.cat]||["","",""])[2])} · ${fmH(+x.dur||0)}</small></button>`).join(""):`<small class="hhint">Nichts im Katalog – der Text wird als eigene Folgeaufgabe übernommen.</small>`;el.hidden=false}
 function hTplSave(){const x=HED.c,ti=$("heTi").value.trim();if(!ti){$("heTi").focus();return}const ws=[...$("heWd").querySelectorAll('[aria-pressed="true"]')].map(b=>+b.dataset.wd);
   const o={ti,cat:$("heCat").value,ic:$("heIc").value.trim(),f:$("heF").value,wd:ws.length?ws[0]:null,wds:ws.length?ws:null,dur:+$("heDur").value,pts:+$("hePts").value||null,kid:$("heCat").value==="kids"?1:0,ck:$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20),nx:hNxRead()};
   const C=hCcfg();if(x.id&&x.bi){C.ov=Object.assign({},C.ov,{[x.id]:o})}else if(x.id){C.add=C.add.map(a=>a.id===x.id?Object.assign({id:x.id},o):a)}else{C.add=C.add.concat(Object.assign({id:"t"+Date.now().toString(36)},o))}
@@ -1021,7 +1027,7 @@ document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
   if(ds.hjm!=null){hProjEdit(ds.hjm,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.dur=+t.value;delete s.pts}});return}
   if(ds.hjd!=null){hProjEdit(ds.hjd,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.date=t.value||null});if(t.value)toast("📅 Schritt eingeplant am "+fmtDate(t.value));return}
   if(HED&&["heF","heDur","heCat","heWwd"].includes(t.id))hEdUpd()});
-document.addEventListener("input",e=>{if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}});
+document.addEventListener("input",e=>{if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}if(e.target.id==="heNxTi")hNxSuggest()});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const t=e.target;if(t.dataset&&t.dataset.hjnew!=null){e.preventDefault();const b=document.querySelector(`[data-hjadd="${t.dataset.hjnew}"]`);b&&b.click()}if(t.id==="hjT"){e.preventDefault();$("hjAdd").click()}});
 /* Klicks im Zuhause-Bereich, in „Unser Plan“ und in der Kinderansicht */
 document.addEventListener("click",e=>{const t=e.target;
@@ -1074,6 +1080,7 @@ document.addEventListener("click",e=>{const t=e.target;
     if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
     hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,ck:(T.ck||[]).slice(),nx:T.nx?Object.assign({},T.nx):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
+  const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick);if(T&&HED){$("heNxTi").value=T.ti;$("heNxIc").value=T.ic||"";HED.nxTpl={id:T.id,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};$("heNxS").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
   if(t.closest("[data-hnxdel]")){const i=$("heNxTi");if(i)i.value="";const d=t.closest("details");if(d)d.open=false;t.remove();return}
   if(t.closest("[data-hclose]")){$("hdlg").close();HED=null;return}
   if(t.closest("[data-hmini],[data-hmdel]"))return;
