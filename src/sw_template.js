@@ -74,11 +74,12 @@ async function showReminders(test) {
     await self.registration.showNotification(`${i.ic || "🏠"} ${i.ti}`, Object.assign({
       body: (Array.isArray(i.team) ? "Gemeinsam – Punkte werden geteilt" : i.who ? "Für dich" : "🙋 Noch niemand – übernimmst du?") + (i.disp < today() ? " · ⚠️ überfällig" : "") + ` · +${i.pts} Punkte`,
       tag: "wg-t-" + i.cid + "-" + i.d, renotify: false, data: { url: "./?abhaken=1#zuhause", item: i },
-      actions: i.cid.startsWith("j:") ? [] : [{ action: "done", title: "✓ Erledigt" }, { action: "open", title: "Liste" }] }, opt));
+      actions: i.cid.startsWith("j:") || i.cid.startsWith("p") ? [] : [{ action: "done", title: "✓ Erledigt" }, { action: "open", title: "Liste" }] }, opt));
   }
   if (L.length > show.length) await self.registration.showNotification(head, Object.assign({ body: L.slice(show.length).map(i => "• " + i.ti).join("\n"), tag: "wg-sum", data: { url: "./?abhaken=1#zuhause" } }, opt));
 }
 async function markDone(i) {
+  if (String(i.cid).startsWith("p")) return false;
   const auth = await kvGet("auth"), ag = await kvGet("agenda"); if (!auth || !ag) return false;
   const t0 = today(), late = i.disp < t0 ? 1 : 0, data = { by: ag.me, pts: i.pts, min: i.min || 0, cat: i.cat, at: Date.now(), late, tk: 0, vol: i.who ? 0 : 1 }; if (i.ckw) { const w = {}; for (const k in i.ckw) { const m = k === "_me" ? ag.me : k; w[m] = (w[m] || 0) + i.ckw[k]; } const ks = Object.keys(w); if (ks.length > 1 || ks[0] !== ag.me) { data.team = ks; data.w = w; if (ks.length > 1) data.grp = "@c"; } } else if (Array.isArray(i.team) && i.team.length) { data.team = i.team; data.grp = i.who; }
   const iv = crypto.getRandomValues(new Uint8Array(12)), id = "hd:" + i.cid + ":" + i.d;
