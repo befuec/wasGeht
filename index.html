@@ -1625,6 +1625,22 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .hpmore{margin-top:10px}.hpmore>summary{color:var(--muted)}
 .hcproj{display:grid;gap:6px;justify-items:start;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
 .pleg2d>summary{font-size:12px;color:var(--muted);cursor:pointer;margin-top:6px}
+
+/* ---- Suchleiste Zuhause ---- */
+.hsrchw{margin:0 0 14px;display:grid;gap:8px}
+.hsrch{position:relative}
+.hsrch input{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:11px 40px 11px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}
+.hsrch input:focus-visible{outline:2px solid var(--nx);outline-offset:1px}
+.hsrch input::-webkit-search-cancel-button{display:none}
+.hsx{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);font-size:16px;width:32px;height:32px;border-radius:50%;cursor:pointer}
+.hsres{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px;display:grid;gap:8px}
+.hsg{display:grid;gap:2px}.hsg h5{margin:4px 6px 2px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.hsr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:0 8px;align-items:center;text-align:left;font:inherit;border:0;background:transparent;color:var(--ink);padding:7px 6px;border-radius:10px;cursor:pointer}
+.hsr:hover,.hsr:focus-visible{background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.hsr span{grid-row:span 2;font-size:20px;text-align:center}.hsr b{font-size:14px;font-weight:700;min-width:0;overflow-wrap:anywhere}.hsr small{grid-column:2;color:var(--muted);font-size:12px}.hsr i{grid-row:1/span 2;grid-column:3;font-style:normal;color:var(--muted);font-size:14px}
+.hsnew{font:inherit;font-weight:700;font-size:14px;text-align:left;border:1.5px dashed var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;overflow-wrap:anywhere}
+.hsnew.big{border-style:solid;border-color:var(--nx);background:color-mix(in srgb,var(--nx) 8%,var(--surface))}
+.hsmore{font:inherit;font-size:13px;font-weight:700;border:0;background:transparent;color:var(--nx);padding:6px;cursor:pointer;text-align:left}
 </style>
 
 <div class="wrap">
@@ -2280,7 +2296,7 @@ renderLegend();
 
 
 /* Bereiche (Tabs) und Termine */
-const BUILD="2026-11-01";
+const BUILD="2026-11-02";
 let MT="ziele", EVDATE="all";
 try{MT=localStorage.getItem("hwk-tab")||"ziele"}catch(e){}
 window.HASH0=(location.hash||"").toLowerCase();
@@ -4923,6 +4939,26 @@ function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";
     return `<div class="hf3r" title="${esc(T.txt.replace(/<[^>]+>/g,""))}"><span class="hf3l">${l}</span>${T.lvl<0?`<div class="hfb hfe"></div>`:hScale(A.map(x=>Object.assign({},x,{min:x[k]})),T)}</div>`}).join("");
   const ends=A.length===2?`<div class="hf3e"><span>${A[0].p.e} ${esc(A[0].p.n)}</span><span>${esc(A[1].p.n)} ${A[1].p.e}</span></div>`:`<div class="hf3e">${A.map(x=>`<span><i style="background:${x.p.c}"></i>${x.p.e} ${esc(x.p.n)}</span>`).join("")}</div>`;
   return `<div class="hfline hf3"><div class="hf3h"><b>⚖️ Aufgabenverteilung</b><span class="hseg" role="group" aria-label="Zeitraum"><button type="button" data-hfw="w" aria-pressed="${W}">Woche</button><button type="button" data-hfw="m" aria-pressed="${!W}">4 Wochen</button></span></div>${ends}${rows}</div>`}
+/* Suchleiste oben: bestehende Aufgaben + Katalog, sonst neue Aufgabe */
+let HSQ="";
+const hNorm=t=>String(t||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
+function hSrchScore(txt,ti,W){const T=hNorm(txt);if(!W.every(w=>T.includes(w)))return 0;const t=hNorm(ti);return 1+(t.startsWith(W[0])?3:0)+(W.every(w=>t.includes(w))?2:0)}
+function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).split(/\s+/).filter(Boolean),ch=hChores(),TP=hTpls(),used=new Set(ch.map(c=>c.tpl).filter(Boolean));
+  const own=ch.map(c=>{const cc=HCAT[c.cat]||["","📌",""],pn=(hPer(c.who)||{}).n||"";return {c,sc:hSrchScore([c.ti,cc[2],(c.ck||[]).join(" "),pn].join(" "),c.ti,W)}}).filter(x=>x.sc).sort((a,b)=>b.sc-a.sc||a.c.ti.localeCompare(b.c.ti));
+  const cat=TP.filter(x=>!used.has(x.id)).map(x=>{const cc=HCAT[x.cat]||["","📌",""];return {x,sc:hSrchScore([x.ti,cc[2],(x.ck||[]).join(" ")].join(" "),x.ti,W)}}).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc||a.x.ti.localeCompare(b.x.ti));
+  const few=own.length+cat.length<3,MAX=6;
+  const nw=`<button type="button" class="hsnew${few?" big":""}" data-hsnew>➕ „${esc(q)}“ als neue Aufgabe anlegen</button>`;
+  const oRow=({c})=>{const cc=HCAT[c.cat]||["","📌",""];return `<button type="button" class="hsr" data-hedit="${esc(c.cid)}"><span>${c.ic||cc[1]}</span><b>${esc(c.ti)}</b><small>${hWwd(c)?esc(hWhoWdTxt(c)):esc((hPer(c.who)||{n:c.who==="rot"?"abwechselnd":"offen"}).n)} · ${esc(hTurn(c))}</small><i>✏️</i></button>`};
+  const tRow=({x})=>{const cc=HCAT[x.cat]||["","📌",""];return `<button type="button" class="hsr" data-hadd="${esc(x.id)}"><span>${x.ic||cc[1]}</span><b>${esc(x.ti)}</b><small>${esc(cc[2])} · ${esc(HFL[x.f]||"")} · ${fmH(+x.dur||0)}</small><i>➕</i></button>`};
+  return `<div class="hsres" id="hsRes">${few?nw:""}
+    ${own.length?`<div class="hsg"><h5>Eure Aufgaben (${own.length})</h5>${own.slice(0,MAX).map(oRow).join("")}${own.length>MAX?`<small class="hhint">… und ${own.length-MAX} weitere – genauer suchen</small>`:""}</div>`:""}
+    ${cat.length?`<div class="hsg"><h5>Aus dem Katalog (${cat.length})</h5>${cat.slice(0,MAX).map(tRow).join("")}${cat.length>MAX?`<button type="button" class="hsmore" data-hsmore>Alle ${cat.length} Treffer im Katalog zeigen</button>`:""}</div>`:""}
+    ${!own.length&&!cat.length?`<p class="hhint">Nichts gefunden – weder bei euren Aufgaben noch im Katalog.</p>`:""}
+    ${few?"":nw}</div>`}
+function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen">${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
+function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
+function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
+  hEdit({ti:q.slice(0,60),cat:best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
 /* Ruhige Ansicht */
 const hQuiet=()=>LS.get("hwk-quiet",true)!==false;
 /* Erklärtexte nur an den ersten 3 Tagen zeigen */
@@ -4964,11 +5000,13 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
   hAgendaSave();
   const nProjAll=hProjects().length;
-  v.innerHTML=`${head}${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
+  const sf=document.activeElement&&document.activeElement.id==="hsQ",sp=sf?document.activeElement.selectionStart:null;
+  v.innerHTML=`${head}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
     ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
     <section class="pvsec">${sec("pts","🏆 Punkte & Belohnungen"+(openR?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR}</span>`:""),hPtsHtml(),true)}</section>
     <button type="button" class="hfab" data-hcatopen aria-label="Aufgaben & Katalog öffnen" title="Aufgaben & Katalog">➕<small>${ch.length?ch.length:""}</small></button>`;
+  if(sf){const n=$("hsQ");if(n){n.focus();try{n.setSelectionRange(sp,sp)}catch(_){}}}
   const cd=$("hcatdlg");if(cd&&cd.open)renderCatSheet()}
 /* Punkte, Level, Belohnungen, Familienziele, Abzeichen */
 function hPtsHtml(){const me=hMe(),P=hPeople(),meP=hPer(me),sel=hPer(HPSEL)?HPSEL:me,sp=hPer(sel),bal=hBal(me),fam=hFam(),cfg=hGcfg();
@@ -5149,7 +5187,7 @@ function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("h
   if($("heWwd").checked&&!["x","y1"].includes(x.f)){const W={};$("heWwdL").querySelectorAll("select[data-wwd]").forEach(s=>W[s.dataset.wwd]=s.value);if(Object.keys(W).length){x.whoWd=W;const cnt={};Object.values(W).filter(Boolean).forEach(v=>cnt[v]=(cnt[v]||0)+1);const top=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];x.who=top||""}else delete x.whoWd}else delete x.whoWd;
   x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;{const nx=hNxRead();if(nx.length)x.nx=nx;else delete x.nx}
   if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
-  const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);$("hdlg").close();toast(HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
+  const cid=x.cid||("c"+Date.now().toString(36));delete x.cid;hset("hc:"+cid,x);HSQ="";$("hdlg").close();toast(HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
 function hNxBlock(nx,i){const P=hPeople().concat(hGrpOpts());return `<div class="hnxb" data-i="${i}">
    <div class="hnxr"><label>${i?(i+1)+". ":""}Folgeaufgabe<input type="search" class="nxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" class="nxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
    <div class="hnxs" hidden></div>
@@ -5234,7 +5272,8 @@ document.addEventListener("change",e=>{const t=e.target,ds=t.dataset||{};
   if(ds.hjm!=null){hProjEdit(ds.hjm,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s){s.dur=+t.value;delete s.pts}});return}
   if(ds.hjd!=null){hProjEdit(ds.hjd,P=>{const s=(P.steps||[]).find(x=>x.id===ds.s);if(s)s.date=t.value||null});if(t.value)toast("📅 Schritt eingeplant am "+fmtDate(t.value));return}
   if(HED&&["heF","heDur","heCat","heWwd"].includes(t.id))hEdUpd()});
-document.addEventListener("input",e=>{if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}if(e.target.classList&&e.target.classList.contains("nxTi"))hNxSuggest(e.target)});
+document.addEventListener("keydown",e=>{if(e.target.id!=="hsQ"||e.key!=="Enter")return;e.preventDefault();const f=document.querySelector("#hsRes .hsr");if(f)f.click();else if(HSQ.trim())hSrchNew()});
+document.addEventListener("input",e=>{if(e.target.id==="hsQ"){HSQ=e.target.value;hSrchUpd();return}if(e.target.id==="hcQ"){HCQ=e.target.value;hCatFilter()}if(e.target.classList&&e.target.classList.contains("nxTi"))hNxSuggest(e.target)});
 document.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const t=e.target;if(t.dataset&&t.dataset.hjnew!=null){e.preventDefault();const b=document.querySelector(`[data-hjadd="${t.dataset.hjnew}"]`);b&&b.click()}if(t.id==="hjT"){e.preventDefault();$("hjAdd").click()}});
 /* Klicks im Zuhause-Bereich, in „Unser Plan“ und in der Kinderansicht */
 document.addEventListener("click",e=>{const t=e.target;
@@ -5282,6 +5321,9 @@ document.addEventListener("click",e=>{const t=e.target;
   const fw=t.closest("[data-hfw]");if(fw){HFW=fw.dataset.hfw;renderHome();return}
   const fwho=t.closest("[data-hfwho]");if(fwho){HF.who=fwho.dataset.hfwho;LS.set("hwk-hf",HF);renderHome();return}
   const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);HMEOPEN=false;renderHome();return}
+  if(t.closest("[data-hsnew]")){hSrchNew();return}
+  if(t.closest("[data-hsx]")){HSQ="";hSrchUpd();const n=$("hsQ");n&&n.focus();return}
+  if(t.closest("[data-hsmore]")){HCQ=HSQ;const d=$("hcatdlg");HCTAB="all";renderCatSheet();d.showModal?d.showModal():d.setAttribute("open","");return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
     if(id==="_own"){hEdit({ti:"",cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
     if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
