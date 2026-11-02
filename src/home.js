@@ -561,11 +561,13 @@ const fmH=m=>m>=60?Math.floor(m/60)+" h"+(m%60?" "+(m%60)+" min":""):m+" min";
 const hMinOf=x=>+x.min||0;
 function hWeekMin(pid,from,to){return hDoneAll().filter(x=>x.by===pid&&x.d>=from&&x.d<=to).reduce((s,x)=>s+hMinOf(x),0)}
 let HFW="w";
-function hFair(){const A=hAdults(),from=HFW==="w"?wkStart(T0):addD(wkStart(T0),-21),to=addD(wkStart(T0),6);
+/* Mo/Di: „Woche“ = letzte 7 Tage, damit die Anzeige am Wochenanfang nicht nach wenigen Haken ausschlägt */
+const hFairRoll=()=>HFW==="w"&&[1,2].includes(pdate(T0).getDay());
+function hFair(){const A=hAdults(),roll=hFairRoll(),from=roll?addD(T0,-6):HFW==="w"?wkStart(T0):addD(wkStart(T0),-21),to=roll?T0:addD(wkStart(T0),6),pf=HFW==="w"?wkStart(T0):from,pt=addD(wkStart(T0),6);
   const D=hDoneAll().filter(x=>x.d>=from&&x.d<=to);
   const st=A.map(p=>{const mine=D.filter(x=>x.by===p.id);const min=mine.reduce((s,x)=>s+hMinOf(x),0);
     const ml=mine.filter(x=>MENTAL.has(x.cat)).reduce((s,x)=>s+hMinOf(x),0);
-    const plan=hItems(from,to).filter(i=>hMine(i.who,p.id)).reduce((s,i)=>s+(+i.c.dur||0)/(hIsGrp(i.who)?hTeam(i.who).length||1:1),0);
+    const plan=hItems(pf,pt).filter(i=>hMine(i.who,p.id)).reduce((s,i)=>s+(+i.c.dur||0)/(hIsGrp(i.who)?hTeam(i.who).length||1:1),0);
     return {p,min,ml,plan,pts:mine.reduce((s,x)=>s+(+x.pts||0),0),n:mine.length}});
   const tot=st.reduce((s,x)=>s+x.min,0),tml=st.reduce((s,x)=>s+x.ml,0),tpl=st.reduce((s,x)=>s+x.plan,0);
   st.forEach(x=>{x.sh=tot?Math.round(x.min/tot*100):0;x.shm=tml?Math.round(x.ml/tml*100):0;x.shp=tpl?Math.round(x.plan/tpl*100):0});
@@ -757,9 +759,10 @@ const hQuiet=()=>LS.get("hwk-quiet",true)!==false;
 /* Erklärtexte nur an den ersten 3 Tagen zeigen */
 function hTipOn(){const t=LS.get("hwk-tips",{d:"",n:0});if(t.d!==T0){t.d=T0;t.n=(+t.n||0)+1;LS.set("hwk-tips",t)}return !hQuiet()||t.n<=3}
 window.homeTipsReset=()=>{LS.set("hwk-tips",{d:"",n:0});renderHomeAll()};
-function hFairMini(){const F=hFair(),A=F.st;if(A.length<2)return hFairLine();const k=F.tot?"sh":F.tpl?"shp":null;
-  const txt=k?A.map(x=>`${x.p.e} ${esc(x.p.n)} ${x[k]} %`).join(" · "):"noch nichts erledigt";
-  return `<details class="hfmini2" data-hsec="fair"${HSEC.fair?" open":""}><summary><span>Verteilung ${HFW==="w"?"diese Woche":"4 Wochen"}${k==="shp"?" · geplant":""}</span><b>${txt}</b></summary>${hFairLine()}</details>`}
+function hFairMini(){const F=hFair(),A=F.st;if(A.length<2)return hFairLine();const done=F.tot>0,k=done?"sh":F.tpl?"shp":null,mk=done?"min":"plan";
+  const per=hFairRoll()?"letzte 7 Tage":HFW==="w"?"seit Montag":"letzte 4 Wochen";
+  const txt=k?A.map(x=>`${x.p.e} ${esc(x.p.n)} ${fmH(Math.round(x[mk]))} (${x[k]} %)`).join(" · "):"noch nichts erledigt";
+  return `<details class="hfmini2" data-hsec="fair"${HSEC.fair?" open":""}><summary><span>${done?"Erledigte Zeit":"Geplante Zeit"} · ${per}</span><b>${txt}</b></summary>${hFairLine()}</details>`}
 /* Tagesring */
 function hRing(done,tot){const r=16,cir=2*Math.PI*r,p=tot?done/tot:0;return `<svg class="hring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="${r}" class="hrbg"/><circle cx="20" cy="20" r="${r}" class="hrfg" stroke-dasharray="${cir}" stroke-dashoffset="${cir*(1-p)}"/></svg>`}
 /* Wochen-Rückblick (Sa ab 17 Uhr, So, Mo) */
@@ -804,7 +807,8 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
 /* Punkte, Level, Belohnungen, Familienziele, Abzeichen */
 function hPtsHtml(){const me=hMe(),P=hPeople(),meP=hPer(me),sel=hPer(HPSEL)?HPSEL:me,sp=hPer(sel),bal=hBal(me),fam=hFam(),cfg=hGcfg();
   const avs=`<div class="hpavs">${P.map(p=>{const e=hEarned(p.id),L=hLev(e),pr=L.n?Math.round((e-L.L[0])/(L.n[0]-L.L[0])*100):100;return `<button type="button" class="hpav2${p.id===sel?" on":""}" data-hpsel="${p.id}" style="--pc:${p.c};--pg:${pr}%" title="${esc(p.n)}: ${L.L[2]}"><span class="hpring"><span>${p.e}</span></span><b>${hBal(p.id)}</b><small>${esc(p.n)}</small></button>`}).join("")}</div>`;
-  const e=hEarned(sel),L=hLev(e),st=hStreak(sel);
+  const e=hEarned(sel),L=hLev(e),st=hStreak(sel),w7=hEarned(sel,addD(T0,-6),T0),rd=hReds().filter(r=>r.by===sel&&!r.fam&&hPtOk(r)).reduce((a,r)=>a+(+r.cost||0),0);
+  const pinfo=`<p class="hpinfo"><span>Punktestand gesamt</span><span><b>${sp.e} ${esc(sp.n)}:</b> ${e} verdient${rd?` − ${rd} eingelöst = ${e-rd}`:""} · <b>+${w7}</b> in 7 Tagen</span></p>`;
   const det=`<div class="hpdet"><b>${sp.e} ${esc(sp.n)}</b> · ${L.L[1]} ${L.L[2]}${st?` · 🔥 ${st} ${st===1?"Woche":"Wochen"}`:""} · ${L.n?`noch ${L.n[0]-e} bis ${L.n[1]} ${L.n[2]}`:"höchstes Level"}
     <details class="hown" data-hmgr="b"${HMGR.b?" open":""}><summary>🏅 Abzeichen ${sp.kid?"🧒":"🧑"} (${hBadges(sel).filter(b=>b[2]).length} von ${hBadges(sel).length})</summary><div class="hbdg">${hBadges(sel).map(b=>`<span class="${b[2]?"on":""}" title="${esc(b[1])}${b[2]?"":` – ${b[3]} / ${b[4]}`}"><i>${b[0]}</i>${esc(b[1])}${b[2]||b[4]<=1?"":`<small>${b[3]}/${b[4]}</small>`}</span>`).join("")}</div>${hBdgMgr()}</details></div>`;
   const sbal=hBal(sel),isKid=sp&&sp.kid,RW=hRewards(isKid?"k":"a").sort((a,b)=>a[3]-b[3]),nx=RW.find(r=>r[3]>sbal),can=RW.filter(r=>r[3]<=sbal);
@@ -826,8 +830,8 @@ function hPtsHtml(){const me=hMe(),P=hPeople(),meP=hPer(me),sel=hPer(HPSEL)?HPSE
       <h5>Wochen-Challenges</h5>${hChList().map(c=>mrow("ch",c[0],`${c[1]} ${esc(c[2])} · +${c[3]}`,cfg.ch.includes(c[0]),"data-hchon")).join("")}
       ${cfg.cdel.length?`<p class="hrest">${cfg.cdel.length} gelöscht · <button type="button" data-hrestore="ch">wiederherstellen</button></p>`:""}
       <button type="button" class="pmini" data-hmini="ch" data-id="">➕ Eigene Challenge</button></div></details>`;
-  if(hQuiet())return `${avs}${next}${redOpen}<details class="hown hpmore" data-hmgr="more"${HMGR.more?" open":""}><summary>Mehr: Level, Abzeichen, Belohnungen, Familie & Challenges</summary>${det}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}</details>`;
-  return `${avs}${det}${next}${redOpen}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}`}
+  if(hQuiet())return `${avs}${pinfo}${next}${redOpen}<details class="hown hpmore" data-hmgr="more"${HMGR.more?" open":""}><summary>Mehr: Level, Abzeichen, Belohnungen, Familie & Challenges</summary>${det}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}</details>`;
+  return `${avs}${pinfo}${det}${next}${redOpen}${shop}<h4 class="hday">👨‍👩‍👧 Familie & Challenges dieser Woche</h4>${goal}${chal}${gmgr}`}
 /* Katalog als eigenes Blatt */
 function hCatHtml(){const ch=hChores(),TP=hTpls(),tids=new Set(TP.map(x=>x.id)),cc0=hCcfg(),inst=id=>ch.filter(c=>c.tpl===id),extra=ch.filter(c=>!c.tpl||!tids.has(c.tpl));
   const actLine=(c,tt)=>`<button type="button" class="hinst" data-hedit="${esc(c.cid)}" title="Aufgabe ändern">${tt&&c.ti!==tt?`<b>${esc(c.ti)}</b> · `:""}${hWwd(c)?`<span class="hchip">${esc(hWhoWdTxt(c))}</span>`:hChip(c.who)} · ${esc(hTurn(c))}${hMiss(c)==="lapse"?" · 💨":""} ✏️</button>`;
