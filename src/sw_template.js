@@ -46,7 +46,8 @@ async function openTasks() {
   const auth = await kvGet("auth"), ag = await kvGet("agenda");
   if (!auth || !ag) return null;
   const t0 = today(), me = ag.me;
-  let L = (ag.items || []).filter(i => i.disp <= t0);
+  const TODH = { m: 6, n: 11, a: 17 }, hr = new Date().getHours();
+  let L = (ag.items || []).filter(i => i.disp <= t0 && (i.disp < t0 || !i.tod || !TODH[i.tod] || hr >= TODH[i.tod]));
   try {   // aktuellen Stand holen: erledigt, verschoben, entfallen, umverteilt
     const rows = await rpc("fam_list", { p_code: auth.a }), ids = new Map(rows.map(r => [r.id, r]));
     const out = [];

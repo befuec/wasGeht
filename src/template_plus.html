@@ -1633,6 +1633,21 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .hprivc{background:color-mix(in srgb,#7C5CBF 12%,var(--surface))}
 .hform .hprivt{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-items:center;font-weight:700;font-size:14px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,#7C5CBF 8%,var(--surface));cursor:pointer}
 .hform .hprivt input{width:18px;height:18px;margin:0}.hform .hprivt small{grid-column:2;font-weight:500;color:var(--muted);font-size:12px}
+/* ---- Tageszeit & Erledigt-Übersicht ---- */
+.htod{font-size:12px;font-weight:400;opacity:.85}
+.hlater{font:inherit;font-size:13px;font-weight:600;color:var(--muted);border:1.5px dashed var(--line);background:transparent;border-radius:12px;padding:9px 12px;margin:8px 0 4px;width:100%;text-align:left;cursor:pointer}
+.hdtw{overflow-x:auto;margin:4px 0 10px}
+.hdt{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+.hdt th{text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.hdt td{padding:6px 8px;border-bottom:1px solid var(--line)}.hdt td:not(:first-child),.hdt th:not(:first-child){text-align:right}
+.hdnp{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.hdnp button{font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+.hdnp button[aria-pressed="true"]{border-color:var(--nx);background:color-mix(in srgb,var(--nx) 10%,var(--surface))}
+.hdlist{display:grid;gap:2px;max-height:420px;overflow:auto}
+.hdday{margin:10px 0 2px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.hdrow{display:grid;grid-template-columns:26px minmax(0,1fr);gap:0 8px;padding:5px 4px;border-radius:8px}.hdrow span{grid-row:span 2;font-size:18px;text-align:center}.hdrow b{font-size:13.5px;font-weight:600}.hdrow small{color:var(--muted);font-size:12px}
+.hdrow.priv{background:color-mix(in srgb,#7C5CBF 7%,var(--surface))}
+.hsnewr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
 </style>
 
 <div class="wrap">
@@ -4908,7 +4923,7 @@ function hBockPanel(c,i){const pool=c.kid||c.cat==="kids"?hKids().concat(hAdults
 function hAssign(c,d,lab,cur){return `<div class="hassign"><span>${lab}</span>${(c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople()).concat(c.proj?[]:hGrpOpts()).filter(p=>p.id!==cur).map(p=>`<button type="button" data-hwho2="${esc(c.cid)}" data-d="${d}" data-p="${p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}</button>`).join("")}</div>`}
 const hGrpOpts=()=>(hAdults().length>1?["@a"]:[]).concat(hPeople().length>hAdults().length||hAdults().length>2?["@f"]:[]).map(hPer);
 function hDailyChip(i){const {c,d,who,dn}=i,p=hPer(who),k=c.cid+"|"+d,op=HDPICK===k,by=dn&&hPer(dn.by),me=hMe();
-  return `<span class="hdc${op?" pick":""}${dn?" dn":""}${c.priv?" priv":""}"><button type="button" class="hdcb" data-hck="${esc(c.cid)}" data-d="${d}" ${dn?`data-undo="1"`:hIsGrp(who)?"":`data-by="${me}"`} aria-pressed="${!!dn}" aria-label="${dn?"Haken entfernen":"Ich hab's gemacht – abhaken"}"><i>${dn?"✓":""}</i></button><button type="button" class="hdct" data-hdpick="${esc(c.cid)}" data-d="${d}" aria-expanded="${op}" title="Antippen: wer hat's gemacht?">${c.ic||""} ${esc(c.ti)} <small>${dn?(dn.grp&&hPer(dn.grp)?hPer(dn.grp).e:by?by.e:""):p?p.e:"🙋"}</small></button></span>${op?hPickHtml(i):""}`}
+  return `<span class="hdc${op?" pick":""}${dn?" dn":""}${c.priv?" priv":""}"><button type="button" class="hdcb" data-hck="${esc(c.cid)}" data-d="${d}" ${dn?`data-undo="1"`:hIsGrp(who)?"":`data-by="${me}"`} aria-pressed="${!!dn}" aria-label="${dn?"Haken entfernen":"Ich hab's gemacht – abhaken"}"><i>${dn?"✓":""}</i></button><button type="button" class="hdct" data-hdpick="${esc(c.cid)}" data-d="${d}" aria-expanded="${op}" title="Antippen: wer hat's gemacht?">${c.ic||""} ${esc(c.ti)}${c.tod&&HTOD[c.tod]?` <span class="htod">${HTOD[c.tod][0]}</span>`:""} <small>${dn?(dn.grp&&hPer(dn.grp)?hPer(dn.grp).e:by?by.e:""):p?p.e:"🙋"}</small></button></span>${op?hPickHtml(i):""}`}
 function hPickHtml(i){if(!i)return "";const {c,d,who,dn}=i,P=c.kid||c.cat==="kids"?hKids().concat(hAdults()):hPeople();const by=dn&&hPer(dn.by);
   return `<div class="hpick"><b>${c.ic||""} ${esc(c.ti)}</b> – ${dn?`erledigt von ${by?by.e+" "+esc(by.n):"?"}. Doch jemand anderes?`:"wer hat's gemacht? Die Person bekommt die Punkte."}
     <div class="hassign">${!dn&&hIsGrp(who)?`<button type="button" data-hck="${esc(c.cid)}" data-d="${d}" style="--pc:#7C5CBF">${hPer(who).e} Gemeinsam – Punkte teilen</button>`:""}${P.filter(p=>!dn||p.id!==dn.by).map(p=>`<button type="button" ${dn?`data-hredo="${esc(c.cid)}"`:`data-hck="${esc(c.cid)}" data-by="${p.id}"`} data-d="${d}" data-p="${p.id}" style="--pc:${p.c}">${p.e} ${esc(p.n)}${!dn&&p.id===who?" ★":""}</button>`).join("")}</div>
@@ -4929,7 +4944,7 @@ function hRow(i,ctx){const {c,d,disp,who,dn,od,mv}=i,me=hMe(),pts=hPts(c),cat=HC
       ${!dn&&!opnC&&!(open&&c.proj)?hAssign(c,d,"Diesmal macht's:",who):""}
       <div class="hacts">${dn?"":`<button type="button" class="pmini" data-hmv1="${esc(c.cid)}" data-d="${d}">↷ Morgen</button><label class="hmv">📅 <input type="date" data-hmv="${esc(c.cid)}" data-d="${d}" value="${disp}" min="${T0}" aria-label="Verschieben auf"></label>${hSkippable(c)?`<button type="button" class="pmini" data-hskip="${esc(c.cid)}" data-d="${d}" title="Nur dieser Termin entfällt – der nächste bleibt wie geplant">🚫 Entfällt diesmal</button>`:""}`}${c.proj?`<button type="button" class="pmini" data-hjopen="${esc(c.proj.pid)}">🛠️ Projekt öffnen</button>`:`<button type="button" class="pmini" data-hedit="${esc(c.cid)}">✏️ Aufgabe ändern</button>`}${mv?`<button type="button" class="pmini" data-hmvx="${esc(c.cid)}" data-d="${d}">↺ Zurück auf ${esc(fmtDate(d))}</button>`:""}</div></div>`:"";
   return `<div class="htrow${dn?" dn":""}${od?" od":""}${ex?" ex":""}${c.priv?" priv":""}" data-sw="${esc(c.cid)}" data-d="${d}"><button type="button" class="hck" data-hck="${esc(c.cid)}" data-d="${d}" aria-pressed="${!!dn}" aria-label="${dn?"Erledigt – antippen zum Zurücknehmen":"Als erledigt abhaken"}">${dn?"✓":""}</button>
-    <button type="button" class="hrbt" data-hexp="${esc(key)}" aria-expanded="${ex}"><b>${c.ic||cat[1]} ${esc(c.ti)}</b>${meta?`<small>${meta}</small>`:""}</button>
+    <button type="button" class="hrbt" data-hexp="${esc(key)}" aria-expanded="${ex}"><b>${c.ic||cat[1]} ${esc(c.ti)}${c.tod&&HTOD[c.tod]?` <small class="htod" title="${HTOD[c.tod][1]}">${HTOD[c.tod][0]}</small>`:""}</b>${meta?`<small>${meta}</small>`:""}</button>
     ${(()=>{const av=dn?(dn.grp||dn.by):hCkPeople(c).length>1?"@c":who,g=hIsGrp(av);return `<span class="hrr">${c.priv?`<span class="hpriv" title="Privat – nur du siehst diese Aufgabe">🔒</span>`:`${hAv(av)}<span class="hpts${tk?" tk":""}"${g?' title="wird geteilt"':""}>${tk?Math.round(pts*1.5):dn?dn.pts:pts}${g?"÷":""}</span>`}</span>`})()}${det}${hDaily(c)&&HDPICK===key?hPickHtml(i):""}</div>`}
 /* Fairness als eine Zeile */
 function hFairLine(){const F=hFair(),A=F.st;if(!A.length)return "";
@@ -4946,7 +4961,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
   const own=ch.map(c=>{const cc=HCAT[c.cat]||["","📌",""],pn=(hPer(c.who)||{}).n||"";return {c,sc:hSrchScore([c.ti,cc[2],(c.ck||[]).join(" "),pn].join(" "),c.ti,W)}}).filter(x=>x.sc).sort((a,b)=>b.sc-a.sc||a.c.ti.localeCompare(b.c.ti));
   const cat=TP.filter(x=>!used.has(x.id)).map(x=>{const cc=HCAT[x.cat]||["","📌",""];return {x,sc:hSrchScore([x.ti,cc[2],(x.ck||[]).join(" ")].join(" "),x.ti,W)}}).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc||a.x.ti.localeCompare(b.x.ti));
   const few=own.length+cat.length<3,MAX=6;
-  const nw=`<button type="button" class="hsnew${few?" big":""}" data-hsnew>➕ „${esc(q)}“ als neue Aufgabe anlegen</button>`;
+  const nw=`<div class="hsnewr"><button type="button" class="hsnew${few?" big":""}" data-hsnew>➕ „${esc(q)}“ als neue Aufgabe</button><button type="button" class="hsnew${few?" big":""}" data-hadd="_apt">📅 als Termin heute</button></div>`;
   const oRow=({c})=>{const cc=HCAT[c.cat]||["","📌",""];return `<button type="button" class="hsr" data-hedit="${esc(c.cid)}"><span>${c.ic||cc[1]}</span><b>${esc(c.ti)}</b><small>${hWwd(c)?esc(hWhoWdTxt(c)):esc((hPer(c.who)||{n:c.who==="rot"?"abwechselnd":"offen"}).n)} · ${esc(hTurn(c))}</small><i>✏️</i></button>`};
   const tRow=({x})=>{const cc=HCAT[x.cat]||["","📌",""];return `<button type="button" class="hsr" data-hadd="${esc(x.id)}"><span>${x.ic||cc[1]}</span><b>${esc(x.ti)}</b><small>${esc(cc[2])} · ${esc(HFL[x.f]||"")} · ${fmH(+x.dur||0)}</small><i>➕</i></button>`};
   return `<div class="hsres" id="hsRes">${few?nw:""}
@@ -4958,6 +4973,28 @@ function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" va
 function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
 function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
   hEdit({ti:q.slice(0,60),cat:best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
+/* Tageszeit: Aufgaben erscheinen heute erst ab morgens / mittags / abends */
+const HTOD={m:["🌅","Morgens",6],n:["☀️","Mittags",11],a:["🌙","Abends",17]};
+const hTodOk=(c,d)=>!c||!c.tod||!HTOD[c.tod]||d!==T0||new Date().getHours()>=HTOD[c.tod][2];
+let HLATER=false,HTODH=new Date().getHours();
+setInterval(()=>{const h=new Date().getHours();if(h!==HTODH){HTODH=h;try{if(M2==="zuhause")renderHome();if(document.body.classList.contains("kidsmode"))renderKidTasks()}catch(_){}}},60000);
+/* Erledigt – letzte 30 Tage */
+let HDNP="all";
+function hDoneHist(){const from=addD(T0,-29),me=hMe(),L=[];
+  Object.keys(SETS).filter(k=>k.startsWith("hd:")).forEach(k=>{const [,cid,d]=k.split(":"),r=SETS[k];if(!r||!d||d<from||d>T0)return;const c=SETS["hc:"+cid];if(isPrivKey(k)&&!(c&&c.own===me))return;
+    L.push({d,ti:c?c.ti:"(gelöschte Aufgabe)",ic:c?(c.ic||(HCAT[c.cat]||["","📌"])[1]):"📌",r,priv:isPrivKey(k)})});
+  hProjects().forEach(p=>(p.steps||[]).forEach(st=>{if(st.dn&&st.dn.d>=from&&st.dn.d<=T0)L.push({d:st.dn.d,ti:p.ti+": "+st.t,ic:p.ic||"🛠️",r:st.dn})}));
+  return L.sort((a,b)=>b.d.localeCompare(a.d)||(+b.r.at||0)-(+a.r.at||0))}
+function hDoneHtml(){const H=hDoneHist(),from=addD(T0,-29);if(!H.length)return `<p class="pvsub">In den letzten 30 Tagen wurde noch nichts abgehakt.</p>`;
+  const D=hDoneAll().filter(x=>x.d>=from&&x.d<=T0),P=hPeople();
+  const sum=P.map(p=>{const m=D.filter(x=>x.by===p.id);return {p,n:m.length,min:m.reduce((s,x)=>s+hMinOf(x),0),pts:m.reduce((s,x)=>s+(+x.pts||0),0)}}).filter(x=>x.n);
+  const tab=`<div class="hdtw"><table class="hdt"><thead><tr><th>Person</th><th>Aufgaben</th><th>Zeit</th><th>Punkte</th></tr></thead><tbody>${sum.map(x=>`<tr><td>${x.p.e} ${esc(x.p.n)}</td><td>${x.n}</td><td>${fmH(x.min)}</td><td>${x.pts}</td></tr>`).join("")}</tbody></table></div>`;
+  const who=r=>Array.isArray(r.team)&&r.team.length?r.team.map(id=>(hPer(id)||{}).e||"").join(""):((hPer(r.by)||{}).e||"");
+  const flt=x=>HDNP==="all"||(Array.isArray(x.r.team)&&x.r.team.length?x.r.team.includes(HDNP):x.r.by===HDNP);
+  const chips=`<div class="hdnp" role="group" aria-label="Person">${[["all","Alle"]].concat(sum.map(x=>[x.p.id,x.p.e+" "+x.p.n])).map(([k,l])=>`<button type="button" data-hdnp="${esc(k)}" aria-pressed="${HDNP===k}">${esc(l)}</button>`).join("")}</div>`;
+  let last="",out="";H.filter(flt).forEach(x=>{if(x.d!==last){last=x.d;out+=`<h5 class="hdday">${x.d===T0?"Heute":x.d===addD(T0,-1)?"Gestern":esc(fmtDate(x.d))}</h5>`}
+    out+=`<div class="hdrow${x.priv?" priv":""}"><span>${x.ic}</span><b>${esc(x.ti)}</b><small>${who(x.r)}${x.priv?" 🔒":` · ${+x.r.pts||0} P.`}${x.r.min?` · ${fmH(+x.r.min)}`:""}</small></div>`});
+  return `${tab}${chips}<div class="hdlist">${out||`<p class="pvsub">Keine Einträge für diese Person.</p>`}</div>`}
 /* Ruhige Ansicht */
 const hQuiet=()=>LS.get("hwk-quiet",true)!==false;
 /* Erklärtexte nur an den ersten 3 Tagen zeigen */
@@ -4981,7 +5018,8 @@ function hReview(){const n=new Date(),dw=n.getDay();let w=null;if(dw===0||(dw===
 function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null;const me=hMe(),P=hPeople(),meP=hPer(me);
   const fOk=i=>HF.who==="me"?hMineC(i,me):HF.who==="open"?!i.who:true,vis=i=>HF.done||!i.dn;
   const od=hOverdue().filter(fOk),today=hItems(T0,T0).filter(fOk),wkAll=hItems(addD(T0,1),addD(T0,hLeadMax())).filter(i=>!hDaily(i.c)&&i.disp<=addD(T0,hLeadDays(i.c))).filter(fOk).sort((a,b)=>a.disp.localeCompare(b.disp));
-  const td=today.filter(i=>!hDaily(i.c)),dly=today.filter(i=>hDaily(i.c)),nTot=today.length,nDn=today.filter(i=>i.dn).length;
+  const later=today.filter(i=>!i.dn&&!hTodOk(i.c,i.disp)),now0=HLATER?today:today.filter(i=>i.dn||hTodOk(i.c,i.disp));
+  const td=now0.filter(i=>!hDaily(i.c)),dly=now0.filter(i=>hDaily(i.c)),nTot=today.length,nDn=today.filter(i=>i.dn).length;
   const pend=new Set(od.concat(td).filter(i=>!i.dn).map(i=>i.c.cid));
   const wk=(()=>{const m=new Map();wkAll.filter(vis).filter(i=>!pend.has(i.c.cid)).forEach(i=>{const k=i.c.cid;if(!m.has(k))m.set(k,Object.assign({},i,{more:[]}));else if(!i.dn&&m.get(k).more.length<3)m.get(k).more.push(i.disp)});return [...m.values()]})();
   const nDoneAll=od.concat(today,wkAll).filter(i=>i.dn).length;
@@ -4995,8 +5033,9 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const odv=od;
   const odBar=odv.length?`<details class="hodbar" data-hsec="od"${HSEC.od?" open":""}><summary>⚠️ ${odv.length} überfällig <span class="hflc" aria-hidden="true"></span></summary>${odv.map(i=>hRow(i,"od")).join("")}</details>`:"";
   const tdv=td.filter(vis),dlv=dly.filter(vis),nxo=HSEC.next!=null?HSEC.next:true,Q=hQuiet(),tip=hTipOn();
-  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag ${tip?`<small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small>`:""}</h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
-    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:tip?`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`:""}`;
+  const laterBar=later.length?`<button type="button" class="hlater" data-hlater aria-expanded="${HLATER}">${HLATER?"Spätere Aufgaben wieder ausblenden":`Später heute: ${["m","n","a"].map(k=>{const n=later.filter(i=>i.c.tod===k).length;return n?`${HTOD[k][0]} ${n} ${HTOD[k][1].toLowerCase()}`:""}).filter(Boolean).join(" · ")} – jetzt zeigen`}</button>`:"";
+  const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag ${tip?`<small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small>`:""}</h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${laterBar}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
+    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length&&!later.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:tip?`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`:""}`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
   hAgendaSave();
   const nProjAll=hProjects().length;
@@ -5004,6 +5043,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   v.innerHTML=`${head}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
     ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
+    <section class="pvsec">${sec("done","✅ Erledigt – letzte 30 Tage"+(()=>{const n=hDoneHist().length;return n?` <span class="pvn">${n}</span>`:""})(),hDoneHtml(),false)}</section>
     <section class="pvsec">${sec("pts","🏆 Punkte & Belohnungen"+(openR?` <span class="pvn" title="eingelöst, noch nicht genossen">${openR}</span>`:""),hPtsHtml(),true)}</section>
     <button type="button" class="hfab" data-hcatopen aria-label="Aufgaben & Katalog öffnen" title="Aufgaben & Katalog">➕<small>${ch.length?ch.length:""}</small></button>`;
   if(sf){const n=$("hsQ");if(n){n.focus();try{n.setSelectionRange(sp,sp)}catch(_){}}}
@@ -5161,6 +5201,7 @@ function hEdit(c,isNew,mode){HED={c:Object.assign({},c),isNew,mode:mode||"task"}
    <label>Art & Turnus<select id="heF">${HFREQ.map(f=>`<option value="${f[0]}"${f[0]===x.f?" selected":""}>${f[1]}</option>`).join("")}</select></label>
    <div id="heWdW"><span class="hlab">Tag(e) <small class="hhint">– mehrere möglich, z. B. Di + Sa</small></span><div class="dquick" id="heWd">${[1,2,3,4,5,6,0].map(i=>`<button type="button" data-wd="${i}" aria-pressed="${x.f==="d"?true:x.f==="wd"?i>=1&&i<=5:hWds(x).includes(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}</div><small class="hhint" id="heWdH"></small>
    <label class="hwwdt" id="heWwdT"><input type="checkbox" id="heWwd"${hWwd(x)?" checked":""}> 👥 Je Tag eine Person festlegen</label><div class="hwwd" id="heWwdL"></div></div>
+   <label id="heTodW">Tageszeit <small>(erscheint heute erst ab dann)</small><select id="heTod"><option value="">Ganztags</option>${Object.entries(HTOD).map(([k,v])=>`<option value="${k}"${x.tod===k?" selected":""}>${v[0]} ${v[1]} – ab ${v[2]} Uhr</option>`).join("")}</select></label>
    <div class="hf2" id="heDateW"><label><span id="heDateL">Datum</span><input type="date" id="heDate" value="${esc(x.date||"")}"></label></div>
    <label id="heLeadW">Wie viele Tage vorher anfangen?<input type="number" id="heLead" min="0" max="90" value="${+x.lead||0}"></label>
    <div class="hvor"><span class="hlab">Unter „Demnächst“ zeigen – wie lange vorher?</span><div class="hvorr">${(()=>{const cur=x.vor&&+x.vor.n>=0&&x.vor.n!==""?+x.vor.n:6,L=[...Array(31).keys()];if(!L.includes(cur))L.push(cur);return `<select id="heVorN" aria-label="Vorlauf Anzahl">${L.map(n=>`<option value="${n}"${n===cur?" selected":""}>${n===0?"0 – nicht zeigen":n}</option>`).join("")}</select>`})()}<select id="heVorU" aria-label="Vorlauf Einheit">${[["d","Tage"],["w","Wochen"],["m","Monate"]].map(([k,l])=>`<option value="${k}"${(x.vor&&x.vor.u||"d")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">vorher</span></div><small class="hhint">0 = erscheint nicht unter „Demnächst“, nur am Tag selbst</small></div>
@@ -5184,13 +5225,13 @@ function hEdUpd(){const f=$("heF").value,x=HED.c;{const pv=$("hePriv"),w=$("heWh
   const rec=hrec(+$("heDur").value,x.unpop,($("heCat").value==="kids"));$("heRec").textContent=rec;hEdWwd()}
 function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("heTi").value.trim();if(!x.ti){$("heTi").focus();return}x.cat=$("heCat").value;x.ic=$("heIc").value.trim();x.f=$("heF").value;
   const ws=hEdDays();if((x.f==="d"&&ws.length<7)||(x.f==="wd"&&ws.join()!=="1,2,3,4,5")){if(!ws.length){toast("Bitte mindestens einen Tag wählen");return}x.f=x.f==="d"&&ws.join()==="1,2,3,4,5"?"wd":"w1"}x.wds=ws.length?ws:[6];x.wd=x.wds[0];x.date=$("heDate").value||null;delete x.t;x.lead=+$("heLead").value||0;{const vr=$("heVorN").value.trim(),n=vr===""?6:Math.max(0,Math.min(99,Math.round(+vr)||0)),u=$("heVorU").value;if(n===6&&u==="d")delete x.vor;else x.vor={n,u}}
-  const mb=$("heMiss").querySelector('[aria-pressed="true"]');x.miss=mb?mb.dataset.miss:null;
+  const mb=$("heMiss").querySelector('[aria-pressed="true"]');x.miss=mb?mb.dataset.miss:null;{const tv=$("heTod").value;if(tv)x.tod=tv;else delete x.tod}
   x.dur=+$("heDur").value;x.pts=+$("hePts").value||hrec(x.dur,x.unpop,x.kid);x.kid=x.cat==="kids"?1:0;const wh=$("heWho").querySelector('[aria-pressed="true"]');x.who=wh?wh.dataset.who:hMe();
   if($("heWwd").checked&&!["x","y1"].includes(x.f)){const W={};$("heWwdL").querySelectorAll("select[data-wwd]").forEach(s=>W[s.dataset.wwd]=s.value);if(Object.keys(W).length){x.whoWd=W;const cnt={};Object.values(W).filter(Boolean).forEach(v=>cnt[v]=(cnt[v]||0)+1);const top=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];x.who=top||""}else delete x.whoWd}else delete x.whoWd;
   x.ck=$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20);if(!x.start)x.start=T0;{const nx=hNxRead();if(nx.length)x.nx=nx;else delete x.nx}
   if((x.f==="x")&&!x.date){$("heDate").focus();toast("Bitte ein Datum wählen");return}if(x.f==="y1"&&!x.date){$("heDate").focus();toast("Bitte das Datum wählen");return}
   const pv=$("hePriv"),priv=!!(pv&&pv.checked);if(priv){x.priv=1;x.own=hMe();x.who=hMe();delete x.whoWd;delete x.ckw}else{delete x.priv;delete x.own}
-  let cid=x.cid||((priv?"p":"c")+Date.now().toString(36));if(x.cid&&(cid[0]==="p")!==priv){hset("hc:"+cid,null);cid=(priv?"p":"c")+Date.now().toString(36)}delete x.cid;hset("hc:"+cid,x);HSQ="";$("hdlg").close();toast(x.priv?(HED.isNew?"🔒 Private Aufgabe angelegt – nur auf diesem Gerät sichtbar":"💾 Gespeichert (privat)"):HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
+  let cid=x.cid||((priv?"p":"c")+Date.now().toString(36));if(x.cid&&(cid[0]==="p")!==priv){hset("hc:"+cid,null);cid=(priv?"p":"c")+Date.now().toString(36)}delete x.cid;hset("hc:"+cid,x);HSQ="";HCQ="";$("hdlg").close();toast(x.priv?(HED.isNew?"🔒 Private Aufgabe angelegt – nur auf diesem Gerät sichtbar":"💾 Gespeichert (privat)"):HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
 function hNxBlock(nx,i){const P=hPeople().concat(hGrpOpts());return `<div class="hnxb" data-i="${i}">
    <div class="hnxr"><label>${i?(i+1)+". ":""}Folgeaufgabe<input type="search" class="nxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" class="nxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
    <div class="hnxs" hidden></div>
@@ -5205,7 +5246,7 @@ function hNxSuggest(inp){const b=inp.closest(".hnxb"),el=b&&b.querySelector(".hn
   const L=hTpls().filter(x=>(x.ti+" "+(HCAT[x.cat]||["","",""])[2]).toLowerCase().includes(q)).slice(0,8);
   el.innerHTML=L.length?L.map(x=>`<button type="button" data-hnxpick="${esc(x.id)}"><span>${x.ic||"📌"}</span><b>${esc(x.ti)}</b><small>${esc((HCAT[x.cat]||["","",""])[2])} · ${fmH(+x.dur||0)}</small></button>`).join(""):`<small class="hhint">Nichts im Katalog – der Text wird als eigene Folgeaufgabe übernommen.</small>`;el.hidden=false}
 function hTplSave(){const x=HED.c,ti=$("heTi").value.trim();if(!ti){$("heTi").focus();return}const ws=[...$("heWd").querySelectorAll('[aria-pressed="true"]')].map(b=>+b.dataset.wd);
-  const o={ti,cat:$("heCat").value,ic:$("heIc").value.trim(),f:$("heF").value,wd:ws.length?ws[0]:null,wds:ws.length?ws:null,dur:+$("heDur").value,pts:+$("hePts").value||null,kid:$("heCat").value==="kids"?1:0,ck:$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20),nx:hNxRead().length?hNxRead():null};
+  const o={tod:$("heTod").value||undefined,ti,cat:$("heCat").value,ic:$("heIc").value.trim(),f:$("heF").value,wd:ws.length?ws[0]:null,wds:ws.length?ws:null,dur:+$("heDur").value,pts:+$("hePts").value||null,kid:$("heCat").value==="kids"?1:0,ck:$("heCk").value.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,20),nx:hNxRead().length?hNxRead():null};
   const C=hCcfg();if(x.id&&x.bi){C.ov=Object.assign({},C.ov,{[x.id]:o})}else if(x.id){C.add=C.add.map(a=>a.id===x.id?Object.assign({id:x.id},o):a)}else{C.add=C.add.concat(Object.assign({id:"t"+Date.now().toString(36)},o))}
   hset("hcat",C);$("hdlg").close();HED=null;toast(x.id?"💾 Vorlage gespeichert":"➕ Neue Vorlage im Katalog");renderHomeAll()}
 /* Tagesansicht in „Unser Plan“ */
@@ -5221,7 +5262,7 @@ window.homeFairMini=()=>hFairHtml(true);
 /* Kinderansicht: eigene Aufgaben, Punkte, Vorlesen */
 function hSay(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="de-DE";u.rate=.92;const v=speechSynthesis.getVoices().find(v=>/^de/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 function hKidId(){const K=hKids(),s=LS.get("hwk-kidme",null);return K.some(k=>k.id===s)?s:(K[0]||{}).id}
-function hKidItems(kid){const mine=i=>hMineC(i,kid)||(!i.who&&(i.c.kid||i.c.cat==="kids"));return hOverdue().filter(mine).concat(hItems(T0,T0).filter(mine))}
+function hKidItems(kid){const mine=i=>hMineC(i,kid)||(!i.who&&(i.c.kid||i.c.cat==="kids"));return hOverdue().filter(mine).concat(hItems(T0,T0).filter(mine).filter(i=>i.dn||hTodOk(i.c,i.disp)))}
 let KPICK=false;
 function hKidPick(kid){const mine=new Set(hChores().filter(c=>c.who===kid&&c.tpl).map(c=>c.tpl)),T=hTpls().filter(x=>(x.kid||x.cat==="kids")&&!mine.has(x.id));
   if(!KPICK)return `<button type="button" class="kpickb" data-kpick>➕ Aufgabe aussuchen</button>`;
@@ -5324,14 +5365,17 @@ document.addEventListener("click",e=>{const t=e.target;
   const fw=t.closest("[data-hfw]");if(fw){HFW=fw.dataset.hfw;renderHome();return}
   const fwho=t.closest("[data-hfwho]");if(fwho){HF.who=fwho.dataset.hfwho;LS.set("hwk-hf",HF);renderHome();return}
   const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);HMEOPEN=false;renderHome();return}
+  const dnp=t.closest("[data-hdnp]");if(dnp){HDNP=dnp.dataset.hdnp;renderHome();return}
+  if(t.closest("[data-hlater]")){HLATER=!HLATER;renderHome();return}
   if(t.closest("[data-hsnew]")){hSrchNew();return}
   if(t.closest("[data-hsx]")){HSQ="";hSrchUpd();const n=$("hsQ");n&&n.focus();return}
   if(t.closest("[data-hsmore]")){HCQ=HSQ;const d=$("hcatdlg");HCTAB="all";renderCatSheet();d.showModal?d.showModal():d.setAttribute("open","");return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
-    if(id==="_own"){hEdit({ti:"",cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
-    if(id==="_apt"){hEdit({ti:"",cat:"gesund",ic:"📅",f:"x",date:plus(7),t:"10:00",dur:60,who:me},true);return}
+    const qt=(HSQ.trim()||HCQ.trim()).slice(0,60);
+    if(id==="_own"){hEdit({ti:qt,cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
+    if(id==="_apt"){hEdit({ti:qt,cat:"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
-    hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
+    hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,tod:T.tod||undefined,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
   const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick),b=nxp.closest(".hnxb");if(T&&HED&&b){b.querySelector(".nxTi").value=T.ti;b.querySelector(".nxIc").value=T.ic||"";HED.nxT=HED.nxT||[];HED.nxT[+b.dataset.i]={id:T.id,ti:T.ti,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};b.querySelector(".hnxs").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
   if(t.closest("[data-hnxadd]")){const l=$("heNxL");if(!l)return;const i=Math.max(-1,...[...l.querySelectorAll(".hnxb")].map(b=>+b.dataset.i))+1;l.insertAdjacentHTML("beforeend",hNxBlock({},i));const n=l.lastElementChild.querySelector(".nxTi");n&&n.focus();return}
   const nxd=t.closest("[data-hnxdel]");if(nxd){const b=nxd.closest(".hnxb"),l=$("heNxL");if(!b)return;if(l.querySelectorAll(".hnxb").length>1)b.remove();else{b.querySelector(".nxTi").value="";b.querySelector(".nxIc").value="";if(HED&&HED.nxT)HED.nxT[+b.dataset.i]=null}return}
@@ -5368,7 +5412,7 @@ const hLeadMax=()=>Math.max(6,...hChores().map(hLeadDays));
 let HAGT=0,HAGSIG="";
 async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
   const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
-    .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0}));
+    .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0,tod:i.c.tod||undefined}));
   const o={me,meName:p?p.n:"",gen:Date.now(),items:L,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
   clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}
 window.homeAgendaSave=hAgendaSave;
