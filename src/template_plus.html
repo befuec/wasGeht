@@ -1649,6 +1649,7 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .hdrow.priv{background:color-mix(in srgb,#7C5CBF 7%,var(--surface))}
 .hsnewr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
 .hsrw{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px}.hsplus{font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;height:34px;padding:0 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.hsplus:hover,.hsplus:focus-visible{border-color:var(--nx)}
+.updbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:90;font:inherit;font-weight:800;font-size:14px;border:0;border-radius:999px;padding:10px 16px;background:var(--nx);color:var(--nx-ink);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;max-width:calc(100% - 32px)}
 </style>
 
 <div class="wrap">
@@ -2849,6 +2850,16 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  /* Offline-Speicher: Service Worker (nur über https) */
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
+/* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
+{const APPVER="__APPVER__";let lastChk=0,hiddenAt=0,banner=null;
+  const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
+  const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
+  async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
+    try{const r=await fetch("version.txt?t="+now,{cache:"no-store"});if(!r.ok)return;const v=(await r.text()).trim();if(!v||v===APPVER)return;
+      if(fromBg&&!busy()){go();return}
+      if(!banner){banner=document.createElement("button");banner.type="button";banner.className="updbar";banner.textContent="✨ Neue Version verfügbar – jetzt aktualisieren";banner.addEventListener("click",go);document.body.appendChild(banner)}}catch(_){}}
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenAt=Date.now();return}chk(hiddenAt&&Date.now()-hiddenAt>30000)});
+  setInterval(()=>{if(!document.hidden)chk(false)},30*60000);setTimeout(()=>chk(false),5000)}
  window.openSettingsApp=()=>{d.showModal?d.showModal():d.setAttribute("open","");renderAppInst();setTimeout(()=>{const a=$("appInst");if(a)a.scrollIntoView({block:"center"})},60)};
  for(const id of ["setX","setOk"])$(id).addEventListener("click",()=>d.close());
  d.addEventListener("click",e=>{if(e.target===d)d.close()});

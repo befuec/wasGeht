@@ -8,4 +8,5 @@ python3 assemble_plus.py
 python3 assemble_gh.py
 cp gh/index.html ../index.html
 cp gh/sw.js ../sw.js
+cp gh/version.txt ../version.txt
 echo "index.html gebaut ($(wc -c < ../index.html) Bytes)"
