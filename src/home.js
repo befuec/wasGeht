@@ -748,7 +748,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
   const cat=TP.filter(x=>!used.has(x.id)).map(x=>{const cc=HCAT[x.cat]||["","📌",""];return {x,sc:hSrchScore([x.ti,cc[2],(x.ck||[]).join(" ")].join(" "),x.ti,W)}}).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc||a.x.ti.localeCompare(b.x.ti));
   const few=own.length+cat.length<3,MAX=6;
   const nw=`<div class="hsnewr"><button type="button" class="hsnew${few?" big":""}" data-hsnew>➕ „${esc(q)}“ als neue Aufgabe</button><button type="button" class="hsnew${few?" big":""}" data-hadd="_apt">📅 als Termin heute</button></div>`;
-  const oRow=({c})=>{const cc=HCAT[c.cat]||["","📌",""];return `<button type="button" class="hsr" data-hedit="${esc(c.cid)}"><span>${c.ic||cc[1]}</span><b>${esc(c.ti)}</b><small>${hWwd(c)?esc(hWhoWdTxt(c)):esc((hPer(c.who)||{n:c.who==="rot"?"abwechselnd":"offen"}).n)} · ${esc(hTurn(c))}</small><i>✏️</i></button>`};
+  const oRow=({c})=>{const cc=HCAT[c.cat]||["","📌",""];return `<div class="hsrw"><button type="button" class="hsr" data-hedit="${esc(c.cid)}"><span>${c.ic||cc[1]}</span><b>${esc(c.ti)}</b><small>${hWwd(c)?esc(hWhoWdTxt(c)):esc((hPer(c.who)||{n:c.who==="rot"?"abwechselnd":"offen"}).n)} · ${esc(hTurn(c))}</small><i>✏️</i></button><button type="button" class="hsplus" data-hsonce="${esc(c.cid)}" aria-label="„${esc(c.ti)}“ zusätzlich heute einmal" title="Zusätzlich heute einmal">+ heute</button></div>`};
   const tRow=({x})=>{const cc=HCAT[x.cat]||["","📌",""];return `<button type="button" class="hsr" data-hadd="${esc(x.id)}"><span>${x.ic||cc[1]}</span><b>${esc(x.ti)}</b><small>${esc(cc[2])} · ${esc(HFL[x.f]||"")} · ${fmH(+x.dur||0)}</small><i>➕</i></button>`};
   return `<div class="hsres" id="hsRes">${few?nw:""}
     ${own.length?`<div class="hsg"><h5>Eure Aufgaben (${own.length})</h5>${own.slice(0,MAX).map(oRow).join("")}${own.length>MAX?`<small class="hhint">… und ${own.length-MAX} weitere – genauer suchen</small>`:""}</div>`:""}
@@ -1152,6 +1152,11 @@ document.addEventListener("click",e=>{const t=e.target;
   const fwho=t.closest("[data-hfwho]");if(fwho){HF.who=fwho.dataset.hfwho;LS.set("hwk-hf",HF);renderHome();return}
   const hm=t.closest("[data-hme]");if(hm){LS.set("hwk-hme",hm.dataset.hme);HMEOPEN=false;renderHome();return}
   const dnp=t.closest("[data-hdnp]");if(dnp){HDNP=dnp.dataset.hdnp;renderHome();return}
+  const so=t.closest("[data-hsonce]");if(so){const c=SETS["hc:"+so.dataset.hsonce];if(!c)return;const me=hMe(),priv=!!c.priv;
+    const who=priv?me:c.who==="rot"||hWwd(c)?(hWho(c,T0)||""):c.who||"";
+    const x={ti:c.ti,ic:c.ic||"",cat:c.cat,f:"x",date:T0,dur:+c.dur||15,unpop:c.unpop||0,kid:c.kid||0,pts:c.pts||undefined,who,ck:(c.ck||[]).slice(),ckw:c.ckw?Object.assign({},c.ckw):undefined,tod:c.tod||undefined,miss:c.miss||undefined,start:T0,from1:so.dataset.hsonce};
+    if(priv){x.priv=1;x.own=me}const ncid=(priv?"p":"c")+Date.now().toString(36);hset("hc:"+ncid,x);renderHomeAll();
+    undoToast(`➕ ${c.ti} – zusätzlich heute (einmalig)`,()=>{hset("hc:"+ncid,null);renderHomeAll()});return}
   if(t.closest("[data-hlater]")){HLATER=!HLATER;renderHome();return}
   if(t.closest("[data-hsnew]")){hSrchNew();return}
   if(t.closest("[data-hsx]")){HSQ="";hSrchUpd();const n=$("hsQ");n&&n.focus();return}
