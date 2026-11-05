@@ -1650,6 +1650,7 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .hsnewr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
 .hsrw{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px}.hsplus{font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;height:34px;padding:0 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.hsplus:hover,.hsplus:focus-visible{border-color:var(--nx)}
 .updbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:90;font:inherit;font-weight:800;font-size:14px;border:0;border-radius:999px;padding:10px 16px;background:var(--nx);color:var(--nx-ink);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;max-width:calc(100% - 32px)}
+.pmode{display:grid;gap:4px;margin:8px 0}.pmode>span{font-size:12.5px;font-weight:700;color:var(--muted)}
 </style>
 
 <div class="wrap">
@@ -3599,6 +3600,7 @@ function renderPushSet(){const el=$("pushSet");if(!el)return;const P=LS.get("hwk
   else if(!pushOk())body=`<p class="famnote">${isIOSP()&&!isStandaloneP()?"Am iPhone funktionieren Erinnerungen nur in der installierten App: erst oben „📲 Als App installieren“, dann die App über das Symbol öffnen und hier einschalten.":"Dieser Browser unterstützt keine Erinnerungen."}</p>`;
   else if(isIOSP()&&!isStandaloneP())body=`<p class="famnote">Am iPhone bitte zuerst als App installieren (siehe oben) und die App über das Symbol öffnen – dann hier einschalten.</p>`;
   else body=`<p class="famnote">Zu den gewählten Uhrzeiten eine Mitteilung mit deinen offenen Aufgaben und denen, die noch niemand übernommen hat. ${isIOSP()?"Antippen öffnet die Abhak-Liste.":"Mit „✓ Erledigt“ direkt in der Mitteilung abhaken."}</p>
+    ${(()=>{const M=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{}));const g=(k,l)=>`<div class="pmode"><span>${l}</span><div class="dquick">${[["single","Je Aufgabe (mit ✓)"],["sum","Eine Sammel-Mitteilung"]].map(([v,t])=>`<button type="button" data-pmode="${k}:${v}" aria-pressed="${M[k]===v}">${t}</button>`).join("")}</div></div>`;return g("m","Morgens (bis 15 Uhr)")+g("a","Abends (ab 15 Uhr)")})()}
     <div class="dquick" id="pushSlots">${[7,9,12,18,21].map(h=>`<button type="button" data-pslot="${h}" aria-pressed="${sl.includes(h)}">${h} Uhr</button>`).join("")}</div>
     <div class="bkrow">${P?`<button type="button" class="pmini" id="pushTest">🔔 Jetzt testen</button><button type="button" class="pmini" id="pushOffBtn">Ausschalten</button>`:`<button type="button" class="pkok" id="pushOnBtn">🔔 Erinnerungen einschalten</button>`}</div>
     <p class="famnote">${P?"✅ Eingeschaltet für dieses Gerät"+(Notification.permission!=="granted"?" – aber Mitteilungen sind in den Geräte-Einstellungen blockiert.":"."):"Gilt nur für dieses Gerät; jede Person schaltet es auf ihrem Handy selbst ein."}</p>`;
@@ -3616,6 +3618,7 @@ async function pushOff(silent,ck0){const P=LS.get("hwk-push",null);LS.set("hwk-p
   try{const reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();if(sub){if(ck0||CK||SB){try{const c=ck0||CK||await famReady();await sbRpc("fam_push_unsub",{p_code:c.a,p_endpoint:sub.endpoint})}catch(_){}}await sub.unsubscribe()}}catch(_){}
   if(!silent&&P){PUSHMSG="Erinnerungen sind aus.";renderPushSet()}}
 document.addEventListener("click",async e=>{const t=e.target;if(!t.closest)return;
+  const pm=t.closest("[data-pmode]");if(pm){const [k,v]=pm.dataset.pmode.split(":"),M=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{}));M[k]=v;LS.set("hwk-pushmode",M);renderPushSet();if(window.homeAgendaSave)window.homeAgendaSave(true);toast(v==="sum"?"🔔 "+(k==="a"?"Abends":"Morgens")+": eine Sammel-Mitteilung":"🔔 "+(k==="a"?"Abends":"Morgens")+": je Aufgabe eine Mitteilung");return}
   const s=t.closest("[data-pslot]");if(s){const P=LS.get("hwk-push",null),cur=(P&&P.slots)||[9,21],h=+s.dataset.pslot,nx=cur.includes(h)?cur.filter(x=>x!==h):cur.concat(h).sort((a,b)=>a-b);
     if(!nx.length){toast("Mindestens eine Uhrzeit wählen");return}if(P)await pushOn(nx);else{LS.set("hwk-push-pre",nx);s.setAttribute("aria-pressed",String(!cur.includes(h)))}renderPushSet();return}
   if(t.closest("#pushOnBtn")){const pre=LS.get("hwk-push-pre",null);await pushOn(pre&&pre.length?pre:[...document.querySelectorAll("#pushSlots [aria-pressed=true]")].map(b=>+b.dataset.pslot));return}
@@ -5439,7 +5442,7 @@ let HAGT=0,HAGSIG="";
 async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
   const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
     .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0,tod:i.c.tod||undefined}));
-  const o={me,meName:p?p.n:"",gen:Date.now(),items:L,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
+  const mode=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{})),o={me,meName:p?p.n:"",gen:Date.now(),items:L,mode,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L,mode]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
   clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}
 window.homeAgendaSave=hAgendaSave;
 /* Abhak-Liste (aus der Erinnerung geöffnet) */

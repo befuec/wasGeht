@@ -1213,7 +1213,7 @@ let HAGT=0,HAGSIG="";
 async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
   const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
     .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0,tod:i.c.tod||undefined}));
-  const o={me,meName:p?p.n:"",gen:Date.now(),items:L,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
+  const mode=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{})),o={me,meName:p?p.n:"",gen:Date.now(),items:L,mode,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L,mode]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
   clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}
 window.homeAgendaSave=hAgendaSave;
 /* Abhak-Liste (aus der Erinnerung geöffnet) */

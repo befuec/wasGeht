@@ -70,6 +70,13 @@ async function showReminders(test) {
   if (!L.length) return self.registration.showNotification("✅ Alles erledigt", Object.assign({ body: test ? "Test: Gerade ist nichts offen für dich." : "Für dich ist gerade nichts offen. 🎉", tag: "wg-sum", data: { url: "./#zuhause" } }, opt));
   const mine = L.filter(i => i.who === r.me || (Array.isArray(i.team) && i.team.includes(r.me))).length, open = L.length - mine;
   const head = `📋 ${L.length} offen` + (mine && open ? ` · ${mine} für dich, ${open} ohne Person` : mine ? " für dich" : " · noch niemand zugeordnet");
+  const ag = await kvGet("agenda"), eve = new Date().getHours() >= 15, md = Object.assign({ m: "single", a: "sum" }, (ag && ag.mode) || {})[eve ? "a" : "m"];
+  if (md === "sum") {
+    const od = L.filter(i => i.disp < today()).length, names = L.slice(0, 5).map(i => (i.ic ? i.ic + " " : "") + i.ti);
+    return self.registration.showNotification(`${eve ? "🌙" : "☀️"} Noch ${L.length} ${L.length === 1 ? "Aufgabe" : "Aufgaben"} offen`, Object.assign({
+      body: (mine && open ? `${mine} für dich, ${open} ohne Person` : mine ? "für dich" : "noch niemand zugeordnet") + (od ? ` · ⚠️ ${od} überfällig` : "") + "\n" + names.join(", ") + (L.length > 5 ? ` … (+${L.length - 5})` : ""),
+      tag: "wg-sum", data: { url: "./?abhaken=1#zuhause" } }, opt));
+  }
   const show = L.slice(0, 4);
   for (const i of show) {
     await self.registration.showNotification(`${i.ic || "🏠"} ${i.ti}`, Object.assign({
