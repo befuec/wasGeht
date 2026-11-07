@@ -1651,6 +1651,7 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .hsrw{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px}.hsplus{font:inherit;font-size:12.5px;font-weight:800;white-space:nowrap;height:34px;padding:0 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}.hsplus:hover,.hsplus:focus-visible{border-color:var(--nx)}
 .updbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:90;font:inherit;font-weight:800;font-size:14px;border:0;border-radius:999px;padding:10px 16px;background:var(--nx);color:var(--nx-ink);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;max-width:calc(100% - 32px)}
 .pmode{display:grid;gap:4px;margin:8px 0}.pmode>span{font-size:12.5px;font-weight:700;color:var(--muted)}
+.kback{display:flex;justify-content:flex-start}.kbackb{font:inherit;font-weight:800;font-size:14px;border:2px solid var(--kid-ink,#2B2B2B);background:#fff;color:#2B2B2B;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:40px}
 </style>
 
 <div class="wrap">
@@ -1861,6 +1862,7 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
   <dialog class="evdlg hdlg" id="hdlg" aria-label="Aufgabe"></dialog>
   <dialog class="hsheet" id="hcatdlg" aria-label="Aufgaben & Katalog"></dialog>
   <section id="kidview" aria-labelledby="kH">
+    <div class="kback"><button type="button" class="kbackb" id="kidBack">← Zurück zur Elternansicht</button></div>
     <div class="ktasks" id="kTasks" hidden></div>
     <div class="khead"><h2 id="kH">Wohin geht's?</h2><p>Such dir was aus und zeig es Mama oder Papa!</p></div>
     <div class="ktop"><div class="kwx" id="kWx" aria-live="polite"></div><div id="kStars"></div></div>
@@ -2805,8 +2807,9 @@ $("kids").addEventListener("change",e=>{const i=e.target.id.replace("kid","");if
 $("agefit").addEventListener("change",e=>{S.agefit=e.target.checked;render()});
 renderKids();
 $("total").textContent=PLACES.length;
+{const bk=$("kidBack");if(bk)bk.addEventListener("click",()=>{const b=document.querySelector('.modebar [data-mode="adult"]');if(b)b.click();else if(typeof setMode==="function")setMode("adult");scrollTo(0,0);const k=$("kidBtn");if(k)setTimeout(()=>k.dispatchEvent(new Event("kidsync")),0)})}
 {const kb=$("kidBtn"),sync=()=>{const on=document.body.classList.contains("kidsmode");kb.innerHTML=on?`<span aria-hidden="true">👨‍👩‍👧</span><span class="kbl">Eltern</span>`:`<span aria-hidden="true">🧒</span><span class="kbl">Kinder</span>`;kb.setAttribute("aria-label",on?"Zur Elternansicht":"Kinderansicht öffnen");kb.title=on?"Elternansicht":"Kinderansicht"};
- kb.addEventListener("click",()=>{const on=document.body.classList.contains("kidsmode");const b=document.querySelector(`.modebar [data-mode="${on?"adult":"kids"}"]`);b&&b.click();setTimeout(sync,0);scrollTo(0,0)});setTimeout(sync,0)}
+ kb.addEventListener("kidsync",sync); kb.addEventListener("click",()=>{const on=document.body.classList.contains("kidsmode");const b=document.querySelector(`.modebar [data-mode="${on?"adult":"kids"}"]`);b&&b.click();setTimeout(sync,0);scrollTo(0,0)});setTimeout(sync,0)}
 window.FREEDAYS=new Set([6,0]);try{const v=JSON.parse(localStorage.getItem("hwk-freedays")||"null");if(Array.isArray(v))window.FREEDAYS=new Set(v)}catch(e){}
 function renderFreeDays(){$("freeDays").innerHTML=[1,2,3,4,5,6,0].map(i=>`<button type="button" data-fd="${i}" aria-pressed="${FREEDAYS.has(i)}">${["So","Mo","Di","Mi","Do","Fr","Sa"][i]}</button>`).join("")}
 renderFreeDays();
