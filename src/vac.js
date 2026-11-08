@@ -31,9 +31,10 @@ const vTripAt=d=>vTrips().find(t=>d>=t.from&&d<=t.to)||null;
 const vPrevId=()=>LS.get("hwk-vacprev",null);
 function vActive(){const pv=vPrevId();if(pv){const t=vTrips().find(x=>x.id===pv);if(t)return t}return vTripAt(T0)}
 window.vacActive=vActive;
-/* Für Aufgaben: echter Zeitraum, bei Vorschau zusätzlich ab heute für die Reisedauer */
-function vTripForTasks(d){const t=vTripAt(d);if(t)return t;const pv=vPrevId();if(!pv)return null;const P=vTrips().find(x=>x.id===pv);if(!P)return null;
-  const len=Math.round((pdate(P.to)-pdate(P.from))/864e5);return d>=T0&&d<=addD(T0,len)?P:null}
+/* Für Aufgaben zählt nur der echte Urlaubszeitraum – der Planungsmodus ändert an den Aufgaben nichts */
+function vTripForTasks(d){return vTripAt(d)}
+const vPlanning=t=>!!t&&!vTripAt(T0)&&vPrevId()===t.id;
+const vUntil=t=>Math.round((pdate(t.from)-pdate(T0))/864e5);
 function vKidRel(c){if(c.kid||c.cat==="kids"||c.cat==="kinder")return true;const p=hPer(c.who);return !!(p&&p.kid)}
 /* wird von hItems je Termin gefragt */
 function vTaskOk(c,d){const tr=vTripForTasks(d);if(c.cat==="urlaub")return !!tr;if(!tr)return true;return vKidRel(c)}
@@ -79,8 +80,10 @@ async function vGeo(q,near){const w=Math.max(0,VGEO_T+1100-Date.now());if(w)awai
 /* ---------- Kopfzeile, Farben, Ansicht ---------- */
 let VSIG="";
 function vSync(){const t=vActive(),on=!!t;document.body.classList.toggle("vac",on);const bar=$("vacBar");
-  if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPrevId()===t.id&&!vTripAt(T0);
-    bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?"Vorschau":dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span>${pv?`<button type="button" class="pmini" data-vprevoff>Vorschau beenden</button>`:`<button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>`}`;bar.hidden=false}}
+  if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPlanning(t),u=vUntil(t);
+    bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?(u>0?`Planung · noch ${u} ${u===1?"Tag":"Tage"}`:"Rückblick"):dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span><span class="vbb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${pv?`<button type="button" class="pmini vhome" data-vprevoff>🏠 Zurück nach Hause</button>`:""}</span>`;bar.hidden=false}}
+  const nx=$("vacNext");if(nx){const U=on?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
+    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span>🏝️ <b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere unter ⚙️`:""}</small></span><span class="vgo">Urlaub planen ›</span></button>`;nx.hidden=false}}
   const v=$("vacView");if(v){const show=on&&!document.body.classList.contains("kidsmode")&&(M2==="heute"||M2==="entdecken");v.hidden=!show;if(show){const sig=JSON.stringify([M2,t,VF,LS.get("hwk-vacprev",null)]);if(sig!==VSIG||!v.innerHTML){VSIG=sig;vRender(t)}}}
   renderVacSet()}
 window.vSync=vSync;
@@ -101,9 +104,18 @@ function vCard(t,p){const km=vKm(t,p),cc=VCAT[p.cat]||VCAT.sonst,dest=t.dest&&t.
       <label class="vpl"><span class="sr">Einplanen</span><select data-vpl="${esc(p.id)}"><option value="">📅 Einplanen …</option>${vDays(t).map(d=>`<option value="${d}"${p.pl===d?" selected":""}>${esc(fmtDate(d))}${d===T0?" (heute)":""}</option>`).join("")}</select></label>
       <a href="${named}" target="_blank" rel="noopener">Google Maps</a><a href="${route}" target="_blank" rel="noopener">Route</a></div></article>`}
 function vRender(t){const v=$("vacView");if(!v)return;const P=(t.places||[]).slice();
-  const head=`<div class="vhead"><h2>${M2==="heute"?"Heute im Urlaub":"Urlaubsziele"}</h2><button type="button" class="pmini" data-vedit="${esc(t.id)}">${P.length?"Ziele bearbeiten":"Ziele hinzufügen"}</button></div>`;
+  const plan=vPlanning(t);
+  const head=`<div class="vhead"><h2>${M2==="heute"?(plan?"Urlaub planen":"Heute im Urlaub"):"Urlaubsziele"}</h2><button type="button" class="pmini" data-vedit="${esc(t.id)}">${P.length?"Ziele bearbeiten":"Ziele hinzufügen"}</button></div>`;
   if(!P.length){v.innerHTML=head+`<div class="vempty"><p>Für <b>${esc(t.ti)}</b> sind noch keine Ziele eingetragen.</p><p>Füge deine Google-Maps-Liste ein (Export aus Google Takeout, gespeicherte Seite oder einfach die Namen, einer pro Zeile) – die App sucht die Orte selbst.</p><button type="button" class="pbtn" data-vedit="${esc(t.id)}">🗺️ Ziele-Liste einfügen</button></div>`;return}
   const withKm=P.map(p=>Object.assign({},p,{km:vKm(t,p)}));
+  if(M2==="heute"&&plan){const u=vUntil(t),fav=withKm.filter(p=>p.fav),D=vDays(t),nPl=withKm.filter(p=>p.pl).length;
+    v.innerHTML=head+`<div class="vcount"><b>${u>0?`Noch ${u} ${u===1?"Tag":"Tage"}`:"Urlaub ist vorbei"}</b><span>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${D.length} Tage · ${P.length} Ziele · ${nPl} eingeplant</span></div>
+      <div class="vwx" id="vWx">Wetter in ${esc((t.dest&&t.dest.n)||"")} wird geladen …</div>
+      <h3 class="vh3">Reiseplan</h3><div class="vdays">${D.map(d=>{const L=withKm.filter(p=>p.pl===d);return `<div class="vday"><b>${esc(fmtDate(d))}</b><span>${L.length?L.map(p=>`<span class="vdc">${(VCAT[p.cat]||VCAT.sonst)[0]} ${esc(p.n)}</span>`).join(""):`<i>noch frei</i>`}</span></div>`}).join("")}</div>
+      <h3 class="vh3">⭐ Favoriten ${fav.length?`(${fav.length})`:""}</h3>${fav.length?`<div class="vlist">${fav.map(p=>vCard(t,p)).join("")}</div>`:`<p class="pvsub">Noch keine Favoriten – unter „Alle Ziele“ mit ☆ markieren.</p>`}
+      <button type="button" class="pbtn vall" data-m2="entdecken">Alle ${P.length} Ziele ansehen & einplanen</button>`;
+    vWx(t).then(Dw=>{const e=$("vWx");if(!e)return;if(!Dw){e.textContent="Wetter gerade nicht verfügbar.";return}
+      e.innerHTML=`<small class="vwxh">${u>0&&u<=14?"Vorhersage":"Aktuelles Wetter"} in ${esc((t.dest&&t.dest.n)||"")}</small>`+Dw.time.map((d,i)=>`<span><b>${i===0?"Heute":i===1?"Morgen":esc(fmtDate(d).split(" ")[0])}</b> ${vWxI(Dw.weathercode[i])} ${Math.round(Dw.temperature_2m_max[i])}° · 💧${Dw.precipitation_probability_max[i]??"–"} %</span>`).join("")});return}
   if(M2==="heute"){const today=withKm.filter(p=>p.pl===T0),pool=withKm.filter(p=>!p.vis&&p.pl!==T0);
     let seed=+T0.replace(/-/g,"");const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
     const pick=pool.slice().sort((a,b)=>((b.fav?2:0)-(a.fav?2:0))||((a.km??99)-(b.km??99))*0.02+(rnd()-0.5)).slice(0,3);
@@ -123,10 +135,10 @@ function vRender(t){const v=$("vacView");if(!v)return;const P=(t.places||[]).sli
     <div class="vlist">${L.map(p=>vCard(t,p)).join("")||`<p class="pvsub">Nichts gefunden.</p>`}</div>`}
 function vUpd(id,ch){const t=vActive();if(!t)return;const P=(t.places||[]).map(p=>p.id===id?Object.assign({},p,ch(p)):p);vSave(Object.assign({},t,{places:P}));VSIG="";vSync()}
 document.addEventListener("click",e=>{const t=e.target;if(!t.closest)return;
-  if(t.closest("[data-vprevoff]")){LS.set("hwk-vacprev",null);VSIG="";renderHomeAll();vSync();toast("Vorschau beendet");return}
+  if(t.closest("[data-vprevoff]")){LS.set("hwk-vacprev",null);VSIG="";renderHomeAll();vSync();toast("🏠 Zurück im Alltag");scrollTo(0,0);return}
   const ve=t.closest("[data-vedit]");if(ve){vDlg(ve.dataset.vedit);return}
   if(t.closest("[data-vnew]")){vDlg(null);return}
-  const vp=t.closest("[data-vprev]");if(vp){const id=vp.dataset.vprev,on=vPrevId()===id;LS.set("hwk-vacprev",on?null:id);VSIG="";renderHomeAll();vSync();toast(on?"Vorschau beendet":"🏝️ Vorschau: so sieht der Urlaubsmodus aus");if(!on)scrollTo(0,0);return}
+  const vp=t.closest("[data-vprev]");if(vp){const id=vp.dataset.vprev,on=vPrevId()===id;LS.set("hwk-vacprev",on?null:id);VSIG="";renderHomeAll();vSync();toast(on?"🏠 Zurück im Alltag":"🏝️ Planungsmodus – Zuhause-Aufgaben laufen normal weiter");if(!on){scrollTo(0,0);if(typeof setM2==="function"&&M2!=="heute"&&M2!=="entdecken")setM2("heute")}return}
   const vc=t.closest("[data-vcat]");if(vc){VF.cat=vc.dataset.vcat;VSIG="";vSync();return}
   const vo=t.closest("[data-vonly]");if(vo){VF.only=vo.dataset.vonly;VSIG="";vSync();return}
   const vf=t.closest("[data-vfav]");if(vf){vUpd(vf.dataset.vfav,p=>({fav:!p.fav}));return}
@@ -140,7 +152,7 @@ setInterval(()=>{if(!document.hidden)vSync()},60000);
 /* ---------- Einstellungen: Liste der Reisen ---------- */
 function renderVacSet(){const el=$("vacSet");if(!el)return;const L=vTrips(),pv=vPrevId(),sig=JSON.stringify([L.map(t=>[t.id,t.ti,t.from,t.to,(t.places||[]).length]),pv,T0]);if(el.dataset.sig===sig)return;el.dataset.sig=sig;
   el.innerHTML=`<p class="famnote">Im Urlaub wechselt die App ihre Farben, zeigt nur die Ziele aus eurer Urlaubsliste und pausiert die Zuhause-Aufgaben. Kinder- und Urlaubsaufgaben bleiben.</p>
-   ${L.length?`<div class="vtrips">${L.map(t=>{const st=T0<t.from?"geplant":T0>t.to?"vorbei":"läuft";return `<div class="vtrip"><div><b>🏝️ ${esc(t.ti)}</b><small>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${(t.places||[]).length} Ziele · ${st}</small></div><div class="vtb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${st!=="läuft"?`<button type="button" class="pmini" data-vprev="${esc(t.id)}" aria-pressed="${pv===t.id}">${pv===t.id?"Vorschau beenden":"Vorschau"}</button>`:""}</div></div>`}).join("")}</div>`:""}
+   ${L.length?`<div class="vtrips">${L.map(t=>{const st=T0<t.from?"geplant":T0>t.to?"vorbei":"läuft";return `<div class="vtrip"><div><b>🏝️ ${esc(t.ti)}</b><small>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${(t.places||[]).length} Ziele · ${st}</small></div><div class="vtb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${st!=="läuft"?`<button type="button" class="pmini" data-vprev="${esc(t.id)}" aria-pressed="${pv===t.id}">${pv===t.id?"Planung beenden":"🏝️ Planen"}</button>`:""}</div></div>`}).join("")}</div>`:""}
    <button type="button" class="pkok" data-vnew>➕ Urlaub anlegen</button>`}
 
 /* ---------- Dialog: Urlaub anlegen / bearbeiten, Ziele importieren ---------- */

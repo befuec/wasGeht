@@ -1711,6 +1711,15 @@ body.vac[data-m2="heute"] #heuteView,body.vac[data-m2="entdecken"] .layout,body.
 .vpr select{font:inherit;font-size:12px;max-width:130px;padding:3px 4px}
 .vdel{color:#B42318!important;border-color:color-mix(in srgb,#B42318 40%,var(--line))!important}
 .hvacn{margin:0 0 12px;font-size:13px;color:var(--muted);background:color-mix(in srgb,#0B7FA6 8%,var(--surface));border-radius:12px;padding:8px 12px}
+.vacbar .vbb{display:flex;gap:6px;flex-wrap:wrap}.vacbar .vhome{background:var(--nx);color:var(--nx-ink);border-color:var(--nx)}
+.vnext{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:4px 0 10px;font:inherit;text-align:left;cursor:pointer;padding:9px 14px;border-radius:14px;border:1.5px dashed color-mix(in srgb,#0B7FA6 45%,var(--line));background:color-mix(in srgb,#0B7FA6 6%,var(--surface));color:var(--ink)}
+.vnext>span:first-child{display:grid}.vnext small{color:var(--muted);font-size:12px}.vnext .vgo{font-weight:800;font-size:13px;color:#0B6F93;white-space:nowrap}
+body.kidsmode #vacNext{display:none}
+.vcount{display:grid;gap:2px;background:linear-gradient(100deg,color-mix(in srgb,#0B7FA6 14%,var(--surface)),color-mix(in srgb,#F6C76A 20%,var(--surface)));border-radius:14px;padding:12px 14px}.vcount b{font-size:20px}.vcount span{font-size:12.5px;color:var(--muted)}
+.vwxh{flex-basis:100%;color:var(--muted);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+.vdays{display:grid;gap:4px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px}
+.vday{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--line);font-size:13px}.vday:last-child{border-bottom:0}.vday i{color:var(--muted)}
+.vday>span{display:flex;flex-wrap:wrap;gap:4px}.vdc{background:var(--accent-soft);border-radius:999px;padding:1px 8px;font-size:12.5px}
 </style>
 
 <div class="wrap">
@@ -1718,9 +1727,10 @@ body.vac[data-m2="heute"] #heuteView,body.vac[data-m2="entdecken"] .layout,body.
     <div class="hrow"><h1>Was geht?</h1>
   <button type="button" class="setbtn kidbtn" id="kidBtn" aria-label="Kinderansicht öffnen" title="Kinderansicht"><span aria-hidden="true">🧒</span><span class="kbl">Kinder</span></button><button type="button" class="setbtn" id="setBtn" aria-label="Einstellungen: Familie und Darstellung" title="Einstellungen"><span class="setfam" id="setFam" aria-hidden="true"></span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
 </div>
-    <div class="vacbar" id="vacBar" hidden></div>
     <nav class="modebar" aria-label="Ansicht"><button type="button" data-mode="adult" aria-pressed="true"><span aria-hidden="true">👨‍👩‍👧</span> Elternansicht</button><button type="button" data-mode="kids" aria-pressed="false"><span aria-hidden="true">🧒</span> Kinderansicht</button></nav>
   </header>
+  <div class="vacbar" id="vacBar" hidden></div>
+  <div id="vacNext" hidden></div>
 
   <h2 class="mtitle mt-ent">🔭 Entdecken</h2>
   <div class="layout">
@@ -2917,7 +2927,7 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
 /* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
-{const APPVER="e738e22ca1";let lastChk=0,hiddenAt=0,banner=null;
+{const APPVER="30edd05d4a";let lastChk=0,hiddenAt=0,banner=null;
   const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
   const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
   async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
@@ -4324,9 +4334,10 @@ const vTripAt=d=>vTrips().find(t=>d>=t.from&&d<=t.to)||null;
 const vPrevId=()=>LS.get("hwk-vacprev",null);
 function vActive(){const pv=vPrevId();if(pv){const t=vTrips().find(x=>x.id===pv);if(t)return t}return vTripAt(T0)}
 window.vacActive=vActive;
-/* Für Aufgaben: echter Zeitraum, bei Vorschau zusätzlich ab heute für die Reisedauer */
-function vTripForTasks(d){const t=vTripAt(d);if(t)return t;const pv=vPrevId();if(!pv)return null;const P=vTrips().find(x=>x.id===pv);if(!P)return null;
-  const len=Math.round((pdate(P.to)-pdate(P.from))/864e5);return d>=T0&&d<=addD(T0,len)?P:null}
+/* Für Aufgaben zählt nur der echte Urlaubszeitraum – der Planungsmodus ändert an den Aufgaben nichts */
+function vTripForTasks(d){return vTripAt(d)}
+const vPlanning=t=>!!t&&!vTripAt(T0)&&vPrevId()===t.id;
+const vUntil=t=>Math.round((pdate(t.from)-pdate(T0))/864e5);
 function vKidRel(c){if(c.kid||c.cat==="kids"||c.cat==="kinder")return true;const p=hPer(c.who);return !!(p&&p.kid)}
 /* wird von hItems je Termin gefragt */
 function vTaskOk(c,d){const tr=vTripForTasks(d);if(c.cat==="urlaub")return !!tr;if(!tr)return true;return vKidRel(c)}
@@ -4372,8 +4383,10 @@ async function vGeo(q,near){const w=Math.max(0,VGEO_T+1100-Date.now());if(w)awai
 /* ---------- Kopfzeile, Farben, Ansicht ---------- */
 let VSIG="";
 function vSync(){const t=vActive(),on=!!t;document.body.classList.toggle("vac",on);const bar=$("vacBar");
-  if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPrevId()===t.id&&!vTripAt(T0);
-    bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?"Vorschau":dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span>${pv?`<button type="button" class="pmini" data-vprevoff>Vorschau beenden</button>`:`<button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>`}`;bar.hidden=false}}
+  if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPlanning(t),u=vUntil(t);
+    bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?(u>0?`Planung · noch ${u} ${u===1?"Tag":"Tage"}`:"Rückblick"):dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span><span class="vbb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${pv?`<button type="button" class="pmini vhome" data-vprevoff>🏠 Zurück nach Hause</button>`:""}</span>`;bar.hidden=false}}
+  const nx=$("vacNext");if(nx){const U=on?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
+    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span>🏝️ <b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere unter ⚙️`:""}</small></span><span class="vgo">Urlaub planen ›</span></button>`;nx.hidden=false}}
   const v=$("vacView");if(v){const show=on&&!document.body.classList.contains("kidsmode")&&(M2==="heute"||M2==="entdecken");v.hidden=!show;if(show){const sig=JSON.stringify([M2,t,VF,LS.get("hwk-vacprev",null)]);if(sig!==VSIG||!v.innerHTML){VSIG=sig;vRender(t)}}}
   renderVacSet()}
 window.vSync=vSync;
@@ -4394,9 +4407,18 @@ function vCard(t,p){const km=vKm(t,p),cc=VCAT[p.cat]||VCAT.sonst,dest=t.dest&&t.
       <label class="vpl"><span class="sr">Einplanen</span><select data-vpl="${esc(p.id)}"><option value="">📅 Einplanen …</option>${vDays(t).map(d=>`<option value="${d}"${p.pl===d?" selected":""}>${esc(fmtDate(d))}${d===T0?" (heute)":""}</option>`).join("")}</select></label>
       <a href="${named}" target="_blank" rel="noopener">Google Maps</a><a href="${route}" target="_blank" rel="noopener">Route</a></div></article>`}
 function vRender(t){const v=$("vacView");if(!v)return;const P=(t.places||[]).slice();
-  const head=`<div class="vhead"><h2>${M2==="heute"?"Heute im Urlaub":"Urlaubsziele"}</h2><button type="button" class="pmini" data-vedit="${esc(t.id)}">${P.length?"Ziele bearbeiten":"Ziele hinzufügen"}</button></div>`;
+  const plan=vPlanning(t);
+  const head=`<div class="vhead"><h2>${M2==="heute"?(plan?"Urlaub planen":"Heute im Urlaub"):"Urlaubsziele"}</h2><button type="button" class="pmini" data-vedit="${esc(t.id)}">${P.length?"Ziele bearbeiten":"Ziele hinzufügen"}</button></div>`;
   if(!P.length){v.innerHTML=head+`<div class="vempty"><p>Für <b>${esc(t.ti)}</b> sind noch keine Ziele eingetragen.</p><p>Füge deine Google-Maps-Liste ein (Export aus Google Takeout, gespeicherte Seite oder einfach die Namen, einer pro Zeile) – die App sucht die Orte selbst.</p><button type="button" class="pbtn" data-vedit="${esc(t.id)}">🗺️ Ziele-Liste einfügen</button></div>`;return}
   const withKm=P.map(p=>Object.assign({},p,{km:vKm(t,p)}));
+  if(M2==="heute"&&plan){const u=vUntil(t),fav=withKm.filter(p=>p.fav),D=vDays(t),nPl=withKm.filter(p=>p.pl).length;
+    v.innerHTML=head+`<div class="vcount"><b>${u>0?`Noch ${u} ${u===1?"Tag":"Tage"}`:"Urlaub ist vorbei"}</b><span>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${D.length} Tage · ${P.length} Ziele · ${nPl} eingeplant</span></div>
+      <div class="vwx" id="vWx">Wetter in ${esc((t.dest&&t.dest.n)||"")} wird geladen …</div>
+      <h3 class="vh3">Reiseplan</h3><div class="vdays">${D.map(d=>{const L=withKm.filter(p=>p.pl===d);return `<div class="vday"><b>${esc(fmtDate(d))}</b><span>${L.length?L.map(p=>`<span class="vdc">${(VCAT[p.cat]||VCAT.sonst)[0]} ${esc(p.n)}</span>`).join(""):`<i>noch frei</i>`}</span></div>`}).join("")}</div>
+      <h3 class="vh3">⭐ Favoriten ${fav.length?`(${fav.length})`:""}</h3>${fav.length?`<div class="vlist">${fav.map(p=>vCard(t,p)).join("")}</div>`:`<p class="pvsub">Noch keine Favoriten – unter „Alle Ziele“ mit ☆ markieren.</p>`}
+      <button type="button" class="pbtn vall" data-m2="entdecken">Alle ${P.length} Ziele ansehen & einplanen</button>`;
+    vWx(t).then(Dw=>{const e=$("vWx");if(!e)return;if(!Dw){e.textContent="Wetter gerade nicht verfügbar.";return}
+      e.innerHTML=`<small class="vwxh">${u>0&&u<=14?"Vorhersage":"Aktuelles Wetter"} in ${esc((t.dest&&t.dest.n)||"")}</small>`+Dw.time.map((d,i)=>`<span><b>${i===0?"Heute":i===1?"Morgen":esc(fmtDate(d).split(" ")[0])}</b> ${vWxI(Dw.weathercode[i])} ${Math.round(Dw.temperature_2m_max[i])}° · 💧${Dw.precipitation_probability_max[i]??"–"} %</span>`).join("")});return}
   if(M2==="heute"){const today=withKm.filter(p=>p.pl===T0),pool=withKm.filter(p=>!p.vis&&p.pl!==T0);
     let seed=+T0.replace(/-/g,"");const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
     const pick=pool.slice().sort((a,b)=>((b.fav?2:0)-(a.fav?2:0))||((a.km??99)-(b.km??99))*0.02+(rnd()-0.5)).slice(0,3);
@@ -4416,10 +4438,10 @@ function vRender(t){const v=$("vacView");if(!v)return;const P=(t.places||[]).sli
     <div class="vlist">${L.map(p=>vCard(t,p)).join("")||`<p class="pvsub">Nichts gefunden.</p>`}</div>`}
 function vUpd(id,ch){const t=vActive();if(!t)return;const P=(t.places||[]).map(p=>p.id===id?Object.assign({},p,ch(p)):p);vSave(Object.assign({},t,{places:P}));VSIG="";vSync()}
 document.addEventListener("click",e=>{const t=e.target;if(!t.closest)return;
-  if(t.closest("[data-vprevoff]")){LS.set("hwk-vacprev",null);VSIG="";renderHomeAll();vSync();toast("Vorschau beendet");return}
+  if(t.closest("[data-vprevoff]")){LS.set("hwk-vacprev",null);VSIG="";renderHomeAll();vSync();toast("🏠 Zurück im Alltag");scrollTo(0,0);return}
   const ve=t.closest("[data-vedit]");if(ve){vDlg(ve.dataset.vedit);return}
   if(t.closest("[data-vnew]")){vDlg(null);return}
-  const vp=t.closest("[data-vprev]");if(vp){const id=vp.dataset.vprev,on=vPrevId()===id;LS.set("hwk-vacprev",on?null:id);VSIG="";renderHomeAll();vSync();toast(on?"Vorschau beendet":"🏝️ Vorschau: so sieht der Urlaubsmodus aus");if(!on)scrollTo(0,0);return}
+  const vp=t.closest("[data-vprev]");if(vp){const id=vp.dataset.vprev,on=vPrevId()===id;LS.set("hwk-vacprev",on?null:id);VSIG="";renderHomeAll();vSync();toast(on?"🏠 Zurück im Alltag":"🏝️ Planungsmodus – Zuhause-Aufgaben laufen normal weiter");if(!on){scrollTo(0,0);if(typeof setM2==="function"&&M2!=="heute"&&M2!=="entdecken")setM2("heute")}return}
   const vc=t.closest("[data-vcat]");if(vc){VF.cat=vc.dataset.vcat;VSIG="";vSync();return}
   const vo=t.closest("[data-vonly]");if(vo){VF.only=vo.dataset.vonly;VSIG="";vSync();return}
   const vf=t.closest("[data-vfav]");if(vf){vUpd(vf.dataset.vfav,p=>({fav:!p.fav}));return}
@@ -4433,7 +4455,7 @@ setInterval(()=>{if(!document.hidden)vSync()},60000);
 /* ---------- Einstellungen: Liste der Reisen ---------- */
 function renderVacSet(){const el=$("vacSet");if(!el)return;const L=vTrips(),pv=vPrevId(),sig=JSON.stringify([L.map(t=>[t.id,t.ti,t.from,t.to,(t.places||[]).length]),pv,T0]);if(el.dataset.sig===sig)return;el.dataset.sig=sig;
   el.innerHTML=`<p class="famnote">Im Urlaub wechselt die App ihre Farben, zeigt nur die Ziele aus eurer Urlaubsliste und pausiert die Zuhause-Aufgaben. Kinder- und Urlaubsaufgaben bleiben.</p>
-   ${L.length?`<div class="vtrips">${L.map(t=>{const st=T0<t.from?"geplant":T0>t.to?"vorbei":"läuft";return `<div class="vtrip"><div><b>🏝️ ${esc(t.ti)}</b><small>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${(t.places||[]).length} Ziele · ${st}</small></div><div class="vtb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${st!=="läuft"?`<button type="button" class="pmini" data-vprev="${esc(t.id)}" aria-pressed="${pv===t.id}">${pv===t.id?"Vorschau beenden":"Vorschau"}</button>`:""}</div></div>`}).join("")}</div>`:""}
+   ${L.length?`<div class="vtrips">${L.map(t=>{const st=T0<t.from?"geplant":T0>t.to?"vorbei":"läuft";return `<div class="vtrip"><div><b>🏝️ ${esc(t.ti)}</b><small>${esc(fmtDate(t.from))} – ${esc(fmtDate(t.to))} · ${(t.places||[]).length} Ziele · ${st}</small></div><div class="vtb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${st!=="läuft"?`<button type="button" class="pmini" data-vprev="${esc(t.id)}" aria-pressed="${pv===t.id}">${pv===t.id?"Planung beenden":"🏝️ Planen"}</button>`:""}</div></div>`}).join("")}</div>`:""}
    <button type="button" class="pkok" data-vnew>➕ Urlaub anlegen</button>`}
 
 /* ---------- Dialog: Urlaub anlegen / bearbeiten, Ziele importieren ---------- */
@@ -5248,7 +5270,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
 function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen">${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
 function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
 function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
-  hEdit({ti:q.slice(0,60),cat:vActive()?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
+  hEdit({ti:q.slice(0,60),cat:vTripAt(T0)?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
 /* Tageszeit: Aufgaben erscheinen heute erst ab morgens / mittags / abends */
 const HTOD={m:["🌅","Morgens",6],n:["☀️","Mittags",11],a:["🌙","Abends",17]};
 const hTodOk=(c,d)=>!c||!c.tod||!HTOD[c.tod]||d!==T0||new Date().getHours()>=HTOD[c.tod][2];
@@ -5316,7 +5338,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   hAgendaSave();
   const nProjAll=hProjects().length;
   const sf=document.activeElement&&document.activeElement.id==="hsQ",sp=sf?document.activeElement.selectionStart:null;
-  v.innerHTML=`${head}${vActive()?`<p class="hvacn">🏝️ <b>Urlaub:</b> Zuhause-Aufgaben pausieren und werden nicht überfällig. Kinder- und Urlaubsaufgaben laufen weiter.</p>`:""}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
+  v.innerHTML=`${head}${vTripAt(T0)?`<p class="hvacn">🏝️ <b>Urlaub:</b> Zuhause-Aufgaben pausieren und werden nicht überfällig. Kinder- und Urlaubsaufgaben laufen weiter.</p>`:""}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
     ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
     <section class="pvsec">${sec("done","✅ Erledigt – letzte 30 Tage"+(()=>{const n=hDoneHist().length;return n?` <span class="pvn">${n}</span>`:""})(),hDoneHtml(),false)}</section>
@@ -5656,8 +5678,8 @@ document.addEventListener("click",e=>{const t=e.target;
   if(t.closest("[data-hsmore]")){HCQ=HSQ;const d=$("hcatdlg");HCTAB="all";renderCatSheet();d.showModal?d.showModal():d.setAttribute("open","");return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
     const qt=(HSQ.trim()||HCQ.trim()).slice(0,60);
-    if(id==="_own"){hEdit({ti:qt,cat:vActive()?"urlaub":"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
-    if(id==="_apt"){hEdit({ti:qt,cat:vActive()?"urlaub":"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
+    if(id==="_own"){hEdit({ti:qt,cat:vTripAt(T0)?"urlaub":"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
+    if(id==="_apt"){hEdit({ti:qt,cat:vTripAt(T0)?"urlaub":"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
     hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,tod:T.tod||undefined,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
   const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick),b=nxp.closest(".hnxb");if(T&&HED&&b){b.querySelector(".nxTi").value=T.ti;b.querySelector(".nxIc").value=T.ic||"";HED.nxT=HED.nxT||[];HED.nxT[+b.dataset.i]={id:T.id,ti:T.ti,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};b.querySelector(".hnxs").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
