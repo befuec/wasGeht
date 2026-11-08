@@ -1652,6 +1652,13 @@ body.quiet .pcalg button.wefree{background:color-mix(in srgb,var(--ok) 7%,transp
 .updbar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:90;font:inherit;font-weight:800;font-size:14px;border:0;border-radius:999px;padding:10px 16px;background:var(--nx);color:var(--nx-ink);box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;max-width:calc(100% - 32px)}
 .pmode{display:grid;gap:4px;margin:8px 0}.pmode>span{font-size:12.5px;font-weight:700;color:var(--muted)}
 .kback{display:flex;justify-content:flex-start}.kbackb{font:inherit;font-weight:800;font-size:14px;border:2px solid var(--kid-ink,#2B2B2B);background:#fff;color:#2B2B2B;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:40px}
+/* Aufgeklappte Listenzeile: keine Dopplungen zur Zeile darüber */
+.lexp .card .ctop .cat,.lexp .card .ctop h3,.lexp .card .km{display:none}
+.lexp .card .ctop:not(:has(> div:first-child > :not(.cat):not(h3))){display:none}
+.lexp .card .price .tot,.lexp .card .price .pt-badge:not(.pt-frei){display:none}
+.lexp .card .price:not(:has(.px,.pt-frei)){display:none}
+.lexp .card .mode.car{display:none}
+.lexp .card .pcard [data-act="plan"],.lexp .card .pcard [data-act="unplan"],.lexp .card .pcard .mbtn,.lexp .card .cmore{display:none}
 </style>
 
 <div class="wrap">
@@ -2134,7 +2141,7 @@ function card(p){
       ${p.aud==="e"?`<span class="tag age">🍷 Erwachsene</span>`:`<span class="tag age">${p.amin===0?"bis "+p.amax+" J.":p.amin+"–"+p.amax+" J."}</span>`}</div>
     ${priceRow(p,fc,ti)}
     <div class="trip">
-      <div class="modes">${p.bike?`<span class="mode" title="Fahrrad, ca. ${p.bike} Min."><span aria-hidden="true">🚲</span> ${p.bike} Min.</span>`:""}<span class="mode" title="Auto, ca. ${p.car} Min."><span aria-hidden="true">🚗</span> ${p.car} Min.</span>${p.st?`<span class="mode oe" title="nächste U- oder S-Bahn"><span aria-hidden="true">🚇</span> ${esc(p.st)}</span>`:""}<span class="mode dur" title="Ausflugsdauer inkl. Fahrt"><span aria-hidden="true">⏱️</span> ca. ${fmtH(p.dur)} h</span></div>
+      <div class="modes">${p.bike?`<span class="mode" title="Fahrrad, ca. ${p.bike} Min."><span aria-hidden="true">🚲</span> ${p.bike} Min.</span>`:""}<span class="mode car" title="Auto, ca. ${p.car} Min."><span aria-hidden="true">🚗</span> ${p.car} Min.</span>${p.st?`<span class="mode oe" title="nächste U- oder S-Bahn"><span aria-hidden="true">🚇</span> ${esc(p.st)}</span>`:""}<span class="mode dur" title="Ausflugsdauer inkl. Fahrt"><span aria-hidden="true">⏱️</span> ca. ${fmtH(p.dur)} h</span></div>
     </div>
     ${hoursBlock(p)}
     ${exLine(p)}${evRows(p)}
