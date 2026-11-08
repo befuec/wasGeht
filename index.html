@@ -2324,7 +2324,7 @@ renderLegend();
 
 
 /* Bereiche (Tabs) und Termine */
-const BUILD="2026-11-07";
+const BUILD="2026-11-08";
 let MT="ziele", EVDATE="all";
 try{MT=localStorage.getItem("hwk-tab")||"ziele"}catch(e){}
 window.HASH0=(location.hash||"").toLowerCase();
@@ -2871,7 +2871,7 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
 /* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
-{const APPVER="ab666e9fe4";let lastChk=0,hiddenAt=0,banner=null;
+{const APPVER="50531cf1a8";let lastChk=0,hiddenAt=0,banner=null;
   const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
   const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
   async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
@@ -3618,8 +3618,7 @@ function renderPushSet(){const el=$("pushSet");if(!el)return;const P=LS.get("hwk
   if(!SB)body=`<p class="famnote">Erinnerungen gibt es mit gemeinsamem Plan (Familien-Code).</p>`;
   else if(!pushOk())body=`<p class="famnote">${isIOSP()&&!isStandaloneP()?"Am iPhone funktionieren Erinnerungen nur in der installierten App: erst oben „📲 Als App installieren“, dann die App über das Symbol öffnen und hier einschalten.":"Dieser Browser unterstützt keine Erinnerungen."}</p>`;
   else if(isIOSP()&&!isStandaloneP())body=`<p class="famnote">Am iPhone bitte zuerst als App installieren (siehe oben) und die App über das Symbol öffnen – dann hier einschalten.</p>`;
-  else body=`<p class="famnote">Zu den gewählten Uhrzeiten eine Mitteilung mit deinen offenen Aufgaben und denen, die noch niemand übernommen hat. ${isIOSP()?"Antippen öffnet die Abhak-Liste.":"Mit „✓ Erledigt“ direkt in der Mitteilung abhaken."}</p>
-    ${(()=>{const M=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{}));const g=(k,l)=>`<div class="pmode"><span>${l}</span><div class="dquick">${[["single","Je Aufgabe (mit ✓)"],["sum","Eine Sammel-Mitteilung"]].map(([v,t])=>`<button type="button" data-pmode="${k}:${v}" aria-pressed="${M[k]===v}">${t}</button>`).join("")}</div></div>`;return g("m","Morgens (bis 15 Uhr)")+g("a","Abends (ab 15 Uhr)")})()}
+  else body=`<p class="famnote">Zu den gewählten Uhrzeiten <b>eine</b> Sammel-Mitteilung, wie viele Aufgaben für dich (und ohne Person) noch offen sind. Antippen öffnet die Abhak-Liste.</p>
     <div class="dquick" id="pushSlots">${[7,9,12,18,21].map(h=>`<button type="button" data-pslot="${h}" aria-pressed="${sl.includes(h)}">${h} Uhr</button>`).join("")}</div>
     <div class="bkrow">${P?`<button type="button" class="pmini" id="pushTest">🔔 Jetzt testen</button><button type="button" class="pmini" id="pushOffBtn">Ausschalten</button>`:`<button type="button" class="pkok" id="pushOnBtn">🔔 Erinnerungen einschalten</button>`}</div>
     <p class="famnote">${P?"✅ Eingeschaltet für dieses Gerät"+(Notification.permission!=="granted"?" – aber Mitteilungen sind in den Geräte-Einstellungen blockiert.":"."):"Gilt nur für dieses Gerät; jede Person schaltet es auf ihrem Handy selbst ein."}</p>`;
