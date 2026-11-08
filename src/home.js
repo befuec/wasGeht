@@ -1,5 +1,5 @@
 /* ===== Zuhause: Aufgaben, Fairness, Punkte, Belohnungen ===== */
-const HCATS=[["kinder","👶","Kinder & Alltag"],["gesund","🩺","Gesundheit & Arzttermine"],["haushalt","🧹","Haushalt & Putzen"],["garten","🌳","Garten & Draußen"],["haus","🔧","Haus, Technik & Auto"],["projekt","🛠️","Projekte & Renovierung"],["orga","🗂️","Organisation (Kopf-Arbeit)"],["feste","🎁","Feste & Geschenke"],["sport","⚽","Sport & Freizeit"],["kuemmern","💛","Kümmern & Beziehungen"],["kids","🧒","Aufgaben für Kinder"]];
+const HCATS=[["kinder","👶","Kinder & Alltag"],["gesund","🩺","Gesundheit & Arzttermine"],["haushalt","🧹","Haushalt & Putzen"],["garten","🌳","Garten & Draußen"],["haus","🔧","Haus, Technik & Auto"],["projekt","🛠️","Projekte & Renovierung"],["orga","🗂️","Organisation (Kopf-Arbeit)"],["feste","🎁","Feste & Geschenke"],["sport","⚽","Sport & Freizeit"],["kuemmern","💛","Kümmern & Beziehungen"],["kids","🧒","Aufgaben für Kinder"],["urlaub","🏝️","Urlaub"]];
 const HCAT=Object.fromEntries(HCATS.map(c=>[c[0],c]));
 const MENTAL=new Set(["orga","feste","gesund","kuemmern"]);
 /* [id, Kategorie, Icon, Titel, Turnus, Minuten, unbeliebt, Kinderaufgabe, Checkliste] */
@@ -426,7 +426,7 @@ const HT3=[
 ["ix29", "kids", "🧼", "Hände waschen ohne Erinnerung", "d", 2, 0, 1],
 ["ix30", "kids", "🌙", "Schlafanzug selbst anziehen", "d", 5, 0, 1]];
 const hTplObj=x=>({id:x[0],cat:x[1],ic:x[2],ti:x[3],f:x[4],dur:x[5],unpop:x[6],kid:x[7],ck:x[8]||[],nx:x[9]||null,bi:1});
-function hTpls(){const C=hCcfg();return HT.concat(HT2,HT3).filter(x=>!C.del.includes(x[0])).map(x=>Object.assign(hTplObj(x),C.ov[x[0]]||{})).concat(C.add.filter(x=>x&&x.ti&&!C.del.includes(x.id)))}
+function hTpls(){const C=hCcfg();return HT.concat(HT2,HT3,HTV).filter(x=>!C.del.includes(x[0])).map(x=>Object.assign(hTplObj(x),C.ov[x[0]]||{})).concat(C.add.filter(x=>x&&x.ti&&!C.del.includes(x.id)))}
 /* Belohnungen: [id, Icon, Titel, Punkte, Gruppe, für: a=Erwachsene k=Kinder b=beide] */
 const HREW=[
  ["r_schulter","💆","15 Min. Schultermassage",30,"erholung","a"],["r_eis","🍦","Eis essen gehen",30,"genuss","b"],["r_kaffee","☕","Kaffee in Ruhe trinken",30,"erholung","a"],
@@ -458,7 +458,7 @@ const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.ro
 const HK=k=>"settings/"+k;
 const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
-const HPRE=/^(hc|hd|hr|ho|hj|hsum):/;
+const HPRE=/^(hc|hd|hr|ho|hj|hsum|hurl):/;
 const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals","hpreset","hbdg"].includes(k);
 /* Punkte-Reset: alles vor diesem Zeitpunkt zählt nicht mehr für Punkte, Level und Belohnungen (Verlauf bleibt) */
 const hRst=()=>+((SETS.hpreset||{}).t)||0;
@@ -552,7 +552,7 @@ function hStepChores(){const L=[];hProjects().forEach(p=>(p.steps||[]).forEach(s
 const hDone=(cid,d)=>{if(cid.startsWith("j:")){const [,pid,sid]=cid.split(":");const p=SETS["hj:"+pid];const s=p&&(p.steps||[]).find(x=>x.id===sid);return s&&s.dn||null}return SETS["hd:"+cid+":"+d]};
 /* Fällige Einträge (Verschiebungen und Übernahmen je Termin berücksichtigt) */
 function hItems(from,to,withSkip){const L=[];hChores().concat(hStepChores()).forEach(c=>hOcc(c,addD(from,-14),addD(to,14)).forEach(d=>{const ov=SETS["ho:"+c.cid+":"+d]||null,disp=(ov&&ov.to)||d;
-    if(disp<from||disp>to)return;if(ov&&ov.skip){if(withSkip)L.push({c,d,disp,sk:true});return}L.push({c,d,disp,who:(ov&&ov.who)||hWho(c,d),dn:hDone(c.cid,d),mv:!!(ov&&ov.to)})}));
+    if(disp<from||disp>to)return;if(!vTaskOk(c,d))return;if(ov&&ov.skip){if(withSkip)L.push({c,d,disp,sk:true});return}L.push({c,d,disp,who:(ov&&ov.who)||hWho(c,d),dn:hDone(c.cid,d),mv:!!(ov&&ov.to)})}));
   return L.sort((a,b)=>(a.disp+(a.c.t||"99")).localeCompare(b.disp+(b.c.t||"99")))}
 function hOverdue(){const now=new Set(hItems(T0,T0,true).map(i=>i.c.cid)),seen={};
   hItems(addD(T0,-28),addD(T0,-1),true).forEach(i=>{if(hMiss(i.c)!=="over"||now.has(i.c.cid))return;seen[i.c.cid]=i});return Object.values(seen).filter(i=>!i.dn&&!i.sk).map(i=>Object.assign({},i,{od:true}))}
@@ -698,7 +698,7 @@ function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
   const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300)}
-function renderHomeAll(){HCACHE=null;if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
+function renderHomeAll(){HCACHE=null;try{vSync()}catch(_){}if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
 /* Zeile einer Aufgabe */
 let HEXP=new Set(),HCTAB=LS.get("hwk-hctab","all"),HCQ="",HMGR={},HCATOPEN=null,HSEC=LS.get("hwk-hsec",{}),HF=Object.assign({who:"all",done:false},LS.get("hwk-hf",{})),HJOPEN=new Set(),HMEOPEN=false,HPSEL=null,HSWX=0;
 const HPACKS=[["🧹","Haushalt-Basis",["h_einkauf","h_essen","h_waesche","h_falten","h_bad","h_kueche","h_saugen","h_muell","h_spuel"]],
@@ -764,7 +764,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
 function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen">${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
 function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
 function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
-  hEdit({ti:q.slice(0,60),cat:best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
+  hEdit({ti:q.slice(0,60),cat:vActive()?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
 /* Tageszeit: Aufgaben erscheinen heute erst ab morgens / mittags / abends */
 const HTOD={m:["🌅","Morgens",6],n:["☀️","Mittags",11],a:["🌙","Abends",17]};
 const hTodOk=(c,d)=>!c||!c.tod||!HTOD[c.tod]||d!==T0||new Date().getHours()>=HTOD[c.tod][2];
@@ -832,7 +832,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   hAgendaSave();
   const nProjAll=hProjects().length;
   const sf=document.activeElement&&document.activeElement.id==="hsQ",sp=sf?document.activeElement.selectionStart:null;
-  v.innerHTML=`${head}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
+  v.innerHTML=`${head}${vActive()?`<p class="hvacn">🏝️ <b>Urlaub:</b> Zuhause-Aufgaben pausieren und werden nicht überfällig. Kinder- und Urlaubsaufgaben laufen weiter.</p>`:""}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
     ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
     <section class="pvsec">${sec("done","✅ Erledigt – letzte 30 Tage"+(()=>{const n=hDoneHist().length;return n?` <span class="pvn">${n}</span>`:""})(),hDoneHtml(),false)}</section>
@@ -1172,8 +1172,8 @@ document.addEventListener("click",e=>{const t=e.target;
   if(t.closest("[data-hsmore]")){HCQ=HSQ;const d=$("hcatdlg");HCTAB="all";renderCatSheet();d.showModal?d.showModal():d.setAttribute("open","");return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
     const qt=(HSQ.trim()||HCQ.trim()).slice(0,60);
-    if(id==="_own"){hEdit({ti:qt,cat:"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
-    if(id==="_apt"){hEdit({ti:qt,cat:"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
+    if(id==="_own"){hEdit({ti:qt,cat:vActive()?"urlaub":"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
+    if(id==="_apt"){hEdit({ti:qt,cat:vActive()?"urlaub":"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
     hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,tod:T.tod||undefined,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
   const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick),b=nxp.closest(".hnxb");if(T&&HED&&b){b.querySelector(".nxTi").value=T.ti;b.querySelector(".nxIc").value=T.ic||"";HED.nxT=HED.nxT||[];HED.nxT[+b.dataset.i]={id:T.id,ti:T.ti,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};b.querySelector(".hnxs").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}

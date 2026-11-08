@@ -3,7 +3,7 @@ import datetime
 t=open('template_plus.html').read()
 i=t.index('<script>\n/* ===== Plus-Funktionen'); j=t.index('</script>',i)
 pj=open('plus.js').read().rstrip(); assert pj.endswith('})();')
-t=t[:i]+'<script>\n'+pj[:-5]+'\n'+open('home.js').read()+'\n})();\n'+t[j:]
+t=t[:i]+'<script>\n'+pj[:-5]+'\n'+open('vac.js').read()+'\n'+open('home.js').read()+'\n})();\n'+t[j:]
 open('template_plus.html','w').write(t)
 # Sicherheit: in Link-Feldern nur http(s)-Adressen zulassen und "</" entschärfen
 import json,re
