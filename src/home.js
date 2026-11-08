@@ -764,7 +764,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
 function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen">${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
 function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
 function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
-  hEdit({ti:q.slice(0,60),cat:vTripAt(T0)?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
+  hEdit({ti:q.slice(0,60),cat:(vTripAt(T0)||vPlanNow())?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
 /* Tageszeit: Aufgaben erscheinen heute erst ab morgens / mittags / abends */
 const HTOD={m:["🌅","Morgens",6],n:["☀️","Mittags",11],a:["🌙","Abends",17]};
 const hTodOk=(c,d)=>!c||!c.tod||!HTOD[c.tod]||d!==T0||new Date().getHours()>=HTOD[c.tod][2];
@@ -832,7 +832,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   hAgendaSave();
   const nProjAll=hProjects().length;
   const sf=document.activeElement&&document.activeElement.id==="hsQ",sp=sf?document.activeElement.selectionStart:null;
-  v.innerHTML=`${head}${vTripAt(T0)?`<p class="hvacn">🏝️ <b>Urlaub:</b> Zuhause-Aufgaben pausieren und werden nicht überfällig. Kinder- und Urlaubsaufgaben laufen weiter.</p>`:""}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
+  v.innerHTML=`${head}${vTripAt(T0)?`<p class="hvacn">🏝️ <b>Urlaub:</b> Zuhause-Aufgaben pausieren und werden nicht überfällig. Kinder- und Urlaubsaufgaben laufen weiter.</p>`:vPlanning(vActive())?`<p class="hvacn">🏝️ <b>Planung:</b> Hier siehst du nur Urlaubs- und Kinderaufgaben. Die Alltagsaufgaben laufen im Hintergrund weiter (auch die Erinnerungen) – „Zurück nach Hause“ zeigt sie wieder.</p>`:""}<div class="hsrchw">${hSrchHtml()}</div>${hAbkHtml()}${hReview()}${Q?"":hFairLine()}
     <section class="pvsec hnow">${ringRow}${now}</section>${Q?hFairMini():""}
     ${Q&&!nProjAll?"":`<section class="pvsec">${sec("proj","🛠️ Projekte & Vorhaben"+(nProj?` <span class="pvn">${nProj}</span>`:""),hProjHtml(),true)}</section>`}
     <section class="pvsec">${sec("done","✅ Erledigt – letzte 30 Tage"+(()=>{const n=hDoneHist().length;return n?` <span class="pvn">${n}</span>`:""})(),hDoneHtml(),false)}</section>
@@ -1172,8 +1172,8 @@ document.addEventListener("click",e=>{const t=e.target;
   if(t.closest("[data-hsmore]")){HCQ=HSQ;const d=$("hcatdlg");HCTAB="all";renderCatSheet();d.showModal?d.showModal():d.setAttribute("open","");return}
   const ad=t.closest("[data-hadd]");if(ad){const id=ad.dataset.hadd;const me=hMe();
     const qt=(HSQ.trim()||HCQ.trim()).slice(0,60);
-    if(id==="_own"){hEdit({ti:qt,cat:vTripAt(T0)?"urlaub":"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
-    if(id==="_apt"){hEdit({ti:qt,cat:vTripAt(T0)?"urlaub":"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
+    if(id==="_own"){hEdit({ti:qt,cat:(vTripAt(T0)||vPlanNow())?"urlaub":"haushalt",f:"w1",wd:hBlock().days[0]??6,dur:30,who:me},true);return}
+    if(id==="_apt"){hEdit({ti:qt,cat:(vTripAt(T0)||vPlanNow())?"urlaub":"haushalt",ic:"📅",f:"x",date:T0,dur:15,who:me},true);return}
     const T=hTpls().find(x=>x.id===id);if(!T)return;const kid=!!T.kid;const P=hPeople();const who=kid?((P.find(p=>p.kid)||{}).id||me):me;
     hEdit({tpl:T.id,cat:T.cat,ic:T.ic,ti:T.ti,f:T.f,wd:T.wd!=null?T.wd:(hBlock().days[0]??6),wds:Array.isArray(T.wds)&&T.wds.length?T.wds.slice():null,dur:T.dur,unpop:T.unpop,kid:T.kid,pts:+T.pts||hrec(T.dur,T.unpop,T.kid),who,tod:T.tod||undefined,ck:(T.ck||[]).slice(),nx:hNxL(T.nx).length?hNxL(T.nx).map(n=>Object.assign({},n)):null,date:T.f==="x"?plus(7):null,lead:T.id==="f_geburtstag"?21:T.id==="f_weihn"?30:0},true);return}
   const nxp=t.closest("[data-hnxpick]");if(nxp){const T=hTpls().find(x=>x.id===nxp.dataset.hnxpick),b=nxp.closest(".hnxb");if(T&&HED&&b){b.querySelector(".nxTi").value=T.ti;b.querySelector(".nxIc").value=T.ic||"";HED.nxT=HED.nxT||[];HED.nxT[+b.dataset.i]={id:T.id,ti:T.ti,dur:+T.dur||30,ck:(T.ck||[]).slice(),nx:T.nx||null};b.querySelector(".hnxs").hidden=true;toast(`↪️ ${T.ic||""} ${T.ti} als Folgeaufgabe`)}return}
@@ -1211,7 +1211,8 @@ const hLeadMax=()=>Math.max(6,...hChores().map(hLeadDays));
 /* Aufgabenliste für die Erinnerungen (Service Worker): offene Aufgaben der nächsten 7 Tage + Überfälliges */
 let HAGT=0,HAGSIG="";
 async function hAgendaSave(now){if(!window.swKV||!SB)return;const run=async()=>{const me=hMe(),p=hPer(me),seen=new Set();
-  const L=hOverdue().concat(hItems(T0,addD(T0,7))).filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
+  VREAL=true;HCACHE=null;let L0;try{L0=hOverdue().concat(hItems(T0,addD(T0,7)))}finally{VREAL=false;HCACHE=null}
+  const L=L0.filter(i=>!i.dn&&!i.sk).filter(i=>{const k=i.c.cid+"|"+i.d;if(seen.has(k))return false;seen.add(k);return true})
     .map(i=>({cid:i.c.cid,d:i.d,disp:i.disp||i.d,ti:i.c.ti,ic:i.c.ic||(HCAT[i.c.cat]||["",""])[1],who:i.who||"",team:hCkPeople(i.c).length?[...new Set(hCkPeople(i.c).concat(i.who&&!hIsGrp(i.who)?[i.who]:[]))]:hIsGrp(i.who)?hTeam(i.who):undefined,ckw:hCkPeople(i.c).length?hCkWeights(i.c,i.who&&!hIsGrp(i.who)?i.who:"_me"):undefined,pts:hPts(i.c),min:+i.c.dur||0,cat:i.c.cat||"",daily:hDaily(i.c)?1:0,tod:i.c.tod||undefined}));
   const mode=Object.assign({m:"single",a:"sum"},LS.get("hwk-pushmode",{})),o={me,meName:p?p.n:"",gen:Date.now(),items:L,mode,groups:{"@a":hTeam("@a"),"@f":hTeam("@f")}},sig=JSON.stringify([me,L,mode]);if(sig===HAGSIG)return;HAGSIG=sig;await window.swKV.set("agenda",o)};
   clearTimeout(HAGT);if(now)return run();HAGT=setTimeout(run,1500)}

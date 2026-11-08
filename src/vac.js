@@ -37,7 +37,10 @@ const vPlanning=t=>!!t&&!vTripAt(T0)&&vPrevId()===t.id;
 const vUntil=t=>Math.round((pdate(t.from)-pdate(T0))/864e5);
 function vKidRel(c){if(c.kid||c.cat==="kids"||c.cat==="kinder")return true;const p=hPer(c.who);return !!(p&&p.kid)}
 /* wird von hItems je Termin gefragt */
-function vTaskOk(c,d){const tr=vTripForTasks(d);if(c.cat==="urlaub")return !!tr;if(!tr)return true;return vKidRel(c)}
+/* Planungsmodus (nur Anzeige, nicht für Erinnerungen): wie im Urlaub nur Urlaubs- und Kinderaufgaben */
+let VREAL=false;
+function vPlanNow(){if(VREAL)return false;const pv=vPrevId();return !!pv&&!vTripAt(T0)&&vTrips().some(x=>x.id===pv)}
+function vTaskOk(c,d){if(vPlanNow())return c.cat==="urlaub"||vKidRel(c);const tr=vTripForTasks(d);if(c.cat==="urlaub")return !!tr||c.f==="x";if(!tr)return true;return vKidRel(c)}
 const vSave=t=>{const o=Object.assign({},t);delete o.id;hset("hurl:"+t.id,o)};
 const vBase=t=>t.acc&&t.acc.lat!=null?t.acc:t.dest&&t.dest.lat!=null?t.dest:null;
 function vKm(t,p){const b=vBase(t);if(!b||p.lat==null)return null;const R=6371,r=x=>x*Math.PI/180,dl=r(p.lat-b.lat),dn=r(p.lng-b.lng),a=Math.sin(dl/2)**2+Math.cos(r(b.lat))*Math.cos(r(p.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(a))}
