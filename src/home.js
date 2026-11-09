@@ -699,11 +699,13 @@ const HCFIG={party:["🥳","Party-Hüpfer"],dance:["💃","Tanzen"],uni:["🦄",
 const hCele=()=>Object.assign({lvl:"normal",fig:"rand",snd:false,vib:true},LS.get("hwk-cele",{}));
 let HCGIF=null;try{HCGIF=localStorage.getItem("hwk-celegif")}catch(_){}
 function hJingle(big){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ac=hJingle.ac||(hJingle.ac=new A());const N=big?[523,659,784,1047]:[659,880];N.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=f;const t0=ac.currentTime+i*.09;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.18,t0+.02);g.gain.exponentialRampToValueAtTime(.001,t0+.35);o.connect(g).connect(ac.destination);o.start(t0);o.stop(t0+.4)})}catch(_){}}
-function hFigure(prev){const C=hCele(),host=document.body;let fig=prev||C.fig;if(fig==="rand"){const K=Object.keys(HCFIG).concat(HCGIF?["gif"]:[]);fig=K[Math.floor(Math.random()*K.length)]}
+/* Effekte über einem offenen Fenster (z. B. Einstellungen) anzeigen, sonst liegen sie dahinter */
+const hFxHost=()=>{const D=[...document.querySelectorAll("dialog[open]")];return D.length?D[D.length-1]:document.body};
+function hFigure(prev){const C=hCele(),host=hFxHost();let fig=prev||C.fig;if(fig==="rand"){const K=Object.keys(HCFIG).concat(HCGIF?["gif"]:[]);fig=K[Math.floor(Math.random()*K.length)]}
   const o=document.createElement("div");o.className="hcele hc-"+fig;o.setAttribute("aria-hidden","true");
   if(fig==="gif"&&HCGIF){const im=document.createElement("img");im.src=HCGIF;im.alt="";o.appendChild(im)}else{const e=document.createElement("span");e.textContent=(HCFIG[fig]||HCFIG.party)[0];o.appendChild(e)}
   host.appendChild(o);setTimeout(()=>o.remove(),fig==="gif"?2600:1900)}
-function hBurst(pts,big,force){const C=force||hCele(),lvl=C.lvl,host=document.body,red=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function hBurst(pts,big,force){const C=force||hCele(),lvl=C.lvl,host=hFxHost(),red=matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(lvl==="off")return;
   const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300);
   if(C.snd)hJingle(big||lvl==="party");if(C.vib&&navigator.vibrate)try{navigator.vibrate(lvl==="party"?[30,50,30,50,60]:20)}catch(_){}
@@ -726,7 +728,7 @@ document.addEventListener("click",e=>{const t=e.target;if(!t.closest)return;
   if(t.closest("[data-hcprev]")){hBurst(5,true);return}
   if(t.closest("[data-hcgifdel]")){try{localStorage.removeItem("hwk-celegif")}catch(_){}HCGIF=null;const C=hCele();if(C.fig==="gif")LS.set("hwk-cele",Object.assign(C,{fig:"rand"}));renderCeleSet();return}});
 document.addEventListener("change",e=>{const t=e.target;
-  if(t.id==="hcSnd"||t.id==="hcVib"){LS.set("hwk-cele",Object.assign(hCele(),t.id==="hcSnd"?{snd:t.checked}:{vib:t.checked}));if(t.id==="hcSnd"&&t.checked)hJingle(true);return}
+  if(t.id==="hcSnd"||t.id==="hcVib"){LS.set("hwk-cele",Object.assign(hCele(),t.id==="hcSnd"?{snd:t.checked}:{vib:t.checked}));if(t.checked)hBurst(5,false);return}
   if(t.id==="hcGifF"&&t.files&&t.files[0]){const f=t.files[0];if(f.size>2*1024*1024){toast("Das GIF ist größer als 2 MB – bitte ein kleineres wählen.");return}
     const r=new FileReader();r.onload=()=>{try{localStorage.setItem("hwk-celegif",r.result);HCGIF=r.result;LS.set("hwk-cele",Object.assign(hCele(),{fig:"gif",lvl:"party"}));renderCeleSet();hBurst(5,true)}catch(_){toast("Konnte das GIF nicht speichern (Speicher voll?).")}};r.readAsDataURL(f)}});
 function renderHomeAll(){HCACHE=null;try{vSync()}catch(_){}if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
