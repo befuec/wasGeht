@@ -1720,6 +1720,27 @@ body.kidsmode #vacNext{display:none}
 .vdays{display:grid;gap:4px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px}
 .vday{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--line);font-size:13px}.vday:last-child{border-bottom:0}.vday i{color:var(--muted)}
 .vday>span{display:flex;flex-wrap:wrap;gap:4px}.vdc{background:var(--accent-soft);border-radius:999px;padding:1px 8px;font-size:12.5px}
+/* ---- Feier-Figuren ---- */
+.hcele{position:fixed;left:50%;top:42%;z-index:92;pointer-events:none;transform:translate(-50%,-50%)}
+.hcele span{display:block;font-size:min(34vw,150px);line-height:1;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))}
+.hcele img{display:block;max-width:min(70vw,320px);max-height:42vh;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:hcgif 2.6s ease-in-out forwards}
+@keyframes hcgif{0%{transform:scale(.3);opacity:0}12%{transform:scale(1.06);opacity:1}20%{transform:scale(1)}85%{opacity:1}100%{transform:scale(.9);opacity:0}}
+.hc-party span{animation:hcjump 1.9s ease-in-out forwards}
+@keyframes hcjump{0%{transform:translateY(40vh) scale(.4);opacity:0}15%{transform:translateY(0) scale(1.1);opacity:1}28%{transform:translateY(-12vh) rotate(-12deg)}40%{transform:translateY(0) rotate(0) scale(1,.9)}52%{transform:translateY(-9vh) rotate(12deg)}64%{transform:translateY(0) scale(1.05,.92)}80%{transform:translateY(-4vh) scale(1)}100%{transform:translateY(0) scale(.6);opacity:0}}
+.hc-dance span{animation:hcdance 1.9s ease-in-out forwards;transform-origin:50% 90%}
+@keyframes hcdance{0%{transform:scale(.3);opacity:0}10%{transform:scale(1);opacity:1}20%{transform:rotate(-18deg) translateX(-6vw)}35%{transform:rotate(18deg) translateX(6vw)}50%{transform:rotate(-18deg) translateX(-6vw) scaleX(-1)}65%{transform:rotate(18deg) translateX(6vw) scaleX(-1)}80%{transform:rotate(0) scale(1.1)}100%{transform:scale(.5);opacity:0}}
+.hc-uni span{animation:hcfly 1.9s ease-in-out forwards}
+@keyframes hcfly{0%{transform:translate(-75vw,20vh) rotate(-10deg) scaleX(-1);opacity:0}15%{opacity:1}50%{transform:translate(0,-10vh) rotate(8deg) scaleX(-1)}85%{opacity:1}100%{transform:translate(75vw,-30vh) rotate(-8deg) scaleX(-1);opacity:0}}
+.hc-rocket span{animation:hcrocket 1.9s cubic-bezier(.5,0,.8,.4) forwards}
+@keyframes hcrocket{0%{transform:translateY(35vh) rotate(-45deg) scale(.7);opacity:0}15%{transform:translateY(25vh) rotate(-45deg);opacity:1}30%{transform:translateY(26vh) rotate(-43deg)}35%{transform:translateY(24vh) rotate(-47deg)}100%{transform:translateY(-90vh) rotate(-45deg) scale(1.2);opacity:1}}
+.hc-trophy span{animation:hctrophy 1.9s ease-out forwards}
+@keyframes hctrophy{0%{transform:translateY(30vh) scale(.2);opacity:0}25%{transform:translateY(0) scale(1.15);opacity:1;filter:drop-shadow(0 0 0 gold)}40%{transform:scale(1) rotate(-6deg);filter:drop-shadow(0 0 28px gold)}55%{transform:rotate(6deg)}70%{transform:rotate(0);filter:drop-shadow(0 0 40px gold)}100%{transform:scale(1.3);opacity:0}}
+.hc-cheer span{animation:hccheer 1.9s ease-in-out forwards}
+@keyframes hccheer{0%{transform:scale(.3);opacity:0}12%{transform:scale(1.1);opacity:1}24%{transform:scale(.92) translateY(2vh)}36%{transform:scale(1.12) translateY(-3vh)}48%{transform:scale(.92) translateY(2vh)}60%{transform:scale(1.12) translateY(-3vh)}75%{transform:scale(1)}100%{transform:scale(1.4);opacity:0}}
+.hc-dog span{animation:hcdog 1.9s ease-in-out forwards}
+@keyframes hcdog{0%{transform:translate(-60vw,10vh);opacity:0}15%{opacity:1}30%{transform:translate(-25vw,-14vh) rotate(-20deg)}45%{transform:translate(0,4vh) rotate(0)}60%{transform:translate(18vw,-12vh) rotate(20deg)}75%{transform:translate(32vw,4vh) rotate(0)}100%{transform:translate(70vw,-6vh);opacity:0}}
+@media (prefers-reduced-motion: reduce){.hcele{display:none}}
+.hcfigs{flex-wrap:wrap}.hcgif{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0}.hcup{cursor:pointer}.hcthumb{width:48px;height:48px;object-fit:cover;border-radius:10px}
 </style>
 
 <div class="wrap">
@@ -1959,6 +1980,7 @@ body.kidsmode #vacNext{display:none}
     <h3 class="seth">🚫 Ausgeblendete regelmäßige Angebote</h3><p class="famnote">Regelmäßige Angebote, die euch nicht interessieren, tauchen in „Heute“, „Entdecken“ und den Tagesvorschlägen nicht mehr auf. Hier könnt ihr sie wieder einblenden.</p><div class="hidrg" id="hidRg"></div>
     <h3 class="seth">📲 Als App installieren</h3><div id="appInst"></div>
     <h3 class="seth">🏝️ Urlaub</h3><div id="vacSet"></div>
+    <h3 class="seth">🎉 Feier beim Abhaken</h3><div id="celeSet"></div>
     <h3 class="seth">🧘 Ansicht</h3><div id="viewSet"></div>
     <h3 class="seth">🔔 Erinnerungen</h3><div id="pushSet"></div>
     <h3 class="seth">🔗 Gemeinsamer Plan</h3><div id="sbStat"></div>
@@ -2380,7 +2402,7 @@ renderLegend();
 
 
 /* Bereiche (Tabs) und Termine */
-const BUILD="2026-11-08";
+const BUILD="2026-11-09";
 let MT="ziele", EVDATE="all";
 try{MT=localStorage.getItem("hwk-tab")||"ziele"}catch(e){}
 window.HASH0=(location.hash||"").toLowerCase();
@@ -2927,7 +2949,7 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
 /* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
-{const APPVER="5b6fc1d7a3";let lastChk=0,hiddenAt=0,banner=null;
+{const APPVER="805303f750";let lastChk=0,hiddenAt=0,banner=null;
   const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
   const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
   async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
@@ -5203,10 +5225,41 @@ function hCheck(cid,d,opt){opt=opt||{};const me=opt.by||hMe();
   const lvBefore=hLev(hEarned(me)).L;const rec={by:me,pts,min:+c.dur||0,cat:c.cat,at:Date.now(),late:late?1:0,tk:tk?1:0,vol:vol?1:0};if(team&&team.length){rec.team=team;if(gx)rec.grp=gx;else if(useCk){rec.w=ckW;if(team.length>1)rec.grp="@c"}else rec.grp=who}hset(k,rec);const nxs=hNxSpawn(cid,d);
   const ex=team&&team.length?hExpand(Object.assign({},rec)):null,sh=ex?(ex.find(y=>y.by===me)||ex[0]).pts:pts;hBurst(sh,tk);const lv=hLev(hEarned(me)).L;
   renderHomeAll();undoToast(`✓ ${c.ti} – ${ex?`Punkte: ${ex.map(y=>`${(hPer(y.by)||{}).n||""} +${y.pts}`).join(", ")}`:`+${pts} Punkte für ${hPer(me)?hPer(me).n:"dich"}`}${tk?" (Übernahme-Bonus +50 %)":""}${lv!==lvBefore?` · 🎉 Neues Level: ${lv[1]} ${lv[2]}`:""}${nxs?` · ↪️ ${nxs.ids.length===1?"Folgeaufgabe am "+fmtDate(nxs.dates[0]):nxs.ids.length+" Folgeaufgaben ab "+fmtDate(nxs.dates.slice().sort()[0])}`:""}`,()=>{const r=SETS[k];hset(k,null);hNxUndo(r);renderHomeAll()})}
-function hBurst(pts,big){const host=document.body,n=big?26:16,em=["🎉","⭐","✨","🎊","💪","🏅"];
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+/* Feier beim Abhaken – Stärke je Gerät einstellbar (Einstellungen → Feier beim Abhaken) */
+const HCFIG={party:["🥳","Party-Hüpfer"],dance:["💃","Tanzen"],uni:["🦄","Einhorn-Flug"],rocket:["🚀","Rakete"],trophy:["🏆","Pokal"],cheer:["🙌","Jubel"],dog:["🐶","Freudensprung"]};
+const hCele=()=>Object.assign({lvl:"normal",fig:"rand",snd:false,vib:true},LS.get("hwk-cele",{}));
+let HCGIF=null;try{HCGIF=localStorage.getItem("hwk-celegif")}catch(_){}
+function hJingle(big){try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const ac=hJingle.ac||(hJingle.ac=new A());const N=big?[523,659,784,1047]:[659,880];N.forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=f;const t0=ac.currentTime+i*.09;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.18,t0+.02);g.gain.exponentialRampToValueAtTime(.001,t0+.35);o.connect(g).connect(ac.destination);o.start(t0);o.stop(t0+.4)})}catch(_){}}
+function hFigure(prev){const C=hCele(),host=document.body;let fig=prev||C.fig;if(fig==="rand"){const K=Object.keys(HCFIG).concat(HCGIF?["gif"]:[]);fig=K[Math.floor(Math.random()*K.length)]}
+  const o=document.createElement("div");o.className="hcele hc-"+fig;o.setAttribute("aria-hidden","true");
+  if(fig==="gif"&&HCGIF){const im=document.createElement("img");im.src=HCGIF;im.alt="";o.appendChild(im)}else{const e=document.createElement("span");e.textContent=(HCFIG[fig]||HCFIG.party)[0];o.appendChild(e)}
+  host.appendChild(o);setTimeout(()=>o.remove(),fig==="gif"?2600:1900)}
+function hBurst(pts,big,force){const C=force||hCele(),lvl=C.lvl,host=document.body,red=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(lvl==="off")return;
+  const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300);
+  if(C.snd)hJingle(big||lvl==="party");if(C.vib&&navigator.vibrate)try{navigator.vibrate(lvl==="party"?[30,50,30,50,60]:20)}catch(_){}
+  if(lvl==="calm"||red)return;
+  const n=lvl==="party"?(big?44:32):(big?26:16),em=["🎉","⭐","✨","🎊","💪","🏅"];
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
-  const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300)}
+  if(lvl==="party")hFigure(force&&force.fig)}
+function renderCeleSet(){const el=$("celeSet");if(!el)return;const C=hCele();
+  el.innerHTML=`<div class="pmode"><span>Stärke</span><div class="dquick">${[["off","Aus"],["calm","Dezent"],["normal","Konfetti"],["party","Party 🥳"]].map(([k,l])=>`<button type="button" data-hcl2="${k}" aria-pressed="${C.lvl===k}">${l}</button>`).join("")}</div></div>
+   <small class="famnote">${{off:"Kein Effekt, nur der Haken.",calm:"Nur „+Punkte“ blendet kurz ein.",normal:"Konfetti-Regen mit „+Punkte“.",party:"Konfetti plus eine große, bewegte Figur, die mitfeiert."}[C.lvl]}</small>
+   ${C.lvl==="party"?`<div class="pmode"><span>Figur</span><div class="dquick hcfigs">${[["rand","🎲 Zufällig"]].concat(Object.entries(HCFIG).map(([k,v])=>[k,v[0]+" "+v[1]])).concat([["gif",HCGIF?"🖼️ Eigenes GIF":"🖼️ Eigenes GIF …"]]).map(([k,l])=>`<button type="button" data-hcfig="${k}" aria-pressed="${C.fig===k}">${esc(l)}</button>`).join("")}</div></div>
+     <div class="hcgif"><label class="pmini hcup">${HCGIF?"Anderes GIF wählen":"GIF hochladen"}<input type="file" id="hcGifF" accept="image/gif,image/webp,image/png,image/apng" hidden></label>${HCGIF?`<img src="${HCGIF}" alt="Eigenes Feier-GIF" class="hcthumb"><button type="button" class="pmini" data-hcgifdel>Entfernen</button>`:`<small class="famnote">z. B. ein Familien-GIF vom Handy, max. 2 MB, bleibt nur auf diesem Gerät.</small>`}</div>`:""}
+   <label class="famchk"><input type="checkbox" id="hcSnd"${C.snd?" checked":""}> 🔊 Kleiner Jubel-Ton</label>
+   <label class="famchk"><input type="checkbox" id="hcVib"${C.vib?" checked":""}> 📳 Kurz vibrieren <small class="famnote">(nur Android)</small></label>
+   <button type="button" class="pkok" data-hcprev>🎉 Ausprobieren</button>`}
+renderCeleSet();
+document.addEventListener("click",e=>{const t=e.target;if(!t.closest)return;
+  const l=t.closest("[data-hcl2]");if(l){LS.set("hwk-cele",Object.assign(hCele(),{lvl:l.dataset.hcl2}));renderCeleSet();if(l.dataset.hcl2!=="off")hBurst(5,false);return}
+  const f=t.closest("[data-hcfig]");if(f){if(f.dataset.hcfig==="gif"&&!HCGIF){$("hcGifF").click();return}LS.set("hwk-cele",Object.assign(hCele(),{fig:f.dataset.hcfig}));renderCeleSet();hBurst(5,false);return}
+  if(t.closest("[data-hcprev]")){hBurst(5,true);return}
+  if(t.closest("[data-hcgifdel]")){try{localStorage.removeItem("hwk-celegif")}catch(_){}HCGIF=null;const C=hCele();if(C.fig==="gif")LS.set("hwk-cele",Object.assign(C,{fig:"rand"}));renderCeleSet();return}});
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.id==="hcSnd"||t.id==="hcVib"){LS.set("hwk-cele",Object.assign(hCele(),t.id==="hcSnd"?{snd:t.checked}:{vib:t.checked}));if(t.id==="hcSnd"&&t.checked)hJingle(true);return}
+  if(t.id==="hcGifF"&&t.files&&t.files[0]){const f=t.files[0];if(f.size>2*1024*1024){toast("Das GIF ist größer als 2 MB – bitte ein kleineres wählen.");return}
+    const r=new FileReader();r.onload=()=>{try{localStorage.setItem("hwk-celegif",r.result);HCGIF=r.result;LS.set("hwk-cele",Object.assign(hCele(),{fig:"gif",lvl:"party"}));renderCeleSet();hBurst(5,true)}catch(_){toast("Konnte das GIF nicht speichern (Speicher voll?).")}};r.readAsDataURL(f)}});
 function renderHomeAll(){HCACHE=null;try{vSync()}catch(_){}if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();if(document.body.classList.contains("kidsmode"))renderKidTasks()}
 /* Zeile einer Aufgabe */
 let HEXP=new Set(),HCTAB=LS.get("hwk-hctab","all"),HCQ="",HMGR={},HCATOPEN=null,HSEC=LS.get("hwk-hsec",{}),HF=Object.assign({who:"all",done:false},LS.get("hwk-hf",{})),HJOPEN=new Set(),HMEOPEN=false,HPSEL=null,HSWX=0;
