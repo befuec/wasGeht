@@ -778,4 +778,7 @@ renderOurs();syncView();syncStarsToKids();render();setM2(M2,true);updateFabs();
  else if(!onClaude&&!LS.get("hwk-fam-skip",0))setTimeout(()=>famAsk(""),600);
  if(!SB){const iv=setInterval(()=>{if(SB){clearInterval(iv);setInterval(()=>{if(!document.hidden)sbLoad()},20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)sbLoad()})}},1000)}}
 document.querySelectorAll(".modebar button").forEach(b=>b.addEventListener("click",()=>setTimeout(updateFabs,0)));
+
+/* Suchformulare nie absenden (Enter), damit nichts neu lädt */
+document.addEventListener("submit",e=>{if(e.target.matches&&e.target.matches("form.nofill"))e.preventDefault()},true);
 })();

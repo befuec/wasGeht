@@ -131,7 +131,7 @@ function vRender(t){const v=$("vacView");if(!v)return;const P=(t.places||[]).sli
   const cats=[...new Set(withKm.map(p=>p.cat||"sonst"))].sort((a,b)=>Object.keys(VCAT).indexOf(a)-Object.keys(VCAT).indexOf(b));
   const q=hNorm(VF.q.trim());let L=withKm.filter(p=>(!VF.cat||p.cat===VF.cat)&&(!q||hNorm(p.n+" "+(p.note||"")).includes(q))&&(VF.only!=="fav"||p.fav)&&(VF.only!=="open"||!p.vis));
   L.sort((a,b)=>(a.km??1e9)-(b.km??1e9));
-  v.innerHTML=head+`<div class="vtools"><input type="search" id="vQ" value="${esc(VF.q)}" placeholder="🔍 Ziel suchen" autocomplete="off" aria-label="Urlaubsziele durchsuchen">
+  v.innerHTML=head+`<div class="vtools"><input type="search" id="vQ" name="wg-vQ" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" value="${esc(VF.q)}" placeholder="🔍 Ziel suchen" autocomplete="off" aria-label="Urlaubsziele durchsuchen">
     <div class="vchips" role="group" aria-label="Kategorie"><button type="button" data-vcat="" aria-pressed="${!VF.cat}">Alle ${P.length}</button>${cats.map(k=>`<button type="button" data-vcat="${k}" aria-pressed="${VF.cat===k}">${VCAT[k][0]} ${esc(VCAT[k][1])} ${withKm.filter(p=>p.cat===k).length}</button>`).join("")}</div>
     <div class="vchips" role="group" aria-label="Auswahl"><button type="button" data-vonly="" aria-pressed="${!VF.only}">Alle</button><button type="button" data-vonly="fav" aria-pressed="${VF.only==="fav"}">⭐ Favoriten</button><button type="button" data-vonly="open" aria-pressed="${VF.only==="open"}">Noch nicht besucht</button></div></div>
     <p class="pvsub">${L.length} ${L.length===1?"Ziel":"Ziele"} · sortiert nach Entfernung ${t.acc&&t.acc.lat!=null?"von der Unterkunft":"vom Urlaubsort"}</p>

@@ -794,7 +794,7 @@ function hSrchRes(){const q=HSQ.trim();if(q.length<2)return "";const W=hNorm(q).
     ${cat.length?`<div class="hsg"><h5>Aus dem Katalog (${cat.length})</h5>${cat.slice(0,MAX).map(tRow).join("")}${cat.length>MAX?`<button type="button" class="hsmore" data-hsmore>Alle ${cat.length} Treffer im Katalog zeigen</button>`:""}</div>`:""}
     ${!own.length&&!cat.length?`<p class="hhint">Nichts gefunden – weder bei euren Aufgaben noch im Katalog.</p>`:""}
     ${few?"":nw}</div>`}
-function hSrchHtml(){return `<div class="hsrch"><input type="search" id="hsQ" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen">${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
+function hSrchHtml(){return `<div class="hsrch"><form class="nofill" role="search" autocomplete="off" action="#"><input type="search" id="hsQ" name="wg-aufgabensuche" value="${esc(HSQ)}" placeholder="🔍 Aufgabe suchen oder neu anlegen" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" inputmode="search" enterkeyhint="search" aria-label="Aufgaben suchen oder neu anlegen"></form>${HSQ?`<button type="button" class="hsx" data-hsx aria-label="Suche leeren">✕</button>`:""}</div>${hSrchRes()}`}
 function hSrchUpd(){const w=document.querySelector("#homeView .hsrchw");if(!w)return;const inp=$("hsQ"),pos=inp?inp.selectionStart:null;w.innerHTML=hSrchHtml();const n=$("hsQ");if(n&&document.activeElement!==n&&pos!=null){n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}}
 function hSrchNew(){const q=HSQ.trim();if(!q)return;const W=hNorm(q).split(/\s+/).filter(Boolean),best=hTpls().map(x=>({x,sc:hSrchScore(x.ti+" "+((HCAT[x.cat]||[])[2]||""),x.ti,W)})).filter(y=>y.sc).sort((a,b)=>b.sc-a.sc)[0];
   hEdit({ti:q.slice(0,60),cat:(vTripAt(T0)||vPlanNow())?"urlaub":best?best.x.cat:"haushalt",ic:best?best.x.ic:"",f:"w1",wd:hBlock().days[0]??6,dur:30,who:hMe(),ck:[]},true)}
@@ -860,7 +860,7 @@ function renderHome(){const v=$("homeView");if(!v)return;hEnsureMe();HCACHE=null
   const tdv=td.filter(vis),dlv=dly.filter(vis),nxo=HSEC.next!=null?HSEC.next:true,Q=hQuiet(),tip=hTipOn();
   const laterBar=later.length?`<button type="button" class="hlater" data-hlater aria-expanded="${HLATER}">${HLATER?"Spätere Aufgaben wieder ausblenden":`Später heute: ${["m","n","a"].map(k=>{const n=later.filter(i=>i.c.tod===k).length;return n?`${HTOD[k][0]} ${n} ${HTOD[k][1].toLowerCase()}`:""}).filter(Boolean).join(" · ")} – jetzt zeigen`}</button>`:"";
   const now=`${odBar}${tdv.length?`<h4 class="hday">Heute dran</h4>`+tdv.map(i=>hRow(i,"today")).join(""):""}${dlv.length?`<h4 class="hday">Jeden Tag ${tip?`<small class="hhint">– Kästchen = ich · Name antippen = jemand anderes</small>`:""}</h4><div class="hdaily">${dlv.map(hDailyChip).join("")}</div>`:""}${laterBar}${wk.length?`<details class="hsubsec" data-hsec="next"${nxo?" open":""}><summary><h4 class="hday">Demnächst (${wk.length})</h4></summary>${wk.map(i=>hRow(i,"week")).join("")}</details>`:""}
-    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length&&!later.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:tip?`<p class="hswtip">Tipp: Zeile nach rechts wischen = erledigt · nach links = morgen</p>`:""}`;
+    ${!odv.length&&!tdv.length&&!dlv.length&&!wk.length&&!later.length?`<p class="pvsub">${ch.length?"Gerade nichts offen. 🎉":"Noch keine Aufgaben – unten rechts auf ➕ tippen und aus dem Katalog wählen."}</p>`:tip?`<p class="hswtip">Tipp: Zeile nach rechts wischen = einen Tag verschieben · nach links = löschen</p>`:""}`;
   const nProj=hProjects().filter(p=>!hProjDone(p)).length,openR=hReds().filter(r=>!r.done).length;
   hAgendaSave();
   const nProjAll=hProjects().length;
@@ -915,7 +915,7 @@ function hCatHtml(){const ch=hChores(),TP=hTpls(),tids=new Set(TP.map(x=>x.id)),
     :packs+HCATS.map(cc=>{const L=TP.filter(x=>x.cat===cc[0]),n=L.filter(x=>inst(x.id).length).length;
       return `<details class="hcat"${HCATOPEN===cc[0]?" open":""} data-hcat="${cc[0]}"><summary>${cc[1]} ${cc[2]} <small>${n?`✓ ${n} von ${L.length}`:L.length}</small></summary><div class="htpl">${L.map(x=>tcard(x,cc)).join("")}</div></details>`}).join("")
       +(extra.length?`<details class="hcat"${HCATOPEN==="_extra"?" open":""} data-hcat="_extra"><summary>📌 Zusätzliche Aufgaben <small>✓ ${extra.length}</small></summary><div class="htpl">${extra.map(ccard).join("")}</div></details>`:"");
-  return `${tabs}<input type="search" class="hcsearch" id="hcQ" placeholder="🔍 Suchen, z. B. Fenster, Geburtstag, Anna …" value="${esc(HCQ)}" aria-label="Aufgaben suchen">
+  return `${tabs}<input type="search" class="hcsearch" id="hcQ" name="wg-katalogsuche" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" placeholder="🔍 Suchen, z. B. Fenster, Geburtstag, Anna …" value="${esc(HCQ)}" aria-label="Aufgaben suchen">
       <p class="hsub">${TAB==="all"?"Antippen wählt eine Aufgabe aus – danach Person und Turnus festlegen. Ausgewählte (✓) zeigen, wer zuständig ist und wann.":TAB==="sel"?"Alle ausgewählten Aufgaben mit zuständiger Person und Turnus – antippen zum Ändern.":""}</p>${body}
       <p class="hsub" id="hcNone" hidden>Nichts gefunden – mit „Neue Vorlage“ selbst anlegen.</p>
       ${TAB==="all"&&cc0.del.length?`<p class="hrest">${cc0.del.length} Vorlagen gelöscht · <button type="button" data-hrestore="tpl">wiederherstellen</button></p>`:""}
@@ -1060,7 +1060,7 @@ function hEdSave(){if(HED.mode==="tpl")return hTplSave();const x=HED.c;x.ti=$("h
   const pv=$("hePriv"),priv=!!(pv&&pv.checked);if(priv){x.priv=1;x.own=hMe();x.who=hMe();delete x.whoWd;delete x.ckw}else{delete x.priv;delete x.own}
   let cid=x.cid||((priv?"p":"c")+Date.now().toString(36));if(x.cid&&(cid[0]==="p")!==priv){hset("hc:"+cid,null);cid=(priv?"p":"c")+Date.now().toString(36)}delete x.cid;hset("hc:"+cid,x);HSQ="";HCQ="";$("hdlg").close();toast(x.priv?(HED.isNew?"🔒 Private Aufgabe angelegt – nur auf diesem Gerät sichtbar":"💾 Gespeichert (privat)"):HED.isNew?(x.who?"➕ Hinzugefügt – erscheint jetzt in „Jetzt dran“ und in „Unser Plan“":"➕ Hinzugefügt – unter „Wer hat Bock?“ könnt ihr sie verteilen"):"💾 Gespeichert");HED=null;renderHomeAll()}
 function hNxBlock(nx,i){const P=hPeople().concat(hGrpOpts());return `<div class="hnxb" data-i="${i}">
-   <div class="hnxr"><label>${i?(i+1)+". ":""}Folgeaufgabe<input type="search" class="nxTi" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" class="nxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
+   <div class="hnxr"><label>${i?(i+1)+". ":""}Folgeaufgabe<input type="search" class="nxTi" name="wg-folge" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" maxlength="60" value="${esc(nx.ti||"")}" placeholder="🔍 Katalog suchen oder eigener Titel" autocomplete="off" enterkeyhint="done"></label><label>Icon<input type="text" class="nxIc" maxlength="4" value="${esc(nx.ic||"")}" placeholder="📦"></label></div>
    <div class="hnxs" hidden></div>
    <span class="hlab">Wann?</span><div class="hvorr"><select class="nxN" aria-label="Abstand">${[...Array(30).keys()].map(k=>k+1).concat((+nx.n>30)?[+nx.n]:[]).map(n=>`<option${n===(+nx.n||2)?" selected":""}>${n}</option>`).join("")}</select><select class="nxU" aria-label="Einheit">${[["d","Tagen"],["w","Wochen"],["m","Monaten"]].map(([k,l])=>`<option value="${k}"${(nx.u||"w")===k?" selected":""}>${l}</option>`).join("")}</select><span class="hhint">nach dem Abhaken</span></div>
    <label>Wer macht's?<select class="nxW"><option value="="${(nx.who??"=")==="="?" selected":""}>Wie diese Aufgabe</option><option value=""${nx.who===""?" selected":""}>🙋 offen</option>${P.map(p=>`<option value="${p.id}"${nx.who===p.id?" selected":""}>${p.e} ${esc(p.n)}</option>`).join("")}</select></label>
@@ -1268,8 +1268,11 @@ document.addEventListener("pointermove",e=>{if(!SW||e.pointerId!==SW.id)return;c
   SW.dx=dx;SW.r.style.transform=`translateX(${Math.max(-140,Math.min(140,dx))}px)`;SW.r.classList.toggle("swr",dx>80);SW.r.classList.toggle("swl",dx<-80)},{passive:true});
 const swEnd=e=>{if(!SW)return;const {r,dx,on}=SW;SW=null;if(!on)return;HSWX=Date.now();r.style.transform="";r.classList.remove("swg","swr","swl");if(e.type==="pointercancel")return;
   const cid=r.dataset.sw,d=r.dataset.d,c=SETS["hc:"+cid];
-  if(dx>80){if(!hDone(cid,d))hCheck(cid,d);return}
-  if(dx<-80&&!hDone(cid,d))hMoveTomorrow(cid,d)};
+  /* rechts = einen Tag verschieben, links = löschen (wiederkehrend: nur dieses Mal) */
+  if(dx>80){if(!hDone(cid,d))hMoveTomorrow(cid,d);return}
+  if(dx<-80){if(cid.startsWith("j:")){toast("Projektschritte bitte im Projekt löschen");return}
+    if(hSkippable(c?Object.assign({cid},c):null)){hSkip(cid,d);return}
+    if(c){const k="hc:"+cid,old=c;hset(k,null);renderHomeAll();undoToast(`🗑️ „${old.ti}“ gelöscht`,()=>{hset(k,old);renderHomeAll()})}}};
 document.addEventListener("pointerup",swEnd);document.addEventListener("pointercancel",swEnd);
 window.renderHomeNow=renderHome;window.renderHomeSetNow=renderHomeSet;
 renderHomeSet();if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();
