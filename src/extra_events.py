@@ -161,6 +161,7 @@ _O="noch nicht genau terminiert – Anstoß vorher prüfen"
 ADD["Volksparkstadion"] = [
  ("2026-11-06","20:30","","HSV – Borussia Mönchengladbach","Bundesliga, 9. Spieltag; Tickets bei hsv.de","https://www.hsv.de/"),
  ("2026-11-28","15:30","","HSV – FC Bayern München","Bundesliga, 11. Spieltag; Tickets bei hsv.de","https://www.hsv.de/"),
+ ("2026-12-06","15:30","17:00","HSV-Weihnachtssingen im Volksparkstadion","Mit Rolf Zuckowski & Chor, Dick Brave, Michael Schulte, NDR-Band u. a.; ca. 90 Min.; Tickets 10–25 €, unter 18 J. 50 % Rabatt; Glühwein, Punsch, Dino Hermann","https://www.ticket-onlineshop.com/ols/hsv-heimspiele/de/Weihnachten/channel/shop/index"),
  ("2026-12-12","","","HSV – FC Schalke 04","Bundesliga, 13. Spieltag, Wochenende 11.–13.12.; "+_O,"https://www.hsv.de/"),
  ("2026-10-31","13:00","","HSV-Frauen – 1. FC Union Berlin","DFB-Pokal Achtelfinale; Spielort laut HSV-Spielplan prüfen; Tickets bei hsv.de","https://www.hsv.de/teams/frauen/spielplan"),
  ("2026-11-13","18:30","","HSV-Frauen – 1. FSV Mainz 05","Frauen-Bundesliga, 10. Spieltag; Spielort laut HSV-Spielplan prüfen","https://www.hsv.de/teams/frauen/spielplan"),
