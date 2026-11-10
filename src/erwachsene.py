@@ -1,4 +1,5 @@
-# Ziele für Erwachsene (ohne Kinder) – aus der Google-Maps-Liste „Erwachsenenveranstaltungen“ (HTML-Export 28.10.2026, 63 Orte).
+# Ziele für Erwachsene (ohne Kinder) – aus der Google-Maps-Liste „Erwachsenenveranstaltungen“ (HTML-Export 28.10.2026, 63 Orte;
+# aktualisiert 10.11.2026 direkt aus Google Maps: 67 Orte, Koordinaten der neuen Orte aus Google Maps).
 # Adressen recherchiert (hamburg-tourism.de, Restaurantführer), Koordinaten aus der Adresse geschätzt (± einige 100 m).
 # Felder: Name, Adresse, lat, lng, Kategorie, drinnen/draussen/beides, Wetter, Saisons, Beschreibung,
 #         Öffnungszeiten (wie hours.py) oder None, Preisstufe, Preistext, Verzehr-Typ (CONS_E) oder "", Aufenthalt (h), Website
@@ -8,8 +9,20 @@ TK = "Karten je nach Veranstaltung, Programm siehe Website"
 # Verzehr-Schätzung pro Erwachsenem (aus den Google-Preisspannen)
 CONS_E = {"e15": ((15, 0), "Café/Bistro, laut Google 10–20 € p. P."), "e25": ((25, 0), "laut Google 20–30 € p. P."),
           "e45": ((45, 0), "Restaurant, laut Google 30–60 € p. P."), "e120": ((130, 0), "Spitzengastronomie, Menü ab ca. 120 € p. P., Getränke extra"),
-          "bar": ((15, 0), "Bar, Getränke ca. 10–20 € p. P.")}
+          "bar": ((15, 0), "Bar, Getränke ca. 10–20 € p. P."),
+          "e250": ((250, 0), "Zwei-Sterne-Menü, ca. 200–300 € p. P. inkl. Ticket-Pauschale, Getränke extra")}
 ERW = [
+ # Neu in der Liste (10.11.2026)
+ ("Hauptkirche St. Michaelis","Englische Planke 1, 20459 Hamburg",53.5484,9.9788,"ausflug","drinnen","egal","FSHW","Der „Michel“ – barockes Wahrzeichen Hamburgs, Turm mit Aussichtsplattform über Stadt und Hafen, Krypta mit Ausstellung; Konzerte und „Orgelpunkt“",
+  "Mo-So 9-18",F,"Kirche kostenlos; Turm und Krypta kostenpflichtig (Preise siehe Website); Einlass bis 17:30; während Gottesdiensten keine Besichtigung","",1.5,"https://www.st-michaelis.de/"),
+ ("100/200 Kitchen","Brandshofer Deich 68, 20539 Hamburg",53.5374,10.0285,"cafe","drinnen","egal","FSHW","Zwei-Sterne-Restaurant in einem Fabrikloft in Rothenburgsort: offene Küche, saisonales Überraschungsmenü; auf der Empore à la carte im „GLORIE“; Reservierung über Ticketsystem",
+  None,V,"Öffnungszeiten und Tickets siehe Website","e250",3.5,"https://100200.kitchen/"),
+ ("HOUSE OF SUPERFREUNDE","Ochsenzoller Straße 103, 22848 Norderstedt",53.6821,9.9797,"cafe","drinnen","egal","FSHW","Kneipe der Superfreunde-Brauerei in Norderstedt – eigenes Bier, dazu Stand-up-Comedy, Pubquiz und Komische Nacht",
+  None,V,"","bar",2.5,"https://house-of-superfreunde.com/"),
+ ("KÆF. Rösterei & Café","Ochsenzoller Straße 120, 22848 Norderstedt",53.6817,9.9828,"cafe","beides","egal","FSHW","Kaffeerösterei mit Café in Norderstedt – Espresso, Filterkaffee, Cold Brew, Frühstück, vegane Optionen, Plätze draußen",
+  "Di-Fr 9-17; Sa 10-17",V,"","e15",1,"https://kaef.shop/"),
+ ("Monkey Quiz","Am Grasbrookpark 1E, 20457 Hamburg",53.5407,9.9966,"kreativ","drinnen","egal","FSHW","Kult-Pubquiz auf Deutsch und Englisch in Teams – an wechselnden Orten, z. B. im ÜberQuell am Fischmarkt",
+  None,U,"Tickets ca. 12 € p. P., Termine und Orte siehe Website","",3,"https://monkey-quiz.de/"),
  # Essen & Trinken
  ("WOHLERS","Thadenstraße 148, 22767 Hamburg",53.5578,9.9455,"cafe","drinnen","egal","FSHW","Französisch-deutsches Restaurant in Altona, viel Bio, vegetarisch und vegan",
   "Mo-So 17-24",V,"","e45",2,"https://restaurant-wohlers.de/"),
@@ -142,5 +155,4 @@ ERWN = {e[0] for e in ERW}
 AUDB = {"Hamburger Kunsthalle", "Planetarium Hamburg", "LIFE HAMBURG Campus"}
 ERW_CLOSE = {"Museum für Hamburgische Geschichte": ("2026-01-01", "Laut Google vorübergehend geschlossen"),
              "MS Artville": ("2026-01-01", "Laut Google vorübergehend geschlossen")}
-# Nicht übernommen (kein fester Ort/keine Adresse gefunden):
-# Craft Bier Bar Hamburg, Monkey Quiz
+# Nicht übernommen: – (Stand 10.11.2026 sind alle 67 Orte der Liste enthalten)

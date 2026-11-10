@@ -197,6 +197,12 @@ ADULT_EV = set()
 def adult(place, items):
     ADD.setdefault(place, []).extend(items)
     ADULT_EV.update((place, d, t, ti) for d, t, _e, ti, _n, _u in items)
+_HS = "https://www.hamburg-tourism.de/sehen-erleben/veranstaltungen/veranstaltungsorte/house-of-superfreunde/"
+adult("HOUSE OF SUPERFREUNDE", [
+ ("2026-11-11","19:30","22:00","Norderstedter Stand-up Comedy Nacht","Tickets siehe Website",_HS),
+ ("2026-12-30","19:00","22:00","PubQuiz Special zum Jahresende","Anmeldung siehe Website",_HS),
+ ("2027-03-03","19:30","22:00","6. Komische Nacht Norderstedt","Tickets siehe Website",_HS),
+])
 _LV = "https://www.life.hamburg/veranstaltungen/life-hamburg-"
 _A = "Anmeldung"
 adult("LIFE HAMBURG Campus", [
