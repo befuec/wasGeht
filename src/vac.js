@@ -85,8 +85,8 @@ let VSIG="";
 function vSync(){const t=vActive(),on=!!t;document.body.classList.toggle("vac",on);const bar=$("vacBar");
   if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPlanning(t),u=vUntil(t);
     bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?(u>0?`Planung · noch ${u} ${u===1?"Tag":"Tage"}`:"Rückblick"):dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span><span class="vbb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${pv?`<button type="button" class="pmini vhome" data-vprevoff>🏠 Zurück nach Hause</button>`:""}</span>`;bar.hidden=false}}
-  const nx=$("vacNext");if(nx){const U=on?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
-    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span>🏝️ <b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere unter ⚙️`:""}</small></span><span class="vgo">Urlaub planen ›</span></button>`;nx.hidden=false}}
+  const nx=$("vacNext");if(nx){const U=on||M2!=="plan"?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
+    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span><b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere`:""}</small></span><span class="vgo">Planen ›</span></button>`;nx.hidden=false}}
   const v=$("vacView");if(v){const show=on&&!document.body.classList.contains("kidsmode")&&(M2==="heute"||M2==="entdecken");v.hidden=!show;if(show){const sig=JSON.stringify([M2,t,VF,LS.get("hwk-vacprev",null)]);if(sig!==VSIG||!v.innerHTML){VSIG=sig;vRender(t)}}}
   renderVacSet()}
 window.vSync=vSync;

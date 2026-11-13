@@ -1696,8 +1696,8 @@ body.vac[data-m2="heute"] #heuteView,body.vac[data-m2="entdecken"] .layout,body.
 .vdel{color:#B42318!important;border-color:color-mix(in srgb,#B42318 40%,var(--line))!important}
 .hvacn{margin:0 0 12px;font-size:13px;color:var(--muted);background:color-mix(in srgb,#0B7FA6 8%,var(--surface));border-radius:12px;padding:8px 12px}
 .vacbar .vbb{display:flex;gap:6px;flex-wrap:wrap}.vacbar .vhome{background:var(--nx);color:var(--nx-ink);border-color:var(--nx)}
-.vnext{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:4px 0 10px;font:inherit;text-align:left;cursor:pointer;padding:9px 14px;border-radius:14px;border:1.5px dashed color-mix(in srgb,#0B7FA6 45%,var(--line));background:color-mix(in srgb,#0B7FA6 6%,var(--surface));color:var(--ink)}
-.vnext>span:first-child{display:grid}.vnext small{color:var(--muted);font-size:12px}.vnext .vgo{font-weight:800;font-size:13px;color:#0B6F93;white-space:nowrap}
+.vnext{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin:0 0 8px;font:inherit;font-size:13px;text-align:left;cursor:pointer;padding:6px 12px;border-radius:10px;border:1px solid color-mix(in srgb,#0B7FA6 35%,var(--line));background:color-mix(in srgb,#0B7FA6 5%,var(--surface));color:var(--ink)}
+.vnext>span:first-child{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px;min-width:0}.vnext b{font-weight:700}.vnext small{color:var(--muted);font-size:12px}.vnext .vgo{font-weight:700;font-size:12.5px;color:#0B6F93;white-space:nowrap}
 body.kidsmode #vacNext{display:none}
 .vcount{display:grid;gap:2px;background:linear-gradient(100deg,color-mix(in srgb,#0B7FA6 14%,var(--surface)),color-mix(in srgb,#F6C76A 20%,var(--surface)));border-radius:14px;padding:12px 14px}.vcount b{font-size:20px}.vcount span{font-size:12.5px;color:var(--muted)}
 .vwxh{flex-basis:100%;color:var(--muted);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
@@ -4400,8 +4400,8 @@ let VSIG="";
 function vSync(){const t=vActive(),on=!!t;document.body.classList.toggle("vac",on);const bar=$("vacBar");
   if(bar){if(!on){bar.hidden=true;bar.innerHTML=""}else{const dn=vDayNo(t),pv=vPlanning(t),u=vUntil(t);
     bar.innerHTML=`<span class="vbt">🏝️ <b>${esc(t.ti)}</b></span><span class="vbs">${pv?(u>0?`Planung · noch ${u} ${u===1?"Tag":"Tage"}`:"Rückblick"):dn?`Tag ${dn[0]} von ${dn[1]}`:""}${t.dest&&t.dest.n?" · "+esc(t.dest.n):""}</span><span class="vbb"><button type="button" class="pmini" data-vedit="${esc(t.id)}">Bearbeiten</button>${pv?`<button type="button" class="pmini vhome" data-vprevoff>🏠 Zurück nach Hause</button>`:""}</span>`;bar.hidden=false}}
-  const nx=$("vacNext");if(nx){const U=on?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
-    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span>🏝️ <b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere unter ⚙️`:""}</small></span><span class="vgo">Urlaub planen ›</span></button>`;nx.hidden=false}}
+  const nx=$("vacNext");if(nx){const U=on||M2!=="plan"?null:vTrips().find(x=>x.from>T0)||null;if(!U){nx.hidden=true;nx.innerHTML=""}else{const u=vUntil(U),more=vTrips().filter(x=>x.from>T0).length-1;
+    nx.innerHTML=`<button type="button" class="vnext" data-vprev="${esc(U.id)}"><span><b>${esc(U.ti)}</b><small>in ${u} ${u===1?"Tag":"Tagen"}${more>0?` · +${more} weitere`:""}</small></span><span class="vgo">Planen ›</span></button>`;nx.hidden=false}}
   const v=$("vacView");if(v){const show=on&&!document.body.classList.contains("kidsmode")&&(M2==="heute"||M2==="entdecken");v.hidden=!show;if(show){const sig=JSON.stringify([M2,t,VF,LS.get("hwk-vacprev",null)]);if(sig!==VSIG||!v.innerHTML){VSIG=sig;vRender(t)}}}
   renderVacSet()}
 window.vSync=vSync;
