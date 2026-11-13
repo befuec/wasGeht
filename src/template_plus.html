@@ -1728,6 +1728,17 @@ dialog .hconf,dialog .hplus,dialog .hcele{position:fixed}
 .hcfigs{flex-wrap:wrap}.hcgif{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0}.hcup{cursor:pointer}.hcthumb{width:48px;height:48px;object-fit:cover;border-radius:10px}
 form.nofill{display:contents}
 .htrow.swr{background:#DBEAFE!important}.htrow.swl{background:#FEE2E2!important}
+/* Entdecken entschlackt: keine Überschrift, kein „Diese Woche anmelden“, Listenzeilen mit mehr Platz für den Namen */
+.mtitle.mt-ent{display:none}
+#awBox{display:none!important}
+@media (max-width:700px){
+ .lrow{gap:8px;padding:8px 10px}
+ .lrow .lact{gap:4px}
+ .lrow .lbtn{font-size:0;line-height:0;padding:7px 9px;display:inline-flex;align-items:center}
+ .lrow .lbtn .ic{width:17px;height:17px;margin:0}
+ .lrow .lchev{display:none}
+ .lrow .lbtn.on{font-size:12px;line-height:1.2;gap:4px}
+}
 </style>
 
 <div class="wrap">
