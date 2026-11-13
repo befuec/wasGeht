@@ -1745,7 +1745,8 @@ dialog .hconf,dialog .hplus,dialog .hcele{position:fixed}
 form.nofill{display:contents}
 .htrow.swr{background:#DBEAFE!important}.htrow.swl{background:#FEE2E2!important}
 /* Entdecken entschlackt: keine Überschrift, kein „Diese Woche anmelden“, Listenzeilen mit mehr Platz für den Namen */
-.mtitle.mt-ent{display:none}
+/* Seitenüberschriften Entdecken und Unser Plan nur für Screenreader */
+.mtitle.mt-ent,#pH{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 #awBox{display:none!important}
 @media (max-width:700px){
  .lrow{gap:8px;padding:8px 10px}
@@ -2963,7 +2964,7 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
 /* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
-{const APPVER="b2f1e8a964";let lastChk=0,hiddenAt=0,banner=null;
+{const APPVER="89d18c8be0";let lastChk=0,hiddenAt=0,banner=null;
   const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
   const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
   async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
