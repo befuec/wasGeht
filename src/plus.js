@@ -1,7 +1,7 @@
 /* ===== Plus-Funktionen: gemeinsame Sterne & Besuche, Top 3, Ausflugsplan, Teilen, Neu-Markierung, Listenansicht, Filter-Blatt, Vorlesen ===== */
 (function(){
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
+const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id)||(window.UEVPL||[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
 /* --- Speicher: gemeinsam (db) oder nur auf diesem Gerät --- */
 const ST={places:LS.get("hwkp-places",{}),plans:LS.get("hwkp-plans",{}),evw:LS.get("hwkp-evw",{}),maybe:LS.get("hwkp-maybe",{}),busy:LS.get("hwkp-busy",{})};
 const M2S=["heute","entdecken","plan","zuhause"];
@@ -83,7 +83,7 @@ window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
 window.__refresh=()=>refresh();
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
-  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
+  if(window.uevApply)uevApply(false,true);syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
   try{const u=await window.claude.use("user");if(u){UAPI=u;if(u.can){const c=await u.can("data.write");if(c===false)CANWRITE=false}if(u.me){const me=await u.me();MYID=me&&me.id||null;if(MYID)PROF[MYID]=me}}}catch(e){}
   let first=true;
@@ -305,12 +305,12 @@ window.plusKidEv=()=>{const kidOk=e=>{if(!FAM.kids.length)return true;const r=ev
   return `<h3>🎉 Was ist los?</h3><p class="khint">Tippe auf ☆, wenn du da hin möchtest – Mama und Papa sehen deinen Wunsch.</p><div class="kevg">${L.slice(0,14).map(x=>{const k=evKey(x.p,x.e),on=evWished(k);
     return `<article class="kevc${on?" on":""}"><span class="ki" aria-hidden="true">${ico(x)}</span><button type="button" class="kws" data-kw="${esc(k)}" aria-pressed="${on}" aria-label="${on?"Wunsch wegnehmen":"Da will ich hin"}: ${esc(x.e.ti)}">${on?"⭐":"☆"}</button><span class="kd">${esc(dn(x))}</span><span class="kt">${esc(x.e.ti)}</span><span class="kp">${esc(x.p.n)} · ${x.p.bike&&x.p.bike<=15?"🚲 "+x.p.bike:"🚗 "+x.p.car} Min.</span></article>`}).join("")}</div>`};
 $("kEv").addEventListener("click",e=>{const b=e.target.closest("[data-kw]");if(!b)return;toggleWish(b.dataset.kw);const on=evWished(b.dataset.kw);b.setAttribute("aria-pressed",String(on));b.textContent=on?"⭐":"☆";b.closest(".kevc").classList.toggle("on",on)});
-window.plusEvBadge=(p,e)=>{const b=[];if(EVNEW.has(evKey(p,e)))b.push(`<span class="newtag">NEU</span>`);if(evWished(evKey(p,e)))b.push(`<span class="kidwish" title="In der Kinderansicht gewünscht">⭐ Kinderwunsch</span>`);
+window.plusEvBadge=(p,e)=>{const b=[];if(e.own)b.push(`<span class="owntag" title="Von euch selbst eingetragen">eigene</span>`);if(EVNEW.has(evKey(p,e)))b.push(`<span class="newtag">NEU</span>`);if(evWished(evKey(p,e)))b.push(`<span class="kidwish" title="In der Kinderansicht gewünscht">⭐ Kinderwunsch</span>`);
   if(e.an&&!FULL.test(e.no)){const m=(e.no||"").match(/Anmeldung bis ([^,;·]+)/i);if(m)b.push(`<span class="soontag">⏳ Anmeldung bis ${esc(m[1].trim())}</span>`);else if(days(e.dt)<=14&&!e.rg)b.push(`<span class="soontag">⏳ bald – jetzt anmelden</span>`)}
   return b.length?" "+b.join(" "):""};
 window.inPlanEv=k=>Object.values(ST.plans).some(v=>(v.items||[]).some(x=>x.type==="ev"&&x.k===k));
 window.plusEvActs=(p,e)=>{const k=evKey(p,e),pl=Object.values(ST.plans).some(v=>(v.items||[]).some(x=>x.type==="ev"&&x.k===k));
-  return `<button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}" title="${pl?"Im Ausflugsplan – antippen zum Entfernen":"In den Ausflugsplan"}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<button type="button" class="pmini" data-evshare="${p.id}" data-k="${esc(k)}">${IC.share}Teilen</button>`};
+  return `<button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}" title="${pl?"Im Ausflugsplan – antippen zum Entfernen":"In den Ausflugsplan"}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<button type="button" class="pmini" data-evshare="${p.id}" data-k="${esc(k)}">${IC.share}Teilen</button>${e.own?`<button type="button" class="pmini" data-uevedit="${esc(e.uid)}">✏️ Bearbeiten</button>`:""}`};
 const findEv=(id,k)=>{const p=byId(id);return p?[p,p.up.find(e=>evKey(p,e)===k)]:[null,null]};
 document.addEventListener("click",e=>{const a=e.target.closest("[data-evplan],[data-evshare]");if(!a)return;e.preventDefault();e.stopPropagation();
   const [p,ev]=findEv(+(a.dataset.evplan||a.dataset.evshare),a.dataset.k);if(!p||!ev)return;
@@ -652,7 +652,7 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const evCostTxt=x=>{const pr=evPrice(x);if(pr===0)return "🆓 kostenlos";if(pr<1e5)return `🎟️ ${fmtEur(pr)} p. P.`;return x.e.an?"🎟️ Preis auf Infoseite":""};
   const plCostTxt=p=>{if(p.pk==="free")return "🆓 kostenlos";const fc=famCost(p);return fc===0?"🆓 kostenlos":fc!=null?"🎟️ "+fmtEur(fc,p.pest):""};
   const ecard=(x,big,wet)=>{const {p,e}=x,k=evKey(p,e),pl=window.inPlanEv(k),st=e.t?toM(e.t):null;
-    return `<div class="hcard ev${big?" big":""}">${big?`<span class="hbadge">⭐ Unser Vorschlag</span>`:""}<span class="hk">🎉 Veranstaltung${p.x?" · nicht in euren Listen":""}</span><b>${esc(e.ti)}</b><div class="hm"><span class="hl">${e.t?e.t+" Uhr":e.to?"läuft bis "+fmtDate(e.to):"ganztägig"}</span> · ${esc(p.n)} · ${Math.round(p.km)} km${hcost(evCostTxt(x))}</div>
+    return `<div class="hcard ev${big?" big":""}">${big?`<span class="hbadge">⭐ Unser Vorschlag</span>`:""}<span class="hk">🎉 Veranstaltung${p.x?" · nicht in euren Listen":e.own?" · eigene":""}</span><b>${esc(e.ti)}</b><div class="hm"><span class="hl">${e.t?e.t+" Uhr":e.to?"läuft bis "+fmtDate(e.to):"ganztägig"}</span> · ${esc(p.n)} · ${Math.round(p.km)} km${hcost(evCostTxt(x))}</div>
       <div class="hw">${st!=null?`Losfahren um ${fmM(st-p.car-10)} · 🚗 ${p.car} Min.`:`🚗 ${p.car} Min.`}${wet?" · ☔ draußen – Regenjacke!":""}${e.no?" · "+esc(e.no.length>70?e.no.slice(0,68)+"…":e.no):""}</div>
       <div class="ha"><button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<a href="${ROUTE(p)}" target="_blank" rel="noopener">Route ↗</a>${e.u?`<a href="${e.u}" target="_blank" rel="noopener">Infos ↗</a>`:""}</div></div>`};
   const pcard=(o,big)=>{const p=o.p,pd=planDateOf(p.id);

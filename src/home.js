@@ -458,7 +458,7 @@ const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.ro
 const HK=k=>"settings/"+k;
 const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
-const HPRE=/^(hc|hd|hr|ho|hj|hsum|hurl):/;
+const HPRE=/^(hc|hd|hr|ho|hj|hsum|hurl|uev):/;
 const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals","hpreset","hbdg"].includes(k);
 /* Punkte-Reset: alles vor diesem Zeitpunkt zählt nicht mehr für Punkte, Level und Belohnungen (Verlauf bleibt) */
 const hRst=()=>+((SETS.hpreset||{}).t)||0;

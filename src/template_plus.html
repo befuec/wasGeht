@@ -5,7 +5,11 @@
 @font-face{font-family:"Baloo 2";src:url(fonts/baloo2.woff) format("woff");font-weight:400 800;font-display:swap}
 @font-face{font-family:"Atkinson Hyperlegible";src:url(fonts/atkinson-Regular.woff) format("woff");font-weight:400;font-display:swap}
 @font-face{font-family:"Atkinson Hyperlegible";src:url(fonts/atkinson-Bold.woff) format("woff");font-weight:700;font-display:swap}
-@font-face{font-family:"Atkinson Hyperlegible";src:url(fonts/atkinson-Italic.woff) format("woff");font-weight:400;font-style:italic;font-display:swap}</style>
+@font-face{font-family:"Atkinson Hyperlegible";src:url(fonts/atkinson-Italic.woff) format("woff");font-weight:400;font-style:italic;font-display:swap}#uevdlg{padding:0 16px 4px!important;max-height:92vh}#uevdlg form.hform{padding:0 16px 12px!important;margin:0;gap:4px}#uevdlg label{display:block!important}#uevdlg label>input{display:block;margin-top:4px}#uevdlg .dlghead{position:sticky;top:0;background:inherit;z-index:2;padding:10px 0}#uevdlg label{font-weight:600;font-size:.9rem}#uevdlg label small{display:inline;font-weight:400;opacity:.7}#uevdlg .hfbtn{position:sticky;bottom:0;background:inherit;padding:10px 0;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}#uevdlg .hfbtn .vdel{margin-right:auto}
+.owntag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 7px;border-radius:999px;background:#ede7ff;color:#4b2fa8;vertical-align:middle}
+.uevl{display:flex;flex-direction:column;gap:6px;margin-top:6px}.uevr{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:8px 10px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--card,#fff);font:inherit;cursor:pointer}.uevr small{opacity:.75}.uevr[aria-current=true]{border-color:#7a5af5;background:#f5f1ff}
+#uevdlg .hf2{display:grid;grid-template-columns:1fr 1fr;gap:8px}#uevdlg label{margin:4px 0}#uevdlg input[type=text],#uevdlg input[type=url],#uevdlg input[type=date],#uevdlg input[type=time]{width:100%;box-sizing:border-box}#uevdlg .vgrow{display:flex;gap:6px;align-items:flex-end}#uevdlg .vgrow label{flex:1}#uevdlg label.famchk{display:flex!important;align-items:center;gap:8px}#uevdlg label.famchk>input{display:inline;margin:0}
+</style>
 <script>(function(){var t="light";try{t=localStorage.getItem("hwk-theme")||"light"}catch(e){}if(t!=="auto")document.documentElement.setAttribute("data-theme",t)})();</script>
 <style>
 /* Layout: sticky filter rail left, result list right; on phones the filters fold into a panel above the list. */
@@ -1915,7 +1919,7 @@ form.nofill{display:contents}
           <div class="audq" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="false">Kinder</button><button type="button" data-aud="erw" aria-pressed="false">Erwachsene</button></div>
           <div class="dquick" id="perQ" role="group" aria-label="Zeitraum"><button type="button" data-q="0">Heute</button><button type="button" data-q="1">Morgen</button><button type="button" data-q="we">Wochenende</button></div>
           <button type="button" class="dbtn" id="evDateBtn" aria-label="Datum wählen">📅 Datum</button><span class="dpick" id="dPick"><button type="button" class="dnav" id="dPrev" aria-label="Vorheriger Tag mit Terminen">‹</button><input type="date" id="evDate" aria-label="Datum wählen"><button type="button" class="dnav" id="dNext" aria-label="Nächster Tag mit Terminen">›</button></span>
-          <button type="button" class="evfbtn" data-evfopen><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Filter <span class="evfn"></span></button>
+          <button type="button" class="evfbtn uevbtn" data-uevnew title="Eigene Veranstaltung eintragen">➕ Eigene</button><button type="button" class="evfbtn" data-evfopen><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Filter <span class="evfn"></span></button>
         </div>
         <div class="dquick accq" id="accQ" role="group" aria-label="Zugang: offen, mit Anmeldung oder Tickets"></div>
         <div class="evvrow"><div class="evvt" role="group" aria-label="Darstellung der Veranstaltungen"><button type="button" data-evv="cards">▦ Kacheln</button><button type="button" data-evv="list">☰ Liste</button></div>
@@ -2054,7 +2058,7 @@ const audOk=p=>AUD==="erw"?(p.aud==="e"||p.aud==="b"):AUD==="fam"?p.aud!=="e":tr
 /* Termine: an Orten mit eigenen Erwachsenen-Terminen zeigt „Erwachsene“ nur diese, „Familie“ blendet sie aus */
 const hasAdultEv=p=>p._hae??(p._hae=!!(p.ev||[]).some(e=>e.aud==="e"));
 const KIDEV=/\b(ab \d{1,2} ?J|\d{1,2}\s?[–-]\s?\d{1,2} ?J|Kinder|Familie|Kita|Baby|Eltern)/i;
-const evAudOk=(p,e)=>AUD==="erw"?(e.aud==="e"||p.aud==="e"||(p.aud==="b"&&!hasAdultEv(p)&&!KIDEV.test(e.ti+" "+(e.no||"")))):AUD==="fam"?(e.aud!=="e"&&p.aud!=="e"):true;
+const evAudOk=(p,e)=>e.own?(AUD==="erw"?e.oa!=="f":AUD==="fam"?e.oa!=="e":true):AUD==="erw"?(e.aud==="e"||p.aud==="e"||(p.aud==="b"&&!hasAdultEv(p)&&!KIDEV.test(e.ti+" "+(e.no||"")))):AUD==="fam"?(e.aud!=="e"&&p.aud!=="e"):true;
 window.evAudOk=evAudOk;window.audOk=audOk;window.getAud=()=>AUD;window.setAud=v=>{AUD=v||"";try{localStorage.setItem("hwk-aud",AUD)}catch(e){}document.querySelectorAll("[data-aud]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.aud===AUD)));
   if(window.audFilters)try{audFilters()}catch(_){}if(typeof render==="function")try{render()}catch(_){}if(window.__refresh)window.__refresh();else if(typeof refresh==="function")refresh();if(typeof update==="function")try{update()}catch(_){}if(typeof renderEvents==="function")try{renderEvents()}catch(_){}if(window.renderHeute)try{window.renderHeute()}catch(_){}};
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest(".audq [data-aud]");if(b)setAud(b.getAttribute("aria-pressed")==="true"?"":b.dataset.aud)});
@@ -2428,7 +2432,7 @@ function saveHidRg(){try{localStorage.setItem("hwk-hidrg",JSON.stringify(HIDRG))
 function renderHidRg(){const el=$("hidRg");if(!el)return;const L=Object.entries(HIDRG).sort((x,y)=>(x[1].ti||"").localeCompare(y[1].ti||""));
   el.innerHTML=L.length?L.map(([k,v])=>`<div class="hidrow"><div style="min-width:0"><b>${esc(v.ti||"")}</b><small>${esc(v.pn||"")}${v.rg?" · "+esc(v.rg):""}</small></div><button type="button" class="pmini" data-rgshow="${esc(k)}">↩️ Wieder anzeigen</button></div>`).join("")
     :`<p class="famnote" style="margin:0">Nichts ausgeblendet. Bei regelmäßigen Angeboten unter „Entdecken“ auf „🚫 Kein Interesse“ tippen.</p>`}
-function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e)&&evAudOk(p,e))a.push({p,e})}));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
+function allEvs(list){const a=[];list.forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e)&&evAudOk(p,e))a.push({p,e})}));if(typeof EXT!=="undefined")xplFor().forEach(p=>p.up.forEach(e=>{if(!rgHidden(p,e))a.push({p,e})}));(window.UEVPL||[]).forEach(p=>p.up.forEach(e=>{if(evAudOk(p,e))a.push({p,e})}));return a.sort((x,y)=>(x.e.dt+x.e.t+x.p.n).localeCompare(y.e.dt+y.e.t+y.p.n))}
 const FULL=/ausgebucht|ausverkauft|nur Warteliste/;
 const MONL=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const WDL=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
@@ -2471,8 +2475,8 @@ function evRow({p,e},noPlace){const full=FULL.test(e.no);
   const link=e.u||p.cal||p.web, lt=e.u?(e.an?(full?"Warteliste / Details":evKind(e)==="tix"?"Tickets kaufen":"Zur Anmeldung"):"Details"):(p.cal?"Programmseite":"Website");
   return `<div class="evrow${full?" full":""}">${calBox(e.dt,e.t)}
     <div style="min-width:0"><div class="t">${esc(e.ti)}${e.to?` <span class="regtag">bis ${pdate(e.to).getDate()}.${pdate(e.to).getMonth()+1}.</span>`:""}${p.x?` <span class="xtag" title="Ort steht nicht in euren Google-Maps-Listen">nicht in euren Listen</span>`:""}${window.plusEvBadge?window.plusEvBadge(p,e):""}${e.rg?` <span class="regtag" title="${esc(e.rg)}">regelmäßig</span>`:""}</div>${e.rg?`<div class="rgpat">${esc(e.rg)}</div>`:""}
-      <div class="p">${noPlace?(e.no?esc(e.no):""):`${p.x?`<b>${esc(p.n)}</b>`:`<button type="button" data-id="${p.id}">${esc(p.n)}</button>`}${(()=>{const c=p.a.split(",").pop().replace(/^\s*\d{5}\s*/,"").trim();return c&&!p.n.includes(c)?", "+esc(c):""})()} · ${Math.round(p.km)} km${p.car?` · Auto ca. ${p.car} Min.`:""}${e.no?` · ${esc(e.no)}`:""}`}</div></div>
-    <div class="acts">${e.an?`<span class="anmtag${full?" full":""}">${full?"voll":evKind(e)==="tix"?"🎟️ Tickets":"✍️ Anmeldung"}</span>`:""}${link?`<a href="${link}" target="_blank" rel="noopener">${lt} ↗</a>`:""}${window.plusEvActs?window.plusEvActs(p,e):""}${e.rg?`<button type="button" class="pmini rghide" data-rghide="${esc(rgKey(p,e))}" data-ti="${esc(e.ti)}" data-pn="${esc(p.n)}" data-rg="${esc(e.rg)}" title="Dieses regelmäßige Angebot künftig ausblenden">🚫 Kein Interesse</button>`:""}${p.x?`<a href="https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination=${encodeURIComponent(p.a)}" target="_blank" rel="noopener">Route ↗</a>`:""}${calMenu(p,e)}</div></div>`}
+      <div class="p">${noPlace?(e.no?esc(e.no):""):`${p.x||p.own?`<b>${esc(p.n)}</b>`:`<button type="button" data-id="${p.id}">${esc(p.n)}</button>`}${(()=>{const c=(p.a||"").split(",").pop().replace(/^\s*\d{5}\s*/,"").trim();return c&&!p.n.includes(c)?", "+esc(c):""})()}${p.own&&p.lat==null?"":` · ${Math.round(p.km)} km${p.car?` · Auto ca. ${p.car} Min.`:""}`}${e.no?` · ${esc(e.no)}`:""}`}</div></div>
+    <div class="acts">${e.an?`<span class="anmtag${full?" full":""}">${full?"voll":evKind(e)==="tix"?"🎟️ Tickets":"✍️ Anmeldung"}</span>`:""}${link?`<a href="${link}" target="_blank" rel="noopener">${lt} ↗</a>`:""}${window.plusEvActs?window.plusEvActs(p,e):""}${e.rg?`<button type="button" class="pmini rghide" data-rghide="${esc(rgKey(p,e))}" data-ti="${esc(e.ti)}" data-pn="${esc(p.n)}" data-rg="${esc(e.rg)}" title="Dieses regelmäßige Angebot künftig ausblenden">🚫 Kein Interesse</button>`:""}${p.x||p.own?`<a href="https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination=${encodeURIComponent(p.own?(p.lat!=null?p.lat+","+p.lng:p.n+" "+p.a):p.a)}" target="_blank" rel="noopener">Route ↗</a>`:""}${calMenu(p,e)}</div></div>`}
 function dayWx(dt){if(typeof WXD==="undefined"||!WXD||!WXD.length)return"";const w=WXD.find(x=>x.dt===dt);if(!w||w.hi==null)return"";const r=Math.round(w.rain||0);
   return `<div class="evdaywx${r>=50?" wet":""}">${wxIcon(w.rain,w.code,w.hi)} ${WX[wxClass(w)]} · ${Math.round(w.hi)}°${w.lo!=null?" / "+Math.round(w.lo)+"°":""} · 💧 ${r} % Regen${r>=50?" · für Draußen-Termine Regenjacke einpacken":""}</div>`}
 function dayHead(dt){const d=pdate(dt);const rel=dt===T0?"Heute, ":dt===plus(1)?"Morgen, ":"";return `<h3 class="evday">${rel}${WDL[d.getDay()]}, ${d.getDate()}. ${MONL[d.getMonth()]}</h3>${dayWx(dt)}`}
@@ -3545,7 +3549,7 @@ setMode(MODE);
 /* ===== Plus-Funktionen: gemeinsame Sterne & Besuche, Top 3, Ausflugsplan, Teilen, Neu-Markierung, Listenansicht, Filter-Blatt, Vorlesen ===== */
 (function(){
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
+const byId=id=>PLACES.find(p=>p.id==id)||(window.getXPL?getXPL():[]).find(p=>p.id==id)||(window.UEVPL||[]).find(p=>p.id==id), byName=n=>PLACES.find(p=>p.n===n);
 /* --- Speicher: gemeinsam (db) oder nur auf diesem Gerät --- */
 const ST={places:LS.get("hwkp-places",{}),plans:LS.get("hwkp-plans",{}),evw:LS.get("hwkp-evw",{}),maybe:LS.get("hwkp-maybe",{}),busy:LS.get("hwkp-busy",{})};
 const M2S=["heute","entdecken","plan","zuhause"];
@@ -3627,7 +3631,7 @@ window.plusStarChanged=(name,on)=>{const p=byName(name);if(p)setPlace(p.id,{star
 if(typeof KSTAR!=="undefined"&&KSTAR.size){KSTAR.forEach(n=>{const p=byName(n);if(p&&!P_(p.id).star){ST.places[p.id]=Object.assign({},P_(p.id),{star:true})}});persistLocal()}
 window.__refresh=()=>refresh();
 let RT=null;function refresh(){clearTimeout(RT);RT=setTimeout(()=>{const a=document.activeElement;if(a&&a.classList&&a.classList.contains("pnote"))return;
-  syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
+  if(window.uevApply)uevApply(false,true);syncStarsToKids();if(window.KIDS_ON){window.renderKidView&&window.renderKidView()}else{render();if(M2==="heute")renderHeute();if(M2==="plan")renderPlan();if(M2==="zuhause"&&window.renderHomeNow)renderHomeNow()}updateFabs()},120)}
 (async()=>{try{if(SB||!window.claude||!window.claude.use)return;const db=await window.claude.use("db");if(!db)return;DB=db;
   try{const u=await window.claude.use("user");if(u){UAPI=u;if(u.can){const c=await u.can("data.write");if(c===false)CANWRITE=false}if(u.me){const me=await u.me();MYID=me&&me.id||null;if(MYID)PROF[MYID]=me}}}catch(e){}
   let first=true;
@@ -3849,12 +3853,12 @@ window.plusKidEv=()=>{const kidOk=e=>{if(!FAM.kids.length)return true;const r=ev
   return `<h3>🎉 Was ist los?</h3><p class="khint">Tippe auf ☆, wenn du da hin möchtest – Mama und Papa sehen deinen Wunsch.</p><div class="kevg">${L.slice(0,14).map(x=>{const k=evKey(x.p,x.e),on=evWished(k);
     return `<article class="kevc${on?" on":""}"><span class="ki" aria-hidden="true">${ico(x)}</span><button type="button" class="kws" data-kw="${esc(k)}" aria-pressed="${on}" aria-label="${on?"Wunsch wegnehmen":"Da will ich hin"}: ${esc(x.e.ti)}">${on?"⭐":"☆"}</button><span class="kd">${esc(dn(x))}</span><span class="kt">${esc(x.e.ti)}</span><span class="kp">${esc(x.p.n)} · ${x.p.bike&&x.p.bike<=15?"🚲 "+x.p.bike:"🚗 "+x.p.car} Min.</span></article>`}).join("")}</div>`};
 $("kEv").addEventListener("click",e=>{const b=e.target.closest("[data-kw]");if(!b)return;toggleWish(b.dataset.kw);const on=evWished(b.dataset.kw);b.setAttribute("aria-pressed",String(on));b.textContent=on?"⭐":"☆";b.closest(".kevc").classList.toggle("on",on)});
-window.plusEvBadge=(p,e)=>{const b=[];if(EVNEW.has(evKey(p,e)))b.push(`<span class="newtag">NEU</span>`);if(evWished(evKey(p,e)))b.push(`<span class="kidwish" title="In der Kinderansicht gewünscht">⭐ Kinderwunsch</span>`);
+window.plusEvBadge=(p,e)=>{const b=[];if(e.own)b.push(`<span class="owntag" title="Von euch selbst eingetragen">eigene</span>`);if(EVNEW.has(evKey(p,e)))b.push(`<span class="newtag">NEU</span>`);if(evWished(evKey(p,e)))b.push(`<span class="kidwish" title="In der Kinderansicht gewünscht">⭐ Kinderwunsch</span>`);
   if(e.an&&!FULL.test(e.no)){const m=(e.no||"").match(/Anmeldung bis ([^,;·]+)/i);if(m)b.push(`<span class="soontag">⏳ Anmeldung bis ${esc(m[1].trim())}</span>`);else if(days(e.dt)<=14&&!e.rg)b.push(`<span class="soontag">⏳ bald – jetzt anmelden</span>`)}
   return b.length?" "+b.join(" "):""};
 window.inPlanEv=k=>Object.values(ST.plans).some(v=>(v.items||[]).some(x=>x.type==="ev"&&x.k===k));
 window.plusEvActs=(p,e)=>{const k=evKey(p,e),pl=Object.values(ST.plans).some(v=>(v.items||[]).some(x=>x.type==="ev"&&x.k===k));
-  return `<button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}" title="${pl?"Im Ausflugsplan – antippen zum Entfernen":"In den Ausflugsplan"}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<button type="button" class="pmini" data-evshare="${p.id}" data-k="${esc(k)}">${IC.share}Teilen</button>`};
+  return `<button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}" title="${pl?"Im Ausflugsplan – antippen zum Entfernen":"In den Ausflugsplan"}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<button type="button" class="pmini" data-evshare="${p.id}" data-k="${esc(k)}">${IC.share}Teilen</button>${e.own?`<button type="button" class="pmini" data-uevedit="${esc(e.uid)}">✏️ Bearbeiten</button>`:""}`};
 const findEv=(id,k)=>{const p=byId(id);return p?[p,p.up.find(e=>evKey(p,e)===k)]:[null,null]};
 document.addEventListener("click",e=>{const a=e.target.closest("[data-evplan],[data-evshare]");if(!a)return;e.preventDefault();e.stopPropagation();
   const [p,ev]=findEv(+(a.dataset.evplan||a.dataset.evshare),a.dataset.k);if(!p||!ev)return;
@@ -4196,7 +4200,7 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   const evCostTxt=x=>{const pr=evPrice(x);if(pr===0)return "🆓 kostenlos";if(pr<1e5)return `🎟️ ${fmtEur(pr)} p. P.`;return x.e.an?"🎟️ Preis auf Infoseite":""};
   const plCostTxt=p=>{if(p.pk==="free")return "🆓 kostenlos";const fc=famCost(p);return fc===0?"🆓 kostenlos":fc!=null?"🎟️ "+fmtEur(fc,p.pest):""};
   const ecard=(x,big,wet)=>{const {p,e}=x,k=evKey(p,e),pl=window.inPlanEv(k),st=e.t?toM(e.t):null;
-    return `<div class="hcard ev${big?" big":""}">${big?`<span class="hbadge">⭐ Unser Vorschlag</span>`:""}<span class="hk">🎉 Veranstaltung${p.x?" · nicht in euren Listen":""}</span><b>${esc(e.ti)}</b><div class="hm"><span class="hl">${e.t?e.t+" Uhr":e.to?"läuft bis "+fmtDate(e.to):"ganztägig"}</span> · ${esc(p.n)} · ${Math.round(p.km)} km${hcost(evCostTxt(x))}</div>
+    return `<div class="hcard ev${big?" big":""}">${big?`<span class="hbadge">⭐ Unser Vorschlag</span>`:""}<span class="hk">🎉 Veranstaltung${p.x?" · nicht in euren Listen":e.own?" · eigene":""}</span><b>${esc(e.ti)}</b><div class="hm"><span class="hl">${e.t?e.t+" Uhr":e.to?"läuft bis "+fmtDate(e.to):"ganztägig"}</span> · ${esc(p.n)} · ${Math.round(p.km)} km${hcost(evCostTxt(x))}</div>
       <div class="hw">${st!=null?`Losfahren um ${fmM(st-p.car-10)} · 🚗 ${p.car} Min.`:`🚗 ${p.car} Min.`}${wet?" · ☔ draußen – Regenjacke!":""}${e.no?" · "+esc(e.no.length>70?e.no.slice(0,68)+"…":e.no):""}</div>
       <div class="ha"><button type="button" class="pmini" data-evplan="${p.id}" data-k="${esc(k)}" aria-pressed="${pl}">${IC.pin}${pl?"Eingeplant":"Einplanen"}</button>${window.plusMaybeBtn(p,e)}<a href="${ROUTE(p)}" target="_blank" rel="noopener">Route ↗</a>${e.u?`<a href="${e.u}" target="_blank" rel="noopener">Infos ↗</a>`:""}</div></div>`};
   const pcard=(o,big)=>{const p=o.p,pd=planDateOf(p.id);
@@ -4996,7 +5000,7 @@ const hrec=(min,unpop,kid)=>kid?Math.max(3,Math.round(min/2)):Math.max(2,Math.ro
 const HK=k=>"settings/"+k;
 const HBOCK=[[1,"👎","keine Lust"],[2,"😐","geht so"],[3,"😍","gern"]];
 /* --- Zustand: steckt in SETS (Supabase-Art „settings“), zusätzlich lokal gespiegelt --- */
-const HPRE=/^(hc|hd|hr|ho|hj|hsum|hurl):/;
+const HPRE=/^(hc|hd|hr|ho|hj|hsum|hurl|uev):/;
 const isHomeKey=k=>HPRE.test(k)||["people","homeblock","hrw","hrwcfg","hgoals","hpreset","hbdg"].includes(k);
 /* Punkte-Reset: alles vor diesem Zeitpunkt zählt nicht mehr für Punkte, Level und Belohnungen (Verlauf bleibt) */
 const hRst=()=>+((SETS.hpreset||{}).t)||0;
@@ -5815,6 +5819,70 @@ document.addEventListener("pointerup",swEnd);document.addEventListener("pointerc
 window.renderHomeNow=renderHome;window.renderHomeSetNow=renderHomeSet;
 renderHomeSet();if(M2==="zuhause")renderHome();if(M2==="plan"&&typeof renderPlan==="function")renderPlan();
 window.__home={SETS,items:(a,b)=>hItems(a,b).map(i=>i.c.cid+"@"+i.disp),hBal:id=>hBal(id),hMe:()=>hMe(),hFam:()=>hFam()};
+
+/* =====================================================================
+   Eigene Veranstaltungen: selbst gefundene Termine per Eingabemaske
+   eintragen. Gespeichert verschlüsselt wie alles andere ("uev:<id>"),
+   damit die ganze Familie sie sieht. Ort = bekanntes Ziel aus der App
+   oder ein eigener Ort (Adresse wird über OpenStreetMap gesucht).
+   ===================================================================== */
+const UHOME={lat:53.76,lng:10.00};
+const uevAll=()=>Object.keys(SETS).filter(k=>k.startsWith("uev:")).map(k=>Object.assign({id:k.slice(4)},SETS[k])).filter(x=>x&&x.ti&&x.dt);
+let UEVSIG="";
+function uevApply(force,quiet){const L=uevAll(),sig=JSON.stringify([L,T0]);if(!force&&sig===UEVSIG)return;UEVSIG=sig;
+  PLACES.forEach(p=>{if(p.up&&p.up.some(e=>e.own))p.up=p.up.filter(e=>!e.own)});
+  const pl=new Map();
+  L.forEach(x=>{if((x.to||x.dt)<T0)return;
+    const e={dt:x.to&&x.dt<T0?T0:x.dt,dt0:x.dt,to:x.to||null,t:x.t||"",te2:x.te||"",ti:x.ti,no:[x.no||"",x.pr||""].filter(Boolean).join(" · "),u:x.u||null,an:!!x.an,own:1,uid:x.id,oa:x.aud||"b"};
+    let p=x.pid!=null&&x.pid!==""?PLACES.find(q=>q.id==x.pid):null;
+    if(!p){const k="u|"+(x.v||"")+"|"+(x.a||"");if(!pl.has(k)){const km=x.lat!=null?Math.round(hav(UHOME,x)*10)/10:15,v=km<10?35:km<30?40:55;let h=0;for(const ch of k)h=(h*31+ch.charCodeAt(0))>>>0;
+      pl.set(k,{id:8000000+h%900000,own:true,n:x.v||"Eigener Ort",a:x.a||"",lat:x.lat,lng:x.lng,km,car:Math.max(5,Math.round((km*1.3/v*60+5)/5)*5),web:x.u||"",up:[],hay:"",aud:"b",c:"ausflug",s:"FSHW"})}p=pl.get(k)}
+    p.up.push(e)});
+  const srt=p=>p.up&&p.up.sort((a,b)=>(a.dt+a.t).localeCompare(b.dt+b.t));PLACES.forEach(srt);pl.forEach(srt);
+  window.UEVPL=[...pl.values()];
+  try{EVCACHE=null;EVCT=0}catch(_){}
+  if(!quiet&&window.__refresh)try{window.__refresh()}catch(_){}}
+window.uevApply=uevApply;
+
+/* ---------- Eingabemaske ---------- */
+let UED=null;
+function uevDlg(id){let d=$("uevdlg");if(!d){d=document.createElement("dialog");d.id="uevdlg";d.className="evdlg hdlg";d.setAttribute("aria-labelledby","uevH");document.body.appendChild(d)}
+  const x=id?uevAll().find(e=>e.id===id):null;const au=window.getAud?getAud():"fam";
+  UED=x?JSON.parse(JSON.stringify(x)):{id:"u"+Date.now().toString(36),ti:"",dt:T0,to:"",t:"",te:"",v:"",a:"",lat:null,lng:null,pid:"",u:"",pr:"",no:"",an:false,aud:au==="erw"?"e":au==="fam"?"f":"b"};uevDraw();d.showModal?d.showModal():d.setAttribute("open","")}
+function uevDraw(){const d=$("uevdlg"),x=UED;if(!d||!x)return;const known=x.pid!==""&&x.pid!=null?PLACES.find(p=>p.id==x.pid):null,mine=uevAll().filter(e=>(e.to||e.dt)>=T0).sort((a,b)=>(a.dt+a.t).localeCompare(b.dt+b.t));
+  d.innerHTML=`<form class="hform nofill" autocomplete="off" action="#"><div class="dlghead"><h3 id="uevH">${uevAll().some(e=>e.id===x.id)?"Eigene Veranstaltung bearbeiten":"Eigene Veranstaltung"}</h3><button type="button" class="mbx" data-uclose aria-label="Schließen">✕</button></div>
+   <label>Titel<input type="text" id="uTi" maxlength="90" value="${esc(x.ti)}" placeholder="z. B. Laternenumzug Rhen" name="wg-uev-titel"></label>
+   <div class="hf2"><label>Datum<input type="date" id="uDt" value="${esc(x.dt)}"></label><label>bis <small>(mehrtägig, optional)</small><input type="date" id="uTo" value="${esc(x.to||"")}"></label></div>
+   <div class="hf2"><label>Beginn <small>(optional)</small><input type="time" id="uT" value="${esc(x.t||"")}"></label><label>Ende <small>(optional)</small><input type="time" id="uTe" value="${esc(x.te||"")}"></label></div>
+   <label>Ort <small>– bekanntes Ziel wählen oder eigenen Namen eintragen</small><input type="text" id="uV" list="uevPl" value="${esc(known?known.n:x.v)}" placeholder="z. B. Bürgerhaus Henstedt-Ulzburg" name="wg-uev-ort" autocomplete="off"></label>
+   <datalist id="uevPl">${PLACES.slice().sort((a,b)=>a.n.localeCompare(b.n)).map(p=>`<option value="${esc(p.n)}"></option>`).join("")}</datalist>
+   <div class="vgrow" id="uAW"${known?" hidden":""}><label>Adresse <small>(für Entfernung und Route)</small><input type="text" id="uA" value="${esc(x.a||"")}" placeholder="Straße, Ort" name="wg-uev-adresse"></label><button type="button" class="pmini" data-ugeo>Suchen</button></div>
+   <small class="hhint" id="uAH">${known?`📍 bekanntes Ziel: ${esc(known.a||"")}`:x.lat!=null?"📍 Ort gefunden":"Ohne Adresse wird keine Entfernung berechnet."}</small>
+   <span class="hlab">Für wen?</span><div class="dquick" id="uAud">${[["f","Kinder"],["e","Erwachsene"],["b","Beide"]].map(([k,l])=>`<button type="button" data-uaud="${k}" aria-pressed="${x.aud===k}">${l}</button>`).join("")}</div>
+   <div class="hf2"><label>Preis <small>(optional)</small><input type="text" id="uPr" maxlength="60" value="${esc(x.pr||"")}" placeholder="z. B. frei, 5 € p. P."></label><label>Link <small>(optional)</small><input type="url" id="uU" value="${esc(x.u||"")}" placeholder="https://…"></label></div>
+   <label>Hinweis <small>(optional)</small><input type="text" id="uNo" maxlength="140" value="${esc(x.no||"")}" placeholder="z. B. Laternen selbst mitbringen"></label>
+   <label class="famchk"><input type="checkbox" id="uAn"${x.an?" checked":""}> Anmeldung oder Ticket nötig</label>
+   <div class="hfbtn">${uevAll().some(e=>e.id===x.id)?`<button type="button" class="pmini hdel vdel" data-udel>Löschen</button>`:""}<button type="button" class="pbtn" data-uclose>Abbrechen</button><button type="button" class="pbtn hsave" data-usave>💾 Speichern</button></div>
+   ${mine.length?`<h4 class="hday">Eure eigenen Veranstaltungen (${mine.length})</h4><div class="uevl">${mine.map(e=>`<button type="button" class="uevr" data-uedit="${esc(e.id)}"${e.id===x.id?' aria-current="true"':""}><b>${esc(e.ti)}</b><small>${esc(fmtDate(e.dt))}${e.to?" – "+esc(fmtDate(e.to)):""}${e.t?" · "+esc(e.t)+" Uhr":""} · ${esc((e.pid!==""&&e.pid!=null&&(PLACES.find(p=>p.id==e.pid)||{}).n)||e.v||"ohne Ort")}</small></button>`).join("")}</div>`:""}
+   </form>`}
+function uevRead(){const x=UED,vn=$("uV").value.trim(),kp=PLACES.find(p=>p.n===vn);
+  x.ti=$("uTi").value.trim().slice(0,90);x.dt=$("uDt").value;x.to=$("uTo").value&&$("uTo").value>x.dt?$("uTo").value:"";x.t=$("uT").value;x.te=$("uTe").value;
+  if(kp){x.pid=kp.id;x.v="";x.a="";x.lat=null;x.lng=null}else{if(x.pid!==""||x.v!==vn||x.a!==$("uA").value.trim()){if(x.v!==vn||x.a!==$("uA").value.trim()){x.lat=null;x.lng=null}}x.pid="";x.v=vn;x.a=$("uA").value.trim()}
+  x.pr=$("uPr").value.trim();x.u=/^https?:\/\//.test($("uU").value.trim())?$("uU").value.trim():"";x.no=$("uNo").value.trim();x.an=$("uAn").checked}
+document.addEventListener("click",async e=>{const t=e.target;if(!t.closest)return;
+  if(t.closest("[data-uevnew]")){uevDlg(null);return}
+  const ued=t.closest("[data-uevedit]");if(ued&&!t.closest("#uevdlg")){uevDlg(ued.dataset.uevedit);return}
+  if(!t.closest("#uevdlg")||!UED)return;const x=UED;
+  if(t.closest("[data-uclose]")){$("uevdlg").close();return}
+  const ua=t.closest("[data-uaud]");if(ua){x.aud=ua.dataset.uaud;$("uAud").querySelectorAll("[data-uaud]").forEach(b=>b.setAttribute("aria-pressed",String(b===ua)));return}
+  const ue=t.closest("[data-uedit]");if(ue){const y=uevAll().find(v=>v.id===ue.dataset.uedit);if(y){UED=JSON.parse(JSON.stringify(y));uevDraw()}return}
+  if(t.closest("[data-ugeo]")){uevRead();const h=$("uAH");if(!x.v&&!x.a){h.textContent="Bitte Ort oder Adresse eintragen.";return}h.textContent="Suche …";const r=await vGeo([x.v,x.a].filter(Boolean).join(", "),UHOME)||(x.a?await vGeo(x.a):null);if(r){x.lat=r.lat;x.lng=r.lng;h.textContent="📍 gefunden: "+r.label}else h.textContent="Nicht gefunden – bitte mit Ort eingeben (z. B. „Rathausplatz 1, Norderstedt“).";return}
+  if(t.closest("[data-udel]")){const b=t.closest("[data-udel]");if(!b.dataset.sure){b.dataset.sure="1";b.textContent="Wirklich löschen? Nochmal tippen";return}hset("uev:"+x.id,null);$("uevdlg").close();uevApply(true);toast("🗑️ Veranstaltung gelöscht");return}
+  if(t.closest("[data-usave]")){uevRead();if(!x.ti){toast("Bitte einen Titel eingeben");$("uTi").focus();return}if(!x.dt){toast("Bitte ein Datum wählen");return}
+    if(x.pid===""&&x.lat==null&&(x.v||x.a)){const r=await vGeo([x.v,x.a].filter(Boolean).join(", "),UHOME)||(x.a?await vGeo(x.a):null);if(r){x.lat=r.lat;x.lng=r.lng}}
+    const o=Object.assign({},x);delete o.id;hset("uev:"+x.id,o);$("uevdlg").close();uevApply(true);toast(`📅 „${x.ti}“ eingetragen – ${fmtDate(x.dt)}`);return}});
+document.addEventListener("input",e=>{if(e.target.id!=="uV"||!UED)return;const kp=PLACES.find(p=>p.n===e.target.value.trim()),w=$("uAW"),h=$("uAH");if(w)w.hidden=!!kp;if(h)h.textContent=kp?`📍 bekanntes Ziel: ${kp.a||""}`:"Ohne Adresse wird keine Entfernung berechnet."});
+setTimeout(()=>uevApply(true),0);
 
 })();
 </script>
