@@ -1756,6 +1756,7 @@ form.nofill{display:contents}
  .lrow .lchev{display:none}
  .lrow .lbtn.on{font-size:12px;line-height:1.2;gap:4px}
 }
+.hsec h3 .hcnt{font-size:12px;font-weight:600;color:var(--muted);margin-left:6px;letter-spacing:0;text-transform:none}
 </style>
 
 <div class="wrap">
@@ -2417,7 +2418,7 @@ renderLegend();
 
 
 /* Bereiche (Tabs) und Termine */
-const BUILD="2026-11-13";
+const BUILD="2026-11-14";
 let MT="ziele", EVDATE="all";
 try{MT=localStorage.getItem("hwk-tab")||"ziele"}catch(e){}
 window.HASH0=(location.hash||"").toLowerCase();
@@ -2964,7 +2965,7 @@ $("freeDays").addEventListener("click",e=>{const b=e.target.closest("[data-fd]")
  if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js").catch(()=>{});
    let reloaded=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(reloaded)return;reloaded=true;wtoast("✨ Neue Version geladen")})}
 /* Update-Prüfung: beim Zurückkehren in die App (und alle 30 Min.) nach neuer Version schauen */
-{const APPVER="1b2546e62c";let lastChk=0,hiddenAt=0,banner=null;
+{const APPVER="ebb802f0f9";let lastChk=0,hiddenAt=0,banner=null;
   const busy=()=>!!document.querySelector("dialog[open]")||(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
   const go=()=>{try{navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})}catch(_){}location.reload()};
   async function chk(fromBg){if(APPVER.startsWith("__")||location.protocol==="file:")return;const now=Date.now();if(now-lastChk<20000)return;lastChk=now;
@@ -4138,7 +4139,7 @@ function hl(x){const e=x.e,p=x.p;let s=0;let c=[];try{c=evCats(p,e)}catch(_){}
   if(FAM.kids.length){const r=evAgeRange(e);if(r&&!FAM.kids.some(k=>k>=r[0]&&k<=r[1]))s-=6}
   return s-p.km/30}
 let EVCACHE=null,EVCT=0;
-let EVHV=-1;function evAllNear(){if(EVCACHE&&Date.now()-EVCT<5000&&EVHV===window.HIDV)return EVCACHE;EVHV=window.HIDV;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
+let EVHV=-1,EVAUD=null;function evAllNear(){const au=window.getAud?getAud():"";if(EVCACHE&&Date.now()-EVCT<5000&&EVHV===window.HIDV&&EVAUD===au)return EVCACHE;EVHV=window.HIDV;EVAUD=au;EVCACHE=allEvs(PLACES.filter(p=>p.km<=45)).filter(x=>x.p.km<=45);EVCT=Date.now();return EVCACHE}
 const onDay=(x,dt)=>x.e.dt<=dt&&(x.e.to||x.e.dt)>=dt;
 const ROUTE=p=>"https://www.google.com/maps/dir/?api=1&origin=53.76,10.00&destination="+encodeURIComponent(p.n+", "+p.a);
 const fmDur=m=>m>=60?(Math.floor(m/60)+(m%60>=30?",5":"")+" h"):m+" Min.";
@@ -4202,6 +4203,10 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
     .filter(x=>{const k=x.p.id+"|"+x.e.ti;if(seen.has(k))return false;seen.add(k);return true})
     .forEach(x=>{let s=hl(x)+2;if(HQ.cost==="more"&&x.e.an&&evKind(x.e)==="tix")s+=1.5;const out=evIO(x)==="draussen";let ec=wc;if(hh&&x.e.t){const o=toM(x.e.t)<12*60?hh.am:hh.pm;ec=wxClass(o)}if(out&&ec==="rain")s-=4;if(out&&ec==="warm")s+=1;if(s>-2)items.push({k:"e",x,sc:s,wet:out&&ec==="rain"})});
   items.sort((a,b)=>b.sc-a.sc);
+  /* Ziele und Veranstaltungen gemischt zeigen: nach dem besten Vorschlag abwechselnd je eins, damit Termine nicht von Zielen verdrängt werden */
+  {const top=items[0],Pl=items.filter(x=>x!==top&&x.k==="p"),Ev=items.filter(x=>x!==top&&x.k==="e"),mix=top?[top]:[];
+   let i=0,j=0,turn=top&&top.k==="p"?"e":"p";while(i<Pl.length||j<Ev.length){if((turn==="e"&&j<Ev.length)||i>=Pl.length)mix.push(Ev[j++]);else mix.push(Pl[i++]);turn=turn==="e"?"p":"e"}
+   items.length=0;mix.forEach(x=>items.push(x))}
   const wl=hh?"":(w?`${wxIcon(w.rain,w.code,w.hi)} ${WX[wc]}, ${Math.round(w.hi)}° · 💧 ${Math.round(w.rain)} %`:"");const halfHtml=wxHalfHtml(dt,mode==="jetzt"?nm:null);
   const hcost=s=>s?` · <span class="hcost" title="${/p\. P\./.test(s)?"Preis pro Person laut Veranstalter":/🆓/.test(s)?"Eintritt frei":/€/.test(s)?"Eintritt für eure ganze Familie (geschätzt)":"Preis steht auf der Infoseite"}">${s}</span>`:"";
   const evCostTxt=x=>{const pr=evPrice(x);if(pr===0)return "🆓 kostenlos";if(pr<1e5)return `🎟️ ${fmtEur(pr)} p. P.`;return x.e.an?"🎟️ Preis auf Infoseite":""};
@@ -4234,7 +4239,7 @@ function renderHeute(){const v=$("heuteView");if(!v||M2!=="heute")return;
   v.innerHTML=headHtml+`
 <div class="haud" role="group" aria-label="Für wen?"><button type="button" data-aud="fam" aria-pressed="${getAud()==="fam"}">Kinder</button><button type="button" data-aud="erw" aria-pressed="${getAud()==="erw"}">Erwachsene</button></div><div class="hqsum"><span class="hql">Eure Antworten:</span>${chosen.length?chosen.map(c=>`<span class="hqc">${esc(c)}</span>`).join(""):`<span class="hqc">keine Vorgaben</span>`}<button type="button" class="hqredo" data-hqredo>✏️ Fragen neu beantworten</button></div>
     ${lateDay?`<p class="hnote">Für einen ganzen Tag ist es heute schon spät – vielleicht morgen?</p>`:""}
-    ${items.length?card(items[0],true)+(items.length>1?`<div class="hsec"><h3>Weitere Ideen</h3><div class="hgrid">${items.slice(1,7).map(it=>card(it)).join("")}</div></div>`:"")
+    ${items.length?card(items[0],true)+(items.length>1?`<div class="hsec"><h3>Weitere Ideen <small class="hcnt">${items.filter(x=>x.k==="p").length} Ziele · ${items.filter(x=>x.k==="e").length} Veranstaltungen</small></h3><div class="hgrid">${items.slice(1,9).map(it=>card(it)).join("")}</div></div>`:"")
       :`<div class="hnote">Dazu passt ${mode==="jetzt"?"heute":"morgen"} leider nichts.${relax?`<div class="evtips" style="margin-top:6px">${relax}</div>`:""}</div>`}
     <button type="button" class="pbtn hmore" data-explore="${dt}">🔭 Mehr für ${mode==="jetzt"?"heute":"morgen"} entdecken</button>`}
 $("heuteView").addEventListener("click",e=>{const h=e.target.closest("[data-hd]");if(h){HD=h.dataset.hd;renderHeute();return}
