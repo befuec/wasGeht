@@ -705,19 +705,20 @@ function hFigure(prev){const C=hCele(),host=hFxHost();let fig=prev||C.fig;if(fig
   const o=document.createElement("div");o.className="hcele hc-"+fig;o.setAttribute("aria-hidden","true");
   if(fig==="gif"&&HCGIF){const im=document.createElement("img");im.src=HCGIF;im.alt="";o.appendChild(im)}else{const e=document.createElement("span");e.textContent=(HCFIG[fig]||HCFIG.party)[0];o.appendChild(e)}
   host.appendChild(o);setTimeout(()=>o.remove(),fig==="gif"?2600:1900)}
-function hBurst(pts,big,force){const C=force||hCele(),lvl=C.lvl,host=hFxHost(),red=!force&&!(LS.get("hwk-cele",{})||{}).lvl&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function hBurst(pts,big,force){const KID=!force&&!!window.KIDS_ON,C0=force||hCele(),C=KID&&C0.lvl!=="off"?Object.assign({},C0,{lvl:"party",fig:"rand"}):C0,lvl=C.lvl,host=hFxHost(),red=!force&&!KID&&!(LS.get("hwk-cele",{})||{}).lvl&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(lvl==="off")return;
   const p=document.createElement("div");p.className="hplus";p.textContent="+"+pts;host.appendChild(p);setTimeout(()=>p.remove(),1300);
   if(C.snd)hJingle(big||lvl==="party");if(C.vib&&navigator.vibrate)try{navigator.vibrate(lvl==="party"?[30,50,30,50,60]:20)}catch(_){}
   if(lvl==="calm"||red)return;
   const n=lvl==="party"?(big?44:32):(big?26:16),em=["🎉","⭐","✨","🎊","💪","🏅"];
   for(let i=0;i<n;i++){const s=document.createElement("span");s.className="hconf";s.textContent=em[i%em.length];s.style.left=(40+Math.random()*20)+"%";s.style.setProperty("--dx",(Math.random()*2-1)*45+"vw");s.style.setProperty("--dy",-(30+Math.random()*45)+"vh");s.style.animationDelay=(Math.random()*.15)+"s";host.appendChild(s);setTimeout(()=>s.remove(),1500)}
-  if(lvl==="party")hFigure(force&&force.fig)}
+  if(lvl==="party")hFigure(force?force.fig:KID?"rand":null)}
 function renderCeleSet(){const el=$("celeSet");if(!el)return;const C=hCele();
   el.innerHTML=`<div class="pmode"><span>Stärke</span><div class="dquick">${[["off","Aus"],["calm","Dezent"],["normal","Konfetti"],["party","Party 🥳"]].map(([k,l])=>`<button type="button" data-hcl2="${k}" aria-pressed="${C.lvl===k}">${l}</button>`).join("")}</div></div>
    ${matchMedia("(prefers-reduced-motion: reduce)").matches?`<small class="famnote">Hinweis: Auf diesem Gerät ist „Bewegung reduzieren“ eingeschaltet. Die hier gewählte Stärke gilt trotzdem.</small>`:""}<small class="famnote">${{off:"Kein Effekt, nur der Haken.",calm:"Nur „+Punkte“ blendet kurz ein.",normal:"Konfetti-Regen mit „+Punkte“.",party:"Konfetti plus eine große, bewegte Figur, die mitfeiert."}[C.lvl]}</small>
    ${C.lvl==="party"?`<div class="pmode"><span>Figur</span><div class="dquick hcfigs">${[["rand","🎲 Zufällig"]].concat(Object.entries(HCFIG).map(([k,v])=>[k,v[0]+" "+v[1]])).concat([["gif",HCGIF?"🖼️ Eigenes GIF":"🖼️ Eigenes GIF …"]]).map(([k,l])=>`<button type="button" data-hcfig="${k}" aria-pressed="${C.fig===k}">${esc(l)}</button>`).join("")}</div></div>
      <div class="hcgif"><label class="pmini hcup">${HCGIF?"Anderes GIF wählen":"GIF hochladen"}<input type="file" id="hcGifF" accept="image/gif,image/webp,image/png,image/apng" hidden></label>${HCGIF?`<img src="${HCGIF}" alt="Eigenes Feier-GIF" class="hcthumb"><button type="button" class="pmini" data-hcgifdel>Entfernen</button>`:`<small class="famnote">z. B. ein Familien-GIF vom Handy, max. 2 MB, bleibt nur auf diesem Gerät.</small>`}</div>`:""}
+   <small class="famnote">👧 In der Kinderansicht feiert immer eine zufällige Figur mit Konfetti mit (außer bei „Aus“).</small>
    <label class="famchk"><input type="checkbox" id="hcSnd"${C.snd?" checked":""}> 🔊 Kleiner Jubel-Ton</label>
    <label class="famchk"><input type="checkbox" id="hcVib"${C.vib?" checked":""}> 📳 Kurz vibrieren <small class="famnote">(nur Android)</small></label>
    <button type="button" class="pkok" data-hcprev>🎉 Ausprobieren</button>`}
